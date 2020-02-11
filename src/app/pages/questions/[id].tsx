@@ -24,10 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Index = ({ props }) => {
   const router = useRouter();
-  console.log(router.query.id);
   const classes = useStyles();
-  // const sampleMoji =
-  //   "# 助けて(´;ω;｀)\n```js\nconst arrowDisplayNone = () => {\n  document.querySelectorAll('.arrow').forEach(item => {\n    item.style.display = 'none';\n  }\n)}\n```";
   const [state, setState] = React.useState<{
     title: string;
     tags: any;
@@ -37,6 +34,7 @@ const Index = ({ props }) => {
     pageView: number;
     createdAt: any;
     isResolve: boolean;
+    myData:any;
   }>({
     title: "",
     tags: [],
@@ -45,10 +43,11 @@ const Index = ({ props }) => {
     userData: null,
     pageView: 0,
     createdAt: null,
-    isResolve: false
+    isResolve: false,
+    myData:null
   });
   React.useEffect(() => {
-    setState({ ...state, userData: props });
+    setState({ ...state, myData: props });
   }, [props]);
   React.useEffect(() => {
     if (typeof router.query.id !== "undefined") {
@@ -56,12 +55,6 @@ const Index = ({ props }) => {
         const getQuestion = await questionDB.showQuestion(router.query.id);
         const questionData: any = getQuestion.data();
         console.log(questionData);
-        console.log(
-          format(
-            new Date(questionData.createdAt.seconds * 1000),
-            "yyyy年MM月dd日HH時mm分"
-          )
-        );
         setState({
           ...state,
           title: questionData.title,

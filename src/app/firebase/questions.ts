@@ -1,14 +1,13 @@
 import { db, FieldValue } from "./firebase";
-// import firebase from "firebase";
 const questions = db.collection("questions");
 export const questionDB = {
   postQuestion: fields => {
-    const { title, tags, text, index, userData } = fields;
+    const { title, tags, text, userData } = fields;
     return questions.add({
       title: title,
       tags: tags,
       text: text,
-      index: index,
+      isPost: true,
       createdAt: FieldValue.serverTimestamp(),
       updatedAt: null,
       isResolve: false,
@@ -20,7 +19,20 @@ export const questionDB = {
       }
     });
   },
-  showQuestion:async uid=>{
+  draftQuestion: fields => {
+    const { title, tags, text, userData } = fields;
+    return db
+      .collection("users")
+      .doc(userData.uid)
+      .collection("draftQuestions")
+      .doc()
+      .set({
+        title: title,
+        tags: tags,
+        text: text
+      });
+  },
+  showQuestion: async uid => {
     const getQuestion = await questions.doc(uid).get();
     return getQuestion;
   }

@@ -26,14 +26,13 @@ export const Chips = ({ labels }) => {
   const classes = useStyles();
   const [state, setState] = React.useState();
   React.useEffect(() => {
-    console.log(labels);
     setState(labels);
   }, [labels]);
   return (
     <div className={classes.root}>
       {typeof state !== "undefined" &&
-        state.map(element => {
-          return <Chip className={classes.chip} label={element} />;
+        state.map((element,index) => {
+          return <Chip key={index} className={classes.chip} label={element} />;
         })}
     </div>
   );
