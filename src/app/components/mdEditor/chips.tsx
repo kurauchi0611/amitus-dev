@@ -8,6 +8,9 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       justifyContent: "left",
       flexWrap: "wrap",
+      marginTop: theme.spacing(1),
+      marginLeft: theme.spacing(5),
+      marginRight: theme.spacing(5),
       "& > *": {
         margin: theme.spacing(0.5)
       }
@@ -22,7 +25,6 @@ const useStyles = makeStyles((theme: Theme) =>
 export const Chips = ({ labels }) => {
   const classes = useStyles();
   const [state, setState] = React.useState();
-  console.log(state);
   React.useEffect(() => {
     console.log(labels);
     setState(labels);

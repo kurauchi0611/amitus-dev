@@ -5,6 +5,7 @@ import { Tags } from "../../components/mdEditor/Tags";
 import { SendButton } from "../../components/mdEditor/sendButton";
 import React from "react";
 import { questionDB } from "../../firebase/questions";
+import { useRouter } from "next/router";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -15,6 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Index = ({ props }) => {
   const classes = useStyles();
+  const router = useRouter();
   const sampleMoji =
     "# 助けて(´;ω;｀)\n```js\nconst arrowDisplayNone = () => {\n  document.querySelectorAll('.arrow').forEach(item => {\n    item.style.display = 'none';\n  }\n)}\n```";
   const [state, setState] = React.useState<{
@@ -43,7 +45,7 @@ const Index = ({ props }) => {
     } else if (name === "tags") {
       const tagsArray: string[] = [];
       event.forEach((item: any) => {
-        tagsArray.push(item.title);
+        tagsArray.push(item.lang);
       });
       setState({
         ...state,
@@ -62,7 +64,9 @@ const Index = ({ props }) => {
     }
   };
   const sendQuestion = () => {
-    questionDB.postQuestion(state);
+    questionDB.postQuestion(state).then(res => {
+      router.push("/questions/[id]", `/questions/${res.id}`);
+    });
   };
   return (
     <React.Fragment>
@@ -78,12 +82,12 @@ const Index = ({ props }) => {
         />
         <Tags handleChange={handleChange("tags")} />
         <MarkDownEditor handleChange={handleChange("text")} text={state.text} />
-        {(typeof state.userData !== "undefined" && state.userData !== null) && (
-        <SendButton
-          handleChange={handleChange("index")}
-          selectedIndex={state.index}
-          onClick={sendQuestion}
-        />
+        {typeof state.userData !== "undefined" && state.userData !== null && (
+          <SendButton
+            handleChange={handleChange("index")}
+            selectedIndex={state.index}
+            onClick={sendQuestion}
+          />
         )}
       </Container>
     </React.Fragment>

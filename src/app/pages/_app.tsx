@@ -6,28 +6,39 @@ import { MenuAppBar } from "../components/MenuAppBar";
 import theme from "../themes/theme";
 import "react-mde/lib/styles/css/react-mde-all.css";
 
-import { auth } from "../firebase/firebase";
+import { auth, db } from "../firebase/firebase";
 
 // function MyApp({ Component, pageProps }) {
 //   return <Component {...pageProps} />
 // }
 
-const MyApp = ({ Component}) => {
+const MyApp = ({ Component }) => {
   const [isUser, setIsUser] = React.useState();
   React.useEffect(() => {
     return auth.onAuthStateChanged(async user => {
       if (user) {
-        await setIsUser(
-          user
-        );
+        await setIsUser(user);
       } else if (!user) {
         // No user is signed in.
         console.log("logout");
-        await setIsUser(
-          null
-        );
+        await setIsUser(null);
       }
     });
+  }, []);
+
+  // const [localLang,setLocalLang] = React.useState();
+  React.useEffect(() => {
+    const cleanup=async()=>{
+      if (localStorage.getItem("langList") === null) {
+        const langList:any=await db
+        .collection("language")
+        .doc("lang")
+        .get();
+        console.log(langList.data().language);
+        localStorage.setItem("langList",JSON.stringify(langList.data().language))
+      }
+    }
+    cleanup();
   }, []);
 
   return (
@@ -37,7 +48,7 @@ const MyApp = ({ Component}) => {
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <MenuAppBar user={isUser}  />
+        <MenuAppBar user={isUser} />
         <Component props={isUser} />
       </ThemeProvider>
     </div>
