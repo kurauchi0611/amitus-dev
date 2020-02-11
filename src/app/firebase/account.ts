@@ -2,15 +2,12 @@ import { storage, auth, functions, db, FieldValue } from "./firebase";
 import firebase from "firebase";
 
 export const accountDB = {
-  loginUser: account => {
+  loginUser: async account => {
     console.log("startLogin");
-    auth
-      .signInWithEmailAndPassword(account.email, account.password)
-      .catch(error => {
-        // Handle Errors here.
-        console.log(error);
-        // ...
-      });
+    return await auth.signInWithEmailAndPassword(
+      account.email,
+      account.password
+    );
   },
   createUser: async account => {
     let result = false;

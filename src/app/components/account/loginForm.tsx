@@ -5,52 +5,72 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  withStyles
 } from "@material-ui/core";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import React from "react";
 import { accountDB } from "../../firebase/account";
 import { MailForm } from "./mailForm";
-// import { accountDB } from "src/db/accountDB.js";
 import { PasswordForm } from "./passwordForm";
 
-export const LoginForm = withStyles(theme => ({
-  button: {
-    width: "120px",
-    maxWidth: theme.spacing(40),
-    margin: "15px auto"
-  },
-  error: {
-    textAlign: "right",
-    color: theme.palette.error.main
-    // height:"20px"
-  },
-  searchButton: {
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
-    fontSize: "1rem",
-    background: theme.palette.buttonMain.main,
-    borderRadius: 3,
-    border: 0,
-    color: "white",
-    height: 35,
-    padding: "0 20px",
-    boxShadow: `0 3px 5px 2px ${theme.palette.buttonMain.dark}`,
-    display: "inline-block"
-  },
-  cancel: {
-    background: theme.palette.buttonCancel.main,
-    boxShadow: `0 3px 5px 2px ${theme.palette.buttonCancel.dark}`
-  }
-}))(({ classes, label, positive, negative, ...props }) => {
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    button: {
+      width: "120px",
+      maxWidth: theme.spacing(40),
+      margin: "15px auto"
+    },
+    error: {
+      textAlign: "right",
+      color: theme.palette.error.main
+      // height:"20px"
+    },
+    searchButton: {
+      marginLeft: theme.spacing(2),
+      marginRight: theme.spacing(2),
+      fontSize: "1rem",
+      background: theme.palette.buttonMain.main,
+      borderRadius: 3,
+      border: 0,
+      color: "white",
+      height: 35,
+      padding: "0 20px",
+      boxShadow: `0 3px 5px 2px ${theme.palette.buttonMain.dark}`,
+      display: "inline-block"
+    },
+    cancel: {
+      background: theme.palette.buttonCancel.main,
+      boxShadow: `0 3px 5px 2px ${theme.palette.buttonCancel.dark}`
+    },
+    success: {
+      background: theme.palette.buttonCancel.main
+    }
+  })
+);
+export const LoginForm = ({ label }) => {
+  const classes = useStyles();
   const [open, setOpen] = React.useState(false);
-
+  const [state, setState] = React.useState<{
+    email: string;
+    password: string;
+    showPassword: boolean;
+    faild: string | boolean;
+    emailFaild: string | boolean;
+    passwordFaild: string | boolean;
+  }>({
+    email: "",
+    password: "",
+    showPassword: false,
+    faild: "",
+    emailFaild: "",
+    passwordFaild: ""
+  });
   const handleClickOpen = () => {
     setOpen(true);
   };
 
   const handleClose = () => {
     setOpen(false);
-    setValues({
+    setState({
       email: "",
       password: "",
       showPassword: false,
@@ -59,14 +79,7 @@ export const LoginForm = withStyles(theme => ({
       passwordFaild: ""
     });
   };
-  const [values, setValues] = React.useState({
-    email: "",
-    password: "",
-    showPassword: false,
-    faild: "",
-    emailFaild: "",
-    passwordFaild: ""
-  });
+
   const emailValidation = email => {
     if (!email) return "メールアドレスを入力してください";
     const moji = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -80,38 +93,21 @@ export const LoginForm = withStyles(theme => ({
 
   const handleChange = prop => event => {
     if (prop === "email") {
-      setValues({
-        ...values,
+      setState({
+        ...state,
         [prop]: event.target.value,
         emailFaild: emailValidation(event.target.value)
       });
     } else if (prop === "password") {
-      setValues({
-        ...values,
+      setState({
+        ...state,
         [prop]: event.target.value,
         passwordFaild: passwordValidation(event.target.value)
       });
     }
   };
-  const changeEmail = () => {
-    if (values.emailFaild === true && values.passwordFaild === true) {
-      accountDB.changeEmail(values.email, values.password).then(result => {
-        console.log(result);
-
-        if (result) {
-          alert("メールアドレスの変更が完了しました。");
-          handleClose();
-        } else {
-          setValues({
-            ...values,
-            faild: "メールアドレスの変更に失敗しました。"
-          });
-        }
-      });
-    }
-  };
   const loginUser = () => {
-    accountDB.loginUser({ email: values.email, password: values.password });
+    accountDB.loginUser({ email: state.email, password: state.password });
   };
 
   return (
@@ -136,16 +132,17 @@ export const LoginForm = withStyles(theme => ({
           <MailForm
             label="メールアドレス"
             handlechange={handleChange("email")}
-            autoComplete="off"
+            email={state.email}
+            autoFocus={true}
           />
-          <div className={classes.error}>{values.emailFaild}</div>
+          <div className={classes.error}>{state.emailFaild}</div>
           <PasswordForm
             label="パスワード"
             handlechange={handleChange("password")}
-            password={values.password}
+            password={state.password}
           ></PasswordForm>
-          <div className={classes.error}>{values.passwordFaild}</div>
-          <div className={classes.error}>{values.faild}</div>
+          <div className={classes.error}>{state.passwordFaild}</div>
+          <div className={classes.error}>{state.faild}</div>
         </DialogContent>
         <DialogActions>
           <Button onClick={loginUser} className={classes.searchButton}>
@@ -159,6 +156,7 @@ export const LoginForm = withStyles(theme => ({
           </Button>
         </DialogActions>
       </Dialog>
+     
     </div>
   );
-});
+};

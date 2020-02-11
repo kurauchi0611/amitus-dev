@@ -147,7 +147,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const UserNameForm = ({ label, handlechange, email, autoFocus }) => {
+export const UserNameForm = ({ label, handlechange, name, autoFocus }) => {
   const classes = useStyles();
   return (
     <div>
@@ -158,7 +158,7 @@ export const UserNameForm = ({ label, handlechange, email, autoFocus }) => {
           id="standard-basic"
           fullWidth
           onInput={handlechange}
-          value={email}
+          value={name}
           autoComplete="off"
           autoFocus={autoFocus}
           startAdornment={

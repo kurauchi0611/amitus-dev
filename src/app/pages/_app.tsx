@@ -1,46 +1,82 @@
-import CssBaseline from "@material-ui/core/CssBaseline";
+import { CssBaseline, Snackbar } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/styles";
 import Head from "next/head";
 import React from "react";
 import { MenuAppBar } from "../components/MenuAppBar";
 import theme from "../themes/theme";
 import "react-mde/lib/styles/css/react-mde-all.css";
+import Alert from "@material-ui/lab/Alert";
+import { createStyles, makeStyles } from "@material-ui/core/styles";
 
 import { auth, db } from "../firebase/firebase";
 
 // function MyApp({ Component, pageProps }) {
 //   return <Component {...pageProps} />
 // }
-
+const useStyles = makeStyles(() =>
+  createStyles({
+    error: {
+      background: "linear-gradient(45deg, #fe5196 30%, #f77062 90%)"
+    },
+    success: {
+      background: "linear-gradient(45deg, #16A196 30%, #32A2D3 90%)"
+    }
+  })
+);
 const MyApp = ({ Component }) => {
+  const classes = useStyles();
   const [isUser, setIsUser] = React.useState();
+  const [success, setSuccess] = React.useState();
+  const [successOpen, setSuccessOpen] = React.useState(false);
   React.useEffect(() => {
     return auth.onAuthStateChanged(async user => {
       if (user) {
         await setIsUser(user);
+        if (localStorage.getItem("loginState") === null) {
+          localStorage.setItem("loginState", "true");
+          setSuccess(
+            <Alert severity="info" className={classes.success} variant="filled">
+              ログインしました。
+            </Alert>
+          );
+          setSuccessOpen(true);
+        }
       } else if (!user) {
         // No user is signed in.
         console.log("logout");
         await setIsUser(null);
+        if (localStorage.getItem("loginState") !== null) {
+          localStorage.removeItem("loginState");
+          setSuccess(
+            <Alert severity="info" className={classes.error} variant="filled">
+              ログアウトしました。
+            </Alert>
+          );
+          setSuccessOpen(true);
+        }
       }
     });
   }, []);
-
   // const [localLang,setLocalLang] = React.useState();
   React.useEffect(() => {
-    const cleanup=async()=>{
+    const cleanup = async () => {
       if (localStorage.getItem("langList") === null) {
-        const langList:any=await db
-        .collection("language")
-        .doc("lang")
-        .get();
+        const langList: any = await db
+          .collection("language")
+          .doc("lang")
+          .get();
         console.log(langList.data().language);
-        localStorage.setItem("langList",JSON.stringify(langList.data().language))
+        localStorage.setItem(
+          "langList",
+          JSON.stringify(langList.data().language)
+        );
       }
-    }
+    };
     cleanup();
   }, []);
-
+  const successHandleClose = () => {
+    setSuccessOpen(false);
+  };
   return (
     <div>
       <Head>
@@ -51,6 +87,13 @@ const MyApp = ({ Component }) => {
         <MenuAppBar user={isUser} />
         <Component props={isUser} />
       </ThemeProvider>
+      <Snackbar
+        autoHideDuration={2000}
+        open={successOpen}
+        onClose={successHandleClose}
+      >
+        {success}
+      </Snackbar>
     </div>
   );
 };
