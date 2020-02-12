@@ -41,10 +41,13 @@ const useStyles = makeStyles((theme: Theme) =>
     cancel: {
       background: theme.palette.buttonCancel.main,
       boxShadow: `0 3px 5px 2px ${theme.palette.buttonCancel.dark}`
+    },
+    padding: {
+      paddingBottom: theme.spacing(2)
     }
   })
 );
-export const RegistForm = ({ label, }) => {
+export const RegistForm = ({ label }) => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [state, setState] = React.useState<{
@@ -148,7 +151,10 @@ export const RegistForm = ({ label, }) => {
           })
           .then(res => {
             if (res) {
-              accountDB.loginUser({ email: state.email, password: state.password });
+              accountDB.loginUser({
+                email: state.email,
+                password: state.password
+              });
               setState({
                 ...state,
                 faild: "登録に成功しました"
@@ -223,7 +229,7 @@ export const RegistForm = ({ label, }) => {
           <div className={classes.error}>{state.checkPasswordFaild}</div>
           <div className={classes.error}>{state.faild}</div>
         </DialogContent>
-        <DialogActions>
+        <DialogActions className={classes.padding}>
           <Button onClick={createUser} className={classes.searchButton}>
             {"登録"}
           </Button>

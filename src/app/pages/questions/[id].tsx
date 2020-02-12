@@ -178,7 +178,7 @@ const Index = ({ props }) => {
               <Grid item xs={12} key={index}>
                 <Paper className={classes.paper} elevation={8}>
                   <div className={classes.userInfo + " " + classes.padding}>
-                    <UserInfo userInfo={`${element.data().userData}`} />
+                    <UserInfo userInfo={element.data().userData} />
                     <Typography className={classes.timestamp}>
                       {`${format(
                         new Date(element.data().createdAt.seconds * 1000),
