@@ -34,6 +34,29 @@ export const questionDB = {
   },
   showQuestion: async uid => {
     const getQuestion = await questions.doc(uid).get();
-    return getQuestion;
+    const getComments = await questions
+      .doc(uid)
+      .collection("comments")
+      .get();
+    return { question: getQuestion, comments: getComments };
+  },
+  postComment: fields => {
+    const { text, userData, uid } = fields;
+    console.log(text);
+    console.log(userData);
+    console.log(uid);
+    
+    return questions
+      .doc(uid)
+      .collection("comments")
+      .add({
+        text: text,
+        userData: {
+          uid: userData.uid,
+          displayName: userData.displayName,
+          photoURL: userData.photoURL
+        },
+        createdAt: FieldValue.serverTimestamp()
+      });
   }
 };
