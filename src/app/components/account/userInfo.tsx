@@ -25,7 +25,6 @@ export const UserInfo = ({ userInfo }) => {
   const classes = useStyles();
   useEffect(() => {
     setuserData(userInfo);
-    console.log(userInfo);
   }, [userInfo]);
   return (
     <div className={classes.card}>

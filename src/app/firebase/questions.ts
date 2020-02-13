@@ -37,15 +37,12 @@ export const questionDB = {
     const getComments = await questions
       .doc(uid)
       .collection("comments")
+      .orderBy("createdAt","desc")
       .get();
     return { question: getQuestion, comments: getComments };
   },
   postComment: fields => {
     const { text, userData, uid } = fields;
-    console.log(text);
-    console.log(userData);
-    console.log(uid);
-    
     return questions
       .doc(uid)
       .collection("comments")
