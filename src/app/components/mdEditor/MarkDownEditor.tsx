@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme: Theme) =>
       "& .mde-textarea-wrapper": {
         border: "1px solid #fff",
         outlineColor: theme.palette.primary.main,
-        "&:hover": { borderColor: theme.palette.primary.main, },
+        "&:hover": { borderColor: theme.palette.primary.main },
         "&:focus + :hover": { borderColor: "#fff" }
       },
       "& .mde-text": {
@@ -38,8 +38,8 @@ const useStyles = makeStyles((theme: Theme) =>
       border: "1px solid #c8ccd0",
       background: "#fff",
       width: "50%",
-      maxHeight: "70%",
-      overflowY: "scroll",
+      maxHeight: "727px",
+      overflowY: "auto",
       wordBreak: "break-all"
     },
     previewChar: {
@@ -55,10 +55,8 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-
-export const MarkDownEditor = ({handleChange,text,}) => {
+export const MarkDownEditor = ({ handleChange, text }) => {
   const classes = useStyles();
-  
   return (
     <div className={classes.wrap}>
       <div className={classes.inner}>

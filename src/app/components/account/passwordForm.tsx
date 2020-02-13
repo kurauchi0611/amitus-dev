@@ -150,7 +150,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const PasswordForm = ({ label, handlechange, password}) => {
+export const PasswordForm = ({ label, handlechange, password }) => {
   const [values, setValues] = React.useState({
     showPassword: false
   });
@@ -174,7 +174,7 @@ export const PasswordForm = ({ label, handlechange, password}) => {
         <FilledInput
           className={classes.back}
           type={values.showPassword ? "text" : "password"}
-          value={password}
+          value={password || ""}
           onChange={handlechange}
           startAdornment={
             <InputAdornment position="start">

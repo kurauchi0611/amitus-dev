@@ -1,17 +1,15 @@
 import { db, FieldValue } from "./firebase";
-// import firebase from "firebase";
 const questions = db.collection("questions");
 export const questionDB = {
   postQuestion: fields => {
-    console.log(fields);
-    const { title, tags, text, index, userData } = fields;
-    questions.doc().set({
+    const { title, tags, text, userData } = fields;
+    return questions.add({
       title: title,
       tags: tags,
       text: text,
-      index: index,
+      isPost: true,
       createdAt: FieldValue.serverTimestamp(),
-      updatedAt: FieldValue.serverTimestamp(),
+      updatedAt: null,
       isResolve: false,
       pageView: 0,
       user: {
@@ -19,9 +17,43 @@ export const questionDB = {
         displayName: userData.displayName,
         photoURL: userData.photoURL
       }
-    }).then(res=>{
-      console.log(res);
     });
   },
-  // showQuestion:uid
+  draftQuestion: fields => {
+    const { title, tags, text, userData } = fields;
+    return db
+      .collection("users")
+      .doc(userData.uid)
+      .collection("draftQuestions")
+      .doc()
+      .set({
+        title: title,
+        tags: tags,
+        text: text
+      });
+  },
+  showQuestion: async uid => {
+    const getQuestion = await questions.doc(uid).get();
+    const getComments = await questions
+      .doc(uid)
+      .collection("comments")
+      .orderBy("createdAt","desc")
+      .get();
+    return { question: getQuestion, comments: getComments };
+  },
+  postComment: fields => {
+    const { text, userData, uid } = fields;
+    return questions
+      .doc(uid)
+      .collection("comments")
+      .add({
+        text: text,
+        userData: {
+          uid: userData.uid,
+          displayName: userData.displayName,
+          photoURL: userData.photoURL
+        },
+        createdAt: FieldValue.serverTimestamp()
+      });
+  }
 };

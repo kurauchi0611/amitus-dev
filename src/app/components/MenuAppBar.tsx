@@ -32,7 +32,7 @@ import PostAddIcon from "@material-ui/icons/PostAdd";
 import LinkWrap from "next/link";
 import { RegistForm } from "./account/registForm";
 import { LoginForm } from "./account/loginForm";
-import { MediaControlCard } from "./account/userInfo";
+import { UserInfo } from "./account/userInfo";
 import { accountDB } from "../firebase/account";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -245,7 +245,7 @@ export const MenuAppBar = ({ user }) => {
       className={classes.ajustTop}
     >
       <MenuItem>
-        <MediaControlCard userInfo={user}></MediaControlCard>
+        <UserInfo userInfo={user}/>
       </MenuItem>
       <MenuItem onClick={handleMenuClose} className={classes.paddingNone}>
         <LinkWrap href="/mypage" passHref>
@@ -344,7 +344,7 @@ export const MenuAppBar = ({ user }) => {
           >
             <LinkWrap href="/">
               <Link>
-                <img src="static/images/logo_a_NoEng.svg" />
+                <img src="/images/logo_a_NoEng.svg" />
               </Link>
             </LinkWrap>
           </Typography>

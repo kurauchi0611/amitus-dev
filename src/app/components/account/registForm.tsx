@@ -1,58 +1,82 @@
 import {
   Button,
-  withStyles,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle,
-  TextField
+  DialogTitle
 } from "@material-ui/core";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import React from "react";
 import { accountDB } from "../../firebase/account";
 import { PasswordForm } from "./passwordForm";
 import { MailForm } from "./mailForm";
 import { UserNameForm } from "./userNameForm";
-import { db } from "../../firebase/firebase";
 
-export const RegistForm = withStyles(theme => ({
-  button: {
-    width: "120px",
-    maxWidth: theme.spacing(40),
-    margin: "15px auto"
-  },
-  error: {
-    textAlign: "right",
-    color: theme.palette.error.main
-    // height:"20px"
-  },
-  searchButton: {
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
-    fontSize: "1rem",
-    background: theme.palette.buttonMain.main,
-    borderRadius: 3,
-    border: 0,
-    color: "white",
-    height: 35,
-    padding: "0 20px",
-    boxShadow: `0 3px 5px 2px ${theme.palette.buttonMain.dark}`,
-    display: "inline-block"
-  },
-  cancel: {
-    background: theme.palette.buttonCancel.main,
-    boxShadow: `0 3px 5px 2px ${theme.palette.buttonCancel.dark}`
-  }
-}))(({ classes, label, positive, negative, ...props }) => {
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    button: {
+      width: "120px",
+      maxWidth: theme.spacing(40),
+      margin: "15px auto"
+    },
+    error: {
+      textAlign: "right",
+      color: theme.palette.error.main
+      // height:"20px"
+    },
+    searchButton: {
+      marginLeft: theme.spacing(2),
+      marginRight: theme.spacing(2),
+      fontSize: "1rem",
+      background: theme.palette.buttonMain.main,
+      borderRadius: 3,
+      border: 0,
+      color: "white",
+      height: 35,
+      padding: "0 20px",
+      boxShadow: `0 3px 5px 2px ${theme.palette.buttonMain.dark}`,
+      display: "inline-block"
+    },
+    cancel: {
+      background: theme.palette.buttonCancel.main,
+      boxShadow: `0 3px 5px 2px ${theme.palette.buttonCancel.dark}`
+    },
+    padding: {
+      paddingBottom: theme.spacing(2)
+    }
+  })
+);
+export const RegistForm = ({ label }) => {
+  const classes = useStyles();
   const [open, setOpen] = React.useState(false);
-
+  const [state, setState] = React.useState<{
+    userName: string;
+    email: string;
+    password: string;
+    checkPassword: string;
+    faild: string | boolean;
+    emailFaild: string | boolean;
+    passwordFaild: string | boolean;
+    checkPasswordFaild: string | boolean;
+    checkNameFaild: string | boolean;
+  }>({
+    userName: "",
+    email: "",
+    password: "",
+    checkPassword: "",
+    faild: "",
+    emailFaild: "",
+    passwordFaild: "",
+    checkPasswordFaild: "",
+    checkNameFaild: ""
+  });
   const handleClickOpen = () => {
     setOpen(true);
   };
-
   const handleClose = () => {
     setOpen(false);
-    setValues({
+    setState({
       userName: "",
       email: "",
       password: "",
@@ -64,17 +88,6 @@ export const RegistForm = withStyles(theme => ({
       checkNameFaild: ""
     });
   };
-  const [values, setValues] = React.useState({
-    userName: "",
-    email: "",
-    password: "",
-    checkPassword: "",
-    faild: "",
-    emailFaild: "",
-    passwordFaild: "",
-    checkPasswordFaild: "",
-    checkNameFaild: ""
-  });
   const emailValidation = email => {
     if (!email) return "メールアドレスを入力してください";
     const moji = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -91,89 +104,80 @@ export const RegistForm = withStyles(theme => ({
   };
 
   const handleChange = prop => event => {
-    let settingValues = {
-      ...values,
+    let settingState = {
+      ...state,
       [prop]: event.target.value
     };
     if (prop === "email") {
-      settingValues = {
-        ...values,
+      settingState = {
+        ...state,
         [prop]: event.target.value,
         emailFaild: emailValidation(event.target.value)
       };
     } else if (prop === "password") {
-      settingValues = {
-        ...values,
+      settingState = {
+        ...state,
         [prop]: event.target.value,
         passwordFaild: passwordValidation(event.target.value)
       };
     } else if (prop === "checkPassword") {
-      settingValues = {
-        ...values,
+      settingState = {
+        ...state,
         [prop]: event.target.value,
         checkPasswordFaild: passwordValidation(event.target.value)
       };
     } else if (prop === "userName") {
-      settingValues = {
-        ...values,
+      settingState = {
+        ...state,
         [prop]: event.target.value,
         checkNameFaild: nameValidation(event.target.value)
       };
     }
-    setValues(settingValues);
-  };
-  const changeEmail = () => {
-    if (values.emailFaild === true && values.passwordFaild === true) {
-      accountDB.changeEmail(values.email, values.password).then(result => {
-        console.log(result);
-        if (result) {
-          alert("メールアドレスの変更が完了しました。");
-          handleClose();
-        } else {
-          setValues({
-            ...values,
-            faild: "メールアドレスの変更に失敗しました。"
-          });
-        }
-      });
-    }
+    setState(settingState);
   };
   const createUser = () => {
     if (
-      values.emailFaild === true &&
-      values.passwordFaild === true &&
-      values.checkPasswordFaild === true &&
-      values.checkNameFaild === true
+      state.emailFaild === true &&
+      state.passwordFaild === true &&
+      state.checkPasswordFaild === true &&
+      state.checkNameFaild === true
     ) {
-      if (values.password === values.checkPassword) {
+      if (state.password === state.checkPassword) {
         accountDB
           .createUser({
-            email: values.email,
-            password: values.password,
-            name: values.userName
+            email: state.email,
+            password: state.password,
+            name: state.userName
           })
           .then(res => {
-            console.log(res);
             if (res) {
-              setValues({
+              accountDB.loginUser({
+                email: state.email,
+                password: state.password
+              });
+              setState({
+                ...state,
                 faild: "登録に成功しました"
               });
               setTimeout(() => {
                 handleClose();
               }, 1000);
             } else {
-              setValues({
+              setState({
+                ...state,
                 faild: "登録に失敗しました。"
               });
             }
           });
       } else {
-        setValues({
+        setState({
+          ...state,
           faild: "パスワードが一致しません。"
         });
       }
     } else {
-      setValues({
+      setState({
+        ...state,
         faild: "正しく入力してください"
       });
     }
@@ -201,30 +205,31 @@ export const RegistForm = withStyles(theme => ({
           <UserNameForm
             label="ユーザ名"
             handlechange={handleChange("userName")}
-            autoComplete="off"
-            // autoFocus={true}
+            name={state.userName}
+            autoFocus={true}
           />
           <MailForm
             label="メールアドレス"
             handlechange={handleChange("email")}
-            autoComplete="off"
+            autoFocus={false}
+            email={state.email}
           />
-          <div className={classes.error}>{values.emailFaild}</div>
+          <div className={classes.error}>{state.emailFaild}</div>
           <PasswordForm
             label="パスワード"
             handlechange={handleChange("password")}
-            password={values.password}
+            password={state.password}
           ></PasswordForm>
-          <div className={classes.error}>{values.passwordFaild}</div>
+          <div className={classes.error}>{state.passwordFaild}</div>
           <PasswordForm
             label="パスワードをもう一度入力してください"
             handlechange={handleChange("checkPassword")}
-            password={values.checkPassword}
+            password={state.checkPassword}
           ></PasswordForm>
-          <div className={classes.error}>{values.checkPasswordFaild}</div>
-          <div className={classes.error}>{values.faild}</div>
+          <div className={classes.error}>{state.checkPasswordFaild}</div>
+          <div className={classes.error}>{state.faild}</div>
         </DialogContent>
-        <DialogActions>
+        <DialogActions className={classes.padding}>
           <Button onClick={createUser} className={classes.searchButton}>
             {"登録"}
           </Button>
@@ -238,4 +243,4 @@ export const RegistForm = withStyles(theme => ({
       </Dialog>
     </div>
   );
-});
+};

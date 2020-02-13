@@ -15,10 +15,6 @@
     "public": "dist/public",
     "rewrites": [
       {
-        "source": "/static/*",
-        "destination": "/*"
-      },
-      {
         "source": "**/**",
         "function": "nextApp"
       }

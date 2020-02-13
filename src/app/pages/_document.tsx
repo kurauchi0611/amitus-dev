@@ -19,7 +19,7 @@ class MyDocument extends Document {
           />
           {/* PWA primary color */}
           <meta name="theme-color" content={theme.palette.primary.main} />
-          <link rel="shortcut icon" href="static/images/amitus_favicon.ico"></link>
+          <link rel="shortcut icon" href="/images/amitus_favicon.ico"></link>
           <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"

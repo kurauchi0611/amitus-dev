@@ -1,22 +1,29 @@
-import { Container, CssBaseline, TextField } from "@material-ui/core";
+import { Container, CssBaseline, Snackbar, TextField } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { MarkDownEditor } from "../../components/mdEditor/MarkDownEditor";
 import { Tags } from "../../components/mdEditor/Tags";
 import { SendButton } from "../../components/mdEditor/sendButton";
 import React from "react";
 import { questionDB } from "../../firebase/questions";
-
+import { useRouter } from "next/router";
+import Alert from "@material-ui/lab/Alert";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     margin: { marginTop: theme.spacing(10) },
-    title: { background: "#fff", marginBottom: theme.spacing(1) }
+    title: { background: "#fff", marginBottom: theme.spacing(1) },
+    error: {
+      background: theme.palette.buttonCancel.main
+    }
   })
 );
 
 const Index = ({ props }) => {
   const classes = useStyles();
+  const router = useRouter();
   const sampleMoji =
     "# 助けて(´;ω;｀)\n```js\nconst arrowDisplayNone = () => {\n  document.querySelectorAll('.arrow').forEach(item => {\n    item.style.display = 'none';\n  }\n)}\n```";
+  const [error, setError] = React.useState();
+  const [open, setOpen] = React.useState(false);
   const [state, setState] = React.useState<{
     title: string;
     tags: any;
@@ -25,7 +32,7 @@ const Index = ({ props }) => {
     userData: any;
   }>({
     title: "",
-    tags: "",
+    tags: null,
     text: sampleMoji,
     index: 0,
     userData: props
@@ -43,7 +50,7 @@ const Index = ({ props }) => {
     } else if (name === "tags") {
       const tagsArray: string[] = [];
       event.forEach((item: any) => {
-        tagsArray.push(item.title);
+        tagsArray.push(item.lang);
       });
       setState({
         ...state,
@@ -61,8 +68,28 @@ const Index = ({ props }) => {
       });
     }
   };
+  const handleClose = () => {
+    setOpen(false);
+  };
   const sendQuestion = () => {
-    questionDB.postQuestion(state);
+    if (state.text !== "" && state.tags !== null && state.text !== "") {
+      if (state.index === 0) {
+        questionDB.postQuestion(state).then(res => {
+          router.push("/questions/[id]", `/questions/${res.id}`);
+        });
+      } else if (state.index === 1) {
+        questionDB.draftQuestion(state).then(() => {
+          router.push("/mypage");
+        });
+      }
+    } else {
+      setError(
+        <Alert severity="error" className={classes.error} variant="filled">
+          全項目入力してください。
+        </Alert>
+      );
+      setOpen(true);
+    }
   };
   return (
     <React.Fragment>
@@ -78,14 +105,17 @@ const Index = ({ props }) => {
         />
         <Tags handleChange={handleChange("tags")} />
         <MarkDownEditor handleChange={handleChange("text")} text={state.text} />
-        {(typeof state.userData !== "undefined" && state.userData !== null) && (
-        <SendButton
-          handleChange={handleChange("index")}
-          selectedIndex={state.index}
-          onClick={sendQuestion}
-        />
+        {typeof state.userData !== "undefined" && state.userData !== null && (
+          <SendButton
+            handleChange={handleChange("index")}
+            selectedIndex={state.index}
+            onClick={sendQuestion}
+          />
         )}
       </Container>
+      <Snackbar autoHideDuration={2000} open={open} onClose={handleClose}>
+        {error}
+      </Snackbar>
     </React.Fragment>
   );
 };
