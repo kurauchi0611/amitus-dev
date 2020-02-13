@@ -34,8 +34,6 @@ const customIcons: {
 
 function IconContainer(props: IconContainerProps) {
   const { value, ...other } = props;
-  console.log(props);
-  console.log(other)
   return <span {...other}>{customIcons[value].icon}</span>;
 }
 

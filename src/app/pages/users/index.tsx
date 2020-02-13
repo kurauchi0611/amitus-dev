@@ -1,17 +1,8 @@
-import {
-  Avatar,
-  Container,
-  CssBaseline,
-  Grid,
-  Paper,
-  Typography,
-  Divider
-} from "@material-ui/core";
+import { Container, CssBaseline, Grid } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import React from "react";
-import { RegularButton } from "../../components/regularButton";
-import { Chips } from "../../components/mdEditor/chips";
-import { Ratings } from "../../components/users/rating";
+import { UserStatus } from "../../components/users/userStatus";
+import { UserContent } from "../../components/users/userContent";
 // import { useRouter } from "next/router";
 // import Alert from "@material-ui/lab/Alert";
 const useStyles = makeStyles((theme: Theme) =>
@@ -50,6 +41,14 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     ff: {
       textAlign: "left"
+    },
+    content: {
+      display: "flex",
+      flexFlow: "wrap",
+      justifyContent: "space-around"
+    },
+    contentPadding: {
+      padding: theme.spacing(4)
     }
   })
 );
@@ -70,54 +69,8 @@ const Index = ({ props }) => {
       <CssBaseline />
       <Container maxWidth="xl" className={classes.margin}>
         <Grid container spacing={3}>
-          <Grid item xs={2}>
-            <Paper
-              className={classes.paper + " " + classes.status}
-              elevation={6}
-            >
-              <Avatar variant="square" className={classes.avatar}>
-                NO
-              </Avatar>
-              <Typography variant="h4" component="p" className={classes.typo}>
-                倉内
-              </Typography>
-              <Divider className={classes.divider} component="div" />
-              <Typography
-                variant="body1"
-                component="p"
-                className={classes.typo}
-              >
-                HAL東京2019年4年制IT2年Bクラス委員長。HEWグループリーダー。おれんじ
-              </Typography>
-              <Divider className={classes.divider} component="div" />
-              <Grid item className={classes.ff}>
-                <Typography variant="body1" component="p">
-                  フォロー：100人
-                </Typography>
-                <Typography variant="body1" component="p" gutterBottom>
-                  フォロワー:1000000000人
-                </Typography>
-              </Grid>
-              <RegularButton label={"フォローする"} />
-              <Divider className={classes.divider} component="div" />
-              <RegularButton label={"DM"} />
-              <Divider className={classes.divider} component="div" />
-              <Ratings rating={5}/>
-              <RegularButton label={"評価一覧"} />
-              <Divider className={classes.divider} component="div" />
-              <Grid item>
-                <Typography variant="body1" component="p">
-                  スキル一覧
-                </Typography>
-                <Chips labels={tags} />
-              </Grid>
-            </Paper>
-          </Grid>
-          <Grid item xs={10}>
-            <Paper className={classes.paper} elevation={6}>
-              xs=9
-            </Paper>
-          </Grid>
+          <UserStatus props={props} />
+          <UserContent props={props} />
         </Grid>
       </Container>
     </React.Fragment>
@@ -125,5 +78,3 @@ const Index = ({ props }) => {
 };
 
 export default Index;
-
-const tags = ["Javascript", "HTML", "CSS", "React", "NEXT.js", "firebase"];
