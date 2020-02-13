@@ -104,7 +104,6 @@ const Index = ({ props }) => {
     setmyData(props);
   }, [props]);
 
-  
   React.useEffect(() => {
     if (typeof router.query.id !== "undefined") {
       const cleanup = async () => {

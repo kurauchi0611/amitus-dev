@@ -3,7 +3,8 @@ import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 import Chip from "@material-ui/core/Chip";
 
 const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
+// todo:margin変える
+createStyles({
     root: {
       display: "flex",
       justifyContent: "left",
@@ -22,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const Chips = ({ labels }) => {
+export const Chips = ({ labels, }) => {
   const classes = useStyles();
   const [state, setState] = React.useState();
   React.useEffect(() => {
