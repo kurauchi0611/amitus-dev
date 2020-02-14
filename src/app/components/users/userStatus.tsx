@@ -59,7 +59,7 @@ export const UserStatus = ({ props }) => {
     console.log(state.userData);
   }, [props]);
   const check = () => {
-    console.log(state.userData.rating);
+    console.log(state.userData);
   };
   return (
     <Grid item xs={2}>
@@ -79,10 +79,10 @@ export const UserStatus = ({ props }) => {
         <Divider className={classes.divider} component="div" />
         <Grid item className={classes.ff}>
           <Typography variant="body1" component="p">
-            フォロー：{typeof state.userData !== "undefined" &&state.userData.name}人
+            フォロー：{typeof state.userData !== "undefined" &&state.userData.follow}人
           </Typography>
           <Typography variant="body1" component="p" gutterBottom>
-            フォロワー:{typeof state.userData !== "undefined" &&state.userData.name}人
+            フォロワー:{typeof state.userData !== "undefined" &&state.userData.follower}人
           </Typography>
         </Grid>
         <RegularButton label={"フォローする"} />

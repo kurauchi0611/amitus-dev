@@ -26,29 +26,45 @@ const useStyles = makeStyles({
   buttonPosition: {
     justifyContent: "space-between"
   },
-  timestamp: { fontSize: ".8rem", }
+  timestamp: { fontSize: ".8rem" }
 });
 
-export const ViewCard = () => {
+export const ViewCard = ({ views }) => {
   const classes = useStyles();
+  const [state, setState] = React.useState();
+  React.useEffect(() => {
+    setState(views);
+  }, [views]);
 
   return (
-    <Card className={classes.root} variant="outlined">
-      <CardContent>
-        <Typography variant="h5" component="h3">
-          たすけて！！！
-        </Typography>
-        <Chips labels={tags} />
-      </CardContent>
-      <CardActions className={classes.buttonPosition}>
-        <Typography className={classes.timestamp}>
-          {"2020年2月14日01時03分投稿"}
-        </Typography>
-        {/* <Button size="small">詳しく見る</Button> */}
-        <RegularButton label={"詳しく見る"} />
-      </CardActions>
-    </Card>
+    <div>
+      {typeof state !== "undefined" &&
+        state.map((element, index) => {
+          console.log(element);
+          return (
+            <Card className={classes.root} variant="outlined" key={index}>
+              <CardContent>
+                <Typography variant="h5" component="h3">
+                  たすけて！！！
+                </Typography>
+                <Chips labels={tags} />
+              </CardContent>
+              <CardActions className={classes.buttonPosition}>
+                <Typography className={classes.timestamp}>
+                  {"2020年2月14日01時03分投稿"}
+                </Typography>
+                {/* <Button size="small">詳しく見る</Button> */}
+                <RegularButton label={"詳しく見る"} />
+              </CardActions>
+            </Card>
+          );
+        })}
+    </div>
   );
 };
 
 const tags = ["Javascript", "HTML", "CSS", "React", "NEXT.js", "firebase"];
+// const hoge=["","","","",""]
+ViewCard.defaultProps = {
+  views: []
+};

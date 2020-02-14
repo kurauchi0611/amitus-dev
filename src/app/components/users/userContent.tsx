@@ -56,29 +56,27 @@ export const UserContent = ({ props }) => {
         <Grid item xs={6} className={classes.contentPadding}>
           <Paper className={classes.paper} elevation={2}>
             <Typography variant="h5" component="h2">
-              倉内の質問
+              {typeof state.userData !== "undefined" && state.userData.name}
+              の質問
             </Typography>
             <Divider className={classes.divider} component="div" />
-            <ViewCard />
-            <ViewCard />
-            <ViewCard />
-            <ViewCard />
-            <ViewCard />
-            <RegularButton label={"もっと見る"}/>
+             {/* userのmyTicketsを取ってくる */}
+            <ViewCard  views={["","","",]}/>
+            {/* todo:5件以上ある時は「もっと見る」無い時は何も表示しないように */}
+            <RegularButton label={"もっと見る"} />
           </Paper>
         </Grid>
         <Grid item xs={6} className={classes.contentPadding}>
           <Paper className={classes.paper} elevation={2}>
             <Typography variant="h5" component="h2">
-              倉内のチケット
+              {typeof state.userData !== "undefined" && state.userData.name}
+              のチケット
             </Typography>
             <Divider className={classes.divider} component="div" />
-            <ViewCard />
-            <ViewCard />
-            <ViewCard />
-            <ViewCard />
-            <ViewCard />
-            <RegularButton label={"もっと見る"}/>
+            {/* userのmyTicketsを取ってくる */}
+            <ViewCard views={["","","",]}/>
+            {/* todo:5件以上ある時は「もっと見る」無い時は何も表示しないように */}
+            <RegularButton label={"もっと見る"} />
           </Paper>
         </Grid>
       </Paper>

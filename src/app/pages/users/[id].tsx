@@ -55,6 +55,8 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const Index = ({ props }) => {
+  console.log(props);
+  
   const classes = useStyles();
   const router = useRouter();
   const [userState, setUserState] = React.useState<{
@@ -80,7 +82,6 @@ const Index = ({ props }) => {
         const getUser = await accountDB.getUser(router.query.id);
         const userData: any = getUser.data();
         if (typeof userData != "undefined") {
-          // userStateにしよう
           setUserState({
             ...userState,
             createdAt: userData.createdAt,
@@ -102,7 +103,7 @@ const Index = ({ props }) => {
       <Container maxWidth="xl" className={classes.margin}>
         <Grid container spacing={3}>
           <UserStatus props={userState} />
-          <UserContent props={props} />
+          <UserContent props={userState} />
         </Grid>
       </Container>
     </React.Fragment>
