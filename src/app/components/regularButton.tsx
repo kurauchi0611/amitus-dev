@@ -21,11 +21,15 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const RegularButton = ({ label }) => {
+export const RegularButton = ({ label ,onClick}) => {
   const classes = useStyles();
   return (
-    <Button variant="contained" className={classes.button}>
+    <Button variant="contained" className={classes.button} onClick={onClick}>
       {label}
     </Button>
   );
 };
+
+RegularButton.defaultProps={
+  onClick:null
+}

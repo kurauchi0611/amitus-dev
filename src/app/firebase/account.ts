@@ -1,6 +1,6 @@
 import { storage, auth, functions, db, FieldValue } from "./firebase";
 import firebase from "firebase";
-
+const user=db.collection('users');
 export const accountDB = {
   loginUser: async account => {
     console.log("startLogin");
@@ -141,5 +141,8 @@ export const accountDB = {
   },
   logoutUser: () => {
     auth.signOut();
+  },
+  getUser:(uid)=>{
+    return user.doc(uid).get();
   }
 };

@@ -1,10 +1,4 @@
-import {
-  Avatar,
-  Grid,
-  Paper,
-  Typography,
-  Divider
-} from "@material-ui/core";
+import { Avatar, Grid, Paper, Typography, Divider } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import React from "react";
 import { RegularButton } from "../regularButton";
@@ -62,45 +56,49 @@ export const UserStatus = ({ props }) => {
   });
   React.useEffect(() => {
     setState({ ...state, userData: props });
+    console.log(state.userData);
   }, [props]);
+  const check = () => {
+    console.log(state.userData.rating);
+  };
   return (
-      <Grid item xs={2}>
-        <Paper className={classes.paper + " " + classes.status} elevation={6}>
-          <Avatar variant="square" className={classes.avatar}>
-            NO
-          </Avatar>
-          <Typography variant="h4" component="p" className={classes.typo}>
-            倉内
+    <Grid item xs={2}>
+      <Paper className={classes.paper + " " + classes.status} elevation={6}>
+        <Avatar variant="square" className={classes.avatar}>
+          NO
+        </Avatar>
+        <Typography variant="h4" component="p" className={classes.typo}>
+          {typeof state.userData !== "undefined" &&state.userData.name}
+        </Typography>
+        <Divider className={classes.divider} component="div" />
+        <Typography variant="body1" component="p" className={classes.typo}>
+        {typeof state.userData !== "undefined" &&state.userData.introduction}
+        </Typography>
+        <Divider className={classes.divider} component="div" />
+        <RegularButton label={"DMを送る"} onClick={check} />
+        <Divider className={classes.divider} component="div" />
+        <Grid item className={classes.ff}>
+          <Typography variant="body1" component="p">
+            フォロー：{typeof state.userData !== "undefined" &&state.userData.name}人
           </Typography>
-          <Divider className={classes.divider} component="div" />
-          <Typography variant="body1" component="p" className={classes.typo}>
-            HAL東京2019年4年制IT2年Bクラス委員長。HEWグループリーダー。おれんじ
+          <Typography variant="body1" component="p" gutterBottom>
+            フォロワー:{typeof state.userData !== "undefined" &&state.userData.name}人
           </Typography>
-          <Divider className={classes.divider} component="div" />
-          <RegularButton label={"DMを送る"} />
-          <Divider className={classes.divider} component="div" />
-          <Grid item className={classes.ff}>
-            <Typography variant="body1" component="p">
-              フォロー：100人
-            </Typography>
-            <Typography variant="body1" component="p" gutterBottom>
-              フォロワー:1000000000人
-            </Typography>
-          </Grid>
-          <RegularButton label={"フォローする"} />
-          <Divider className={classes.divider} component="div" />
-          <Ratings rating={5} />
-          <RegularButton label={"評価一覧"} />
-          <Divider className={classes.divider} component="div" />
-          <Grid item>
-            <Typography variant="body1" component="p">
-              スキル一覧
-            </Typography>
-            <Chips labels={tags} />
-          </Grid>
-        </Paper>
-      </Grid>
+        </Grid>
+        <RegularButton label={"フォローする"} />
+        <Divider className={classes.divider} component="div" />
+        <Ratings rating={typeof state.userData !== "undefined" &&state.userData.rating} />
+        <RegularButton label={"評価一覧"} />
+        <Divider className={classes.divider} component="div" />
+        <Grid item>
+          <Typography variant="body1" component="p">
+            スキル一覧
+          </Typography>
+          <Chips labels={ typeof state.userData !== "undefined" &&state.userData.language} />
+        </Grid>
+      </Paper>
+    </Grid>
   );
 };
 
-const tags = ["Javascript", "HTML", "CSS", "React", "NEXT.js", "firebase"];
+// const tags = ["Javascript", "HTML", "CSS", "React", "NEXT.js", "firebase"];

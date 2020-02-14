@@ -3,7 +3,8 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import React from "react";
 import { UserStatus } from "../../components/users/userStatus";
 import { UserContent } from "../../components/users/userContent";
-// import { useRouter } from "next/router";
+import { useRouter } from "next/router";
+import { accountDB } from "../../firebase/account";
 // import Alert from "@material-ui/lab/Alert";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -55,21 +56,52 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Index = ({ props }) => {
   const classes = useStyles();
-  // const router = useRouter();
-  const [state, setState] = React.useState<{
-    userData: any;
+  const router = useRouter();
+  const [userState, setUserState] = React.useState<{
+    createdAt: any;
+    email: string;
+    introduction: string;
+    language: any;
+    name: string;
+    photoURL: string;
+    rating:number;
   }>({
-    userData: props
+    createdAt: null,
+    email: "",
+    introduction: "",
+    language: [],
+    name: "",
+    photoURL: "",
+    rating:1
   });
   React.useEffect(() => {
-    setState({ ...state, userData: props });
-  }, [props]);
+    if (typeof router.query.id !== "undefined") {
+      const cleanup = async () => {
+        const getUser = await accountDB.getUser(router.query.id);
+        const userData: any = getUser.data();
+        if (typeof userData != "undefined") {
+          // userStateにしよう
+          setUserState({
+            ...userState,
+            createdAt: userData.createdAt,
+            email: userData.email,
+            introduction: userData.introduction,
+            language: userData.language,
+            name: userData.name,
+            photoURL: userData.photoUrl,
+            rating:userData.rating
+          });
+        }
+      };
+      cleanup();
+    }
+  }, [router.query.id]);
   return (
     <React.Fragment>
       <CssBaseline />
       <Container maxWidth="xl" className={classes.margin}>
         <Grid container spacing={3}>
-          <UserStatus props={props} />
+          <UserStatus props={userState} />
           <UserContent props={props} />
         </Grid>
       </Container>

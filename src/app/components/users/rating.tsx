@@ -36,16 +36,19 @@ function IconContainer(props: IconContainerProps) {
   const { value, ...other } = props;
   return <span {...other}>{customIcons[value].icon}</span>;
 }
-
-export const Ratings = ({rating}) => {
+export const Ratings = ({ rating }) => {
+  const [rate, setRate] = React.useState(1);
+  React.useEffect(() => {
+    setRate(rating);
+  }, [rating]);
   return (
-      <Rating
-        name="customized-icons"
-        defaultValue={rating}
-        getLabelText={(value: number) => customIcons[value].label}
-        IconContainerComponent={IconContainer}
-        size="large"
-        readOnly
-      />
+    <Rating
+      name="customized-icons"
+      value={rate}
+      getLabelText={(value: number) => customIcons[value].label}
+      IconContainerComponent={IconContainer}
+      size="large"
+      readOnly
+    />
   );
 };

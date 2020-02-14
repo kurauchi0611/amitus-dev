@@ -2,6 +2,7 @@ import { Grid, Paper, Typography, Divider } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import React from "react";
 import { ViewCard } from "../viewCard/viewCard";
+import { RegularButton } from "../regularButton";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     paper: {
@@ -22,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     contentPadding: {
       padding: theme.spacing(4)
-    },
+    }
   })
 );
 
@@ -36,6 +37,7 @@ export const UserContent = ({ props }) => {
   });
   React.useEffect(() => {
     setState({ ...state, userData: props });
+    console.log(state.userData);
   }, [props]);
   return (
     <Grid item xs={10}>
@@ -45,6 +47,10 @@ export const UserContent = ({ props }) => {
             <Typography variant="h5" component="h2">
               スケジュール
             </Typography>
+            <Divider className={classes.divider} component="div" />
+            <div style={{ width: "100%", height: "300px" }}>
+              ここにschedule的なの
+            </div>
           </Paper>
         </Grid>
         <Grid item xs={6} className={classes.contentPadding}>
@@ -58,6 +64,7 @@ export const UserContent = ({ props }) => {
             <ViewCard />
             <ViewCard />
             <ViewCard />
+            <RegularButton label={"もっと見る"}/>
           </Paper>
         </Grid>
         <Grid item xs={6} className={classes.contentPadding}>
@@ -66,6 +73,12 @@ export const UserContent = ({ props }) => {
               倉内のチケット
             </Typography>
             <Divider className={classes.divider} component="div" />
+            <ViewCard />
+            <ViewCard />
+            <ViewCard />
+            <ViewCard />
+            <ViewCard />
+            <RegularButton label={"もっと見る"}/>
           </Paper>
         </Grid>
       </Paper>
