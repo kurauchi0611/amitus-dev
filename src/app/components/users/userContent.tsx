@@ -3,6 +3,8 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import React from "react";
 import { ViewCard } from "../viewCard/viewCard";
 import { RegularButton } from "../regularButton";
+import { questionDB } from "../../firebase/questions";
+import { ticketDB } from "../../firebase/timeTickets";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     paper: {
@@ -35,9 +37,25 @@ export const UserContent = ({ props }) => {
   }>({
     userData: props
   });
+  const [myQuestions, setMyQuestions] = React.useState();
+  const [myTickets, setMyTickets] = React.useState();
   React.useEffect(() => {
     setState({ ...state, userData: props });
-    console.log(state.userData);
+    if (typeof props !== "undefined" && props.uid !== "") {
+      const cleanup = async () => {
+        const getMyQuestions = await questionDB.showMyQuestions(props.uid);
+        const getMyTickets = await ticketDB.showMyTickets(props.uid);
+        const myQuestionsData: any = getMyQuestions;
+        const myTicketsData: any = getMyTickets;
+        setMyQuestions(myQuestionsData);
+        setMyTickets(myTicketsData);
+        console.log(myQuestions);
+        console.log(myQuestionsData.docs);
+        console.log(myTickets);
+        console.log(myTicketsData.docs);
+      };
+      cleanup();
+    }
   }, [props]);
   return (
     <Grid item xs={10}>
@@ -60,10 +78,14 @@ export const UserContent = ({ props }) => {
               の質問
             </Typography>
             <Divider className={classes.divider} component="div" />
-             {/* userのmyTicketsを取ってくる */}
-            <ViewCard  views={["","","",]}/>
+            {/* userのmyTicketsを取ってくる */}
+            <ViewCard
+              views={typeof myQuestions !== "undefined" && myQuestions.docs}
+            />
             {/* todo:5件以上ある時は「もっと見る」無い時は何も表示しないように */}
+            {typeof myQuestions !== "undefined" &&myQuestions.docs.length==5&&
             <RegularButton label={"もっと見る"} />
+            }
           </Paper>
         </Grid>
         <Grid item xs={6} className={classes.contentPadding}>
@@ -74,9 +96,13 @@ export const UserContent = ({ props }) => {
             </Typography>
             <Divider className={classes.divider} component="div" />
             {/* userのmyTicketsを取ってくる */}
-            <ViewCard views={["","","",]}/>
+            <ViewCard
+              views={typeof myTickets !== "undefined" &&myTickets.docs}
+            />
             {/* todo:5件以上ある時は「もっと見る」無い時は何も表示しないように */}
+            {typeof myTickets !== "undefined" &&myTickets.docs.length==5&&
             <RegularButton label={"もっと見る"} />
+            }
           </Paper>
         </Grid>
       </Paper>

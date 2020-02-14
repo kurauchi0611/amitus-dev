@@ -7,6 +7,7 @@ import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import { Chips } from "../mdEditor/chips";
 import { RegularButton } from "../regularButton";
+import format from "date-fns/format";
 const useStyles = makeStyles({
   root: {
     minWidth: 275,
@@ -33,25 +34,28 @@ export const ViewCard = ({ views }) => {
   const classes = useStyles();
   const [state, setState] = React.useState();
   React.useEffect(() => {
-    setState(views);
+    if (views) setState(views);
   }, [views]);
 
   return (
-    <div>
+    <React.Fragment>
       {typeof state !== "undefined" &&
         state.map((element, index) => {
-          console.log(element);
+          const viewData = element.data();
           return (
             <Card className={classes.root} variant="outlined" key={index}>
               <CardContent>
                 <Typography variant="h5" component="h3">
-                  たすけて！！！
+                  {viewData.title}
                 </Typography>
-                <Chips labels={tags} />
+                <Chips labels={viewData.tags} />
               </CardContent>
               <CardActions className={classes.buttonPosition}>
                 <Typography className={classes.timestamp}>
-                  {"2020年2月14日01時03分投稿"}
+                  {format(
+                    new Date(viewData.createdAt.seconds * 1000),
+                    "yyyy年MM月dd日HH時mm分投稿"
+                  )}
                 </Typography>
                 {/* <Button size="small">詳しく見る</Button> */}
                 <RegularButton label={"詳しく見る"} />
@@ -59,12 +63,12 @@ export const ViewCard = ({ views }) => {
             </Card>
           );
         })}
-    </div>
+    </React.Fragment>
   );
 };
 
-const tags = ["Javascript", "HTML", "CSS", "React", "NEXT.js", "firebase"];
+// const tags = ["Javascript", "HTML", "CSS", "React", "NEXT.js", "firebase"];
 // const hoge=["","","","",""]
 ViewCard.defaultProps = {
-  views: []
+  views: null
 };

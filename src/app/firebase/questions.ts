@@ -61,6 +61,16 @@ export const questionDB = {
       .get();
     return { question: getQuestion, comments: getComments };
   },
+  showMyQuestions: async uid => {
+    const getMyQuestions = await db
+      .collection("users")
+      .doc(uid)
+      .collection("myQuestions")
+      .orderBy("createdAt")
+      .limit(5)
+      .get();
+    return getMyQuestions;
+  },
   postComment: fields => {
     const { text, userData, uid } = fields;
     return questions

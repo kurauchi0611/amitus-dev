@@ -54,7 +54,17 @@ export const ticketDB = {
       });
   },
   showTickets: async uid => {
-    const getTickets = await tickets.doc(uid).get();
-    return getTickets.data();
+    const getTicket = await tickets.doc(uid).get();
+    return getTicket.data();
+  },
+  showMyTickets: async uid => {
+    const getMyTickets = await db
+      .collection("users")
+      .doc(uid)
+      .collection("myTickets")
+      .orderBy("createdAt")
+      .limit(5)
+      .get();
+    return getMyTickets;
   }
 };

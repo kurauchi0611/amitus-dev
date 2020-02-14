@@ -55,8 +55,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const Index = ({ props }) => {
-  console.log(props);
-  
+  if(false)console.log(props);
   const classes = useStyles();
   const router = useRouter();
   const [userState, setUserState] = React.useState<{
@@ -66,7 +65,10 @@ const Index = ({ props }) => {
     language: any;
     name: string;
     photoURL: string;
-    rating:number;
+    rating: number;
+    follow: number;
+    follower: number;
+    uid:any;
   }>({
     createdAt: null,
     email: "",
@@ -74,7 +76,10 @@ const Index = ({ props }) => {
     language: [],
     name: "",
     photoURL: "",
-    rating:1
+    rating: 1,
+    follow: 0,
+    follower: 0,
+    uid:""
   });
   React.useEffect(() => {
     if (typeof router.query.id !== "undefined") {
@@ -90,7 +95,10 @@ const Index = ({ props }) => {
             language: userData.language,
             name: userData.name,
             photoURL: userData.photoUrl,
-            rating:userData.rating
+            rating: userData.rating,
+            follow: userData.follow,
+            follower: userData.follower,
+            uid:router.query.id
           });
         }
       };

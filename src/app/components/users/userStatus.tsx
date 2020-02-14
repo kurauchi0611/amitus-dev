@@ -56,7 +56,6 @@ export const UserStatus = ({ props }) => {
   });
   React.useEffect(() => {
     setState({ ...state, userData: props });
-    console.log(state.userData);
   }, [props]);
   const check = () => {
     console.log(state.userData);
