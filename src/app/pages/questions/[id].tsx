@@ -164,7 +164,9 @@ const Index = ({ props }) => {
         <Typography className={classes.padding} variant="h3">
           {state.title}
         </Typography>
-        <Chips labels={state.tags} />
+        <div className={classes.padding}>
+          <Chips labels={state.tags} />
+        </div>
         <MarkDownViewer text={state.text} />
       </Container>
       <Container maxWidth="lg" className={classes.commentWrap}>
