@@ -71,16 +71,37 @@ const Index = ({ props }) => {
   const handleClose = () => {
     setOpen(false);
   };
-  const sendQuestion = () => {
+  const sendQuestion = async () => {
     if (state.text !== "" && state.tags !== null && state.text !== "") {
       if (state.index === 0) {
-        questionDB.postQuestion(state).then(res => {
-          router.push("/questions/[id]", `/questions/${res.id}`);
-        });
+        const postQuestion = await questionDB.postQuestion(state);
+        if (postQuestion !== null) {
+          console.log(postQuestion);
+          router.push("/questions/[id]", `/questions/${postQuestion}`);
+        } else {
+          setError(
+            <Alert severity="error" className={classes.error} variant="filled">
+              投稿に失敗しました
+            </Alert>
+          );
+        }
       } else if (state.index === 1) {
-        questionDB.draftQuestion(state).then(() => {
-          router.push("/mypage");
-        });
+        await questionDB
+          .draftQuestion(state)
+          .then(() => {
+            router.push("/mypage");
+          })
+          .catch(() => {
+            setError(
+              <Alert
+                severity="error"
+                className={classes.error}
+                variant="filled"
+              >
+                下書き保存に失敗しました
+              </Alert>
+            );
+          });
       }
     } else {
       setError(

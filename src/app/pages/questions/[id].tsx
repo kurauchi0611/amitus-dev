@@ -71,7 +71,8 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       flexFlow: "column",
       alignItems: "flex-end"
-    }
+    },
+    paddingLR: { paddingLeft: theme.spacing(5), paddingRight: theme.spacing(5) }
   })
 );
 
@@ -164,7 +165,7 @@ const Index = ({ props }) => {
         <Typography className={classes.padding} variant="h3">
           {state.title}
         </Typography>
-        <div className={classes.padding}>
+        <div className={classes.paddingLR}>
           <Chips labels={state.tags} />
         </div>
         <MarkDownViewer text={state.text} />
