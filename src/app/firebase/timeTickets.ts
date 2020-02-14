@@ -62,7 +62,7 @@ export const ticketDB = {
       .collection("users")
       .doc(uid)
       .collection("myTickets")
-      .orderBy("createdAt")
+      .orderBy("createdAt","desc")
       .limit(5)
       .get();
     return getMyTickets;

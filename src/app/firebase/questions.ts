@@ -66,7 +66,7 @@ export const questionDB = {
       .collection("users")
       .doc(uid)
       .collection("myQuestions")
-      .orderBy("createdAt")
+      .orderBy("createdAt","desc")
       .limit(5)
       .get();
     return getMyQuestions;
