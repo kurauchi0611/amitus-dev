@@ -8,6 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import { Chips } from "../mdEditor/chips";
 import { RegularButton } from "../regularButton";
 import format from "date-fns/format";
+import Link from "next/link";
 const useStyles = makeStyles({
   root: {
     minWidth: 275,
@@ -30,13 +31,12 @@ const useStyles = makeStyles({
   timestamp: { fontSize: ".8rem" }
 });
 
-export const ViewCard = ({ views }) => {
+export const ViewCard = ({ views, label }) => {
   const classes = useStyles();
   const [state, setState] = React.useState();
   React.useEffect(() => {
     if (views) setState(views);
   }, [views]);
-
   return (
     <React.Fragment>
       {typeof state !== "undefined" &&
@@ -58,7 +58,20 @@ export const ViewCard = ({ views }) => {
                   )}
                 </Typography>
                 {/* <Button size="small">詳しく見る</Button> */}
-                <RegularButton label={"詳しく見る"} />
+                {label === "questions" && (
+                  <Link href="/questions/[id]" as={`/questions/${element.id}`}>
+                    <a>
+                      <RegularButton label={"詳しく見る"} />
+                    </a>
+                  </Link>
+                )}
+                {label === "tickets" && (
+                  <Link href="/timeTickets/[id]" as={`/timeTickets/${element.id}`}>
+                    <a>
+                      <RegularButton label={"詳しく見る"} />
+                    </a>
+                  </Link>
+                )}
               </CardActions>
             </Card>
           );

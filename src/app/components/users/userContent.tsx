@@ -80,6 +80,7 @@ export const UserContent = ({ props }) => {
             <Divider className={classes.divider} component="div" />
             {/* userのmyTicketsを取ってくる */}
             <ViewCard
+            label={"questions"}
               views={typeof myQuestions !== "undefined" && myQuestions.docs}
             />
             {/* todo:5件以上ある時は「もっと見る」無い時は何も表示しないように */}
@@ -97,6 +98,7 @@ export const UserContent = ({ props }) => {
             <Divider className={classes.divider} component="div" />
             {/* userのmyTicketsを取ってくる */}
             <ViewCard
+            label={"tickets"}
               views={typeof myTickets !== "undefined" &&myTickets.docs}
             />
             {/* todo:5件以上ある時は「もっと見る」無い時は何も表示しないように */}
