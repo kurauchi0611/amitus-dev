@@ -49,10 +49,6 @@ export const UserContent = ({ props }) => {
         const myTicketsData: any = getMyTickets;
         setMyQuestions(myQuestionsData);
         setMyTickets(myTicketsData);
-        console.log(myQuestions);
-        console.log(myQuestionsData.docs);
-        console.log(myTickets);
-        console.log(myTicketsData.docs);
       };
       cleanup();
     }

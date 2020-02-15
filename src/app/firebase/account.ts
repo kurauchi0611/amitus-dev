@@ -1,6 +1,6 @@
 import { storage, auth, functions, db, FieldValue } from "./firebase";
 import firebase from "firebase";
-const user=db.collection('users');
+const user = db.collection("users");
 export const accountDB = {
   loginUser: async account => {
     console.log("startLogin");
@@ -8,6 +8,12 @@ export const accountDB = {
       account.email,
       account.password
     );
+  },
+  logoutUser: () => {
+    auth.signOut();
+  },
+  getUser: uid => {
+    return user.doc(uid).get();
   },
   createUser: async account => {
     let result = false;
@@ -24,42 +30,6 @@ export const accountDB = {
         console.log(error);
       });
     return result;
-  },
-  updatePassword: async (oldPassword, newPassword) => {
-    // const authentication = assoc('updatedAt', Firestore.serverTimestamp(), { password: password });
-    // return authenticationRef(id).set(authentication, { merge: true });
-    // firebaseのログイン情報をuserinfoに持っておく
-    const userinfo = auth.currentUser;
-    let res = false;
-    if (userinfo) {
-      const email: any | null = userinfo.email;
-      // 直近にログインしてないと(5分くらいらしい)弾かれるのでreauthしてからパスワード変更
-      const credential = firebase.auth.EmailAuthProvider.credential(
-        email,
-        oldPassword
-      );
-      await userinfo
-        .reauthenticateWithCredential(credential)
-        .then(async () => {
-          // User re-authenticated.
-          await userinfo
-            .updatePassword(newPassword)
-            .then(() => {
-              // Update successful.
-              console.log("change success");
-              res = true;
-            })
-            .catch(error => {
-              // An error happened.
-              console.log(error);
-            });
-        })
-        .catch(error => {
-          // An error happened.
-          console.log(error);
-        });
-    }
-    return res;
   },
   updateAuthStatus: () => {},
   fileUpload: (file, id) => {
@@ -86,9 +56,25 @@ export const accountDB = {
       });
     return res;
   },
-  changeEmail: async (newEmail, password) => {
+  updateName: async name => {
     const userinfo = auth.currentUser;
-    let res = false;
+    if (userinfo) {
+      userinfo
+        .updateProfile({
+          displayName: name
+        })
+        .then(async () => {
+          // Update successful.
+          const updateName = await user
+            .doc(userinfo.uid)
+            .set({ name: name }, { merge: true });
+          return updateName;
+        });
+    }
+    return false;
+  },
+  updateEmail: async (newEmail, password) => {
+    const userinfo = auth.currentUser;
     if (userinfo) {
       const email: any | null = userinfo.email;
       const credential = firebase.auth.EmailAuthProvider.credential(
@@ -99,50 +85,59 @@ export const accountDB = {
         // User re-authenticated.
         await userinfo.updateEmail(newEmail).then(async () => {
           // Update successful.
-          const accounts = db.collection("accounts").doc(userinfo.uid);
-          await accounts
-            .set(
-              {
-                email: newEmail,
-                updateAt: FieldValue.serverTimestamp()
-              },
-              { merge: true }
-            )
-            .then(async () => {
-              // ここからサブコレクション"authentications"のメールアドレスの変更。ふようになったら消す
-              const auth = accounts.collection("authentications");
-              await auth
-                .doc(userinfo.uid)
-                .set(
-                  {
-                    email: newEmail,
-                    updatedAt: FieldValue.serverTimestamp()
-                  },
-                  { merge: true }
-                )
-                .then(async () => {
-                  res = true;
-                })
-                .catch(error => {
-                  // An error happened.
-                  console.log(error);
-                });
-              // ここまでサブコレクション。消したら↓のコメントを有効化する。
-              // res = true
-            })
-            .catch(error => {
-              // An error happened.
-              console.log(error);
-            });
+          const updateEmail = await user.doc(userinfo.uid).set(
+            {
+              email: newEmail,
+              updateAt: FieldValue.serverTimestamp()
+            },
+            { merge: true }
+          );
+          return updateEmail;
         });
       });
     }
-    return res;
+    return false;
   },
-  logoutUser: () => {
-    auth.signOut();
+  updatePassword: async (oldPassword, newPassword) => {
+    // const authentication = assoc('updatedAt', Firestore.serverTimestamp(), { password: password });
+    // return authenticationRef(id).set(authentication, { merge: true });
+    // firebaseのログイン情報をuserinfoに持っておく
+    const userinfo = auth.currentUser;
+    if (userinfo) {
+      const email: any | null = userinfo.email;
+      // 直近にログインしてないと(5分くらいらしい)弾かれるのでreauthしてからパスワード変更
+      const credential = firebase.auth.EmailAuthProvider.credential(
+        email,
+        oldPassword
+      );
+      await userinfo
+        .reauthenticateWithCredential(credential)
+        .then(async () => {
+          // User re-authenticated.
+          const updatePassword = await userinfo.updatePassword(newPassword);
+          return updatePassword;
+        })
+        .catch(error => {
+          // An error happened.
+          console.log(error);
+        });
+    }
+    return false;
   },
-  getUser:(uid)=>{
-    return user.doc(uid).get();
-  }
+  updateIntroduction: async text => {
+    const userinfo = auth.currentUser;
+    if (userinfo) {
+      const updateIntroduction = await user.doc(userinfo.uid).set(
+        {
+          introduction: text
+        },
+        { merge: true }
+      );
+      return updateIntroduction;
+    }
+    return false;
+  },
 };
+
+
+

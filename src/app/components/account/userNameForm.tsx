@@ -150,24 +150,29 @@ const useStyles = makeStyles((theme: Theme) =>
 export const UserNameForm = ({ label, handlechange, name, autoFocus }) => {
   const classes = useStyles();
   return (
-    <div>
-      <FormControl className={classes.margin} fullWidth variant="filled">
-        <InputLabel htmlFor="filled-adornment-name">{label}</InputLabel>
-        <FilledInput
-          className={classes.back}
-          id="standard-basic"
-          fullWidth
-          onInput={handlechange}
-          value={name}
-          autoComplete="off"
-          autoFocus={autoFocus}
-          startAdornment={
-            <InputAdornment position="start">
-              <AccountCircleIcon color={"primary"} />
-            </InputAdornment>
-          }
-        />
-      </FormControl>
-    </div>
+    <FormControl className={classes.margin} fullWidth variant="filled">
+      <InputLabel htmlFor="filled-adornment-name">{label}</InputLabel>
+      <FilledInput
+        className={classes.back}
+        id="standard-basic"
+        fullWidth
+        onInput={handlechange}
+        value={name}
+        autoComplete="off"
+        autoFocus={autoFocus}
+        startAdornment={
+          <InputAdornment position="start">
+            <AccountCircleIcon color={"primary"} />
+          </InputAdornment>
+        }
+      />
+    </FormControl>
   );
+};
+
+UserNameForm.defaultProps = {
+  label: "",
+  handlechange: null,
+  name: "",
+  autoFocus: false
 };
