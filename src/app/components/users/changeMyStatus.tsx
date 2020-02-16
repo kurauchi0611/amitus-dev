@@ -1,5 +1,11 @@
 import React from "react";
-import { Dialog, TextField, Divider, IconButton } from "@material-ui/core";
+import {
+  Button,
+  Dialog,
+  TextField,
+  Divider,
+  IconButton
+} from "@material-ui/core";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -18,6 +24,8 @@ import { UserNameForm } from "../account/userNameForm";
 import { accountDB } from "../../firebase/account";
 import CloseIcon from "@material-ui/icons/Close";
 import { Tags } from "../mdEditor/Tags";
+import croppie from "../croppie/";
+console.log(croppie);
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -57,6 +65,33 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     dialogWidth: {
       width: "600px"
+    },
+    input: {
+      display: "none"
+    },
+    buttonMain:{
+      minWidth:theme.spacing(10),
+      maxWidth: theme.spacing(40),
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
+      fontSize: "1rem",
+      background: theme.palette.buttonMain.main,
+      borderRadius: 3,
+      border: 0,
+      color: "white",
+      height: 35,
+      padding: "0 20px",
+      boxShadow: `0 3px 5px 2px ${theme.palette.buttonMain.dark}`,
+      display: "flex"
+    },
+    buttonCancel:{
+      background: theme.palette.buttonCancel.main,
+      boxShadow: `0 3px 5px 2px ${theme.palette.buttonCancel.dark}`,
+      marginLeft:theme.spacing(4)
+    },
+    flexRow:{
+      display:"flex",
+      flexFlow:"row",
     }
   })
 );
@@ -67,9 +102,8 @@ const Transition = React.forwardRef<unknown, TransitionProps>(
 );
 
 export const ChangeMyStatus = ({ props }) => {
-  console.log(props);
-
   const [open, setOpen] = React.useState(false);
+  const [openImage, setOpenImage] = React.useState(false);
   const classes = useStyles();
   const [state, setState] = React.useState<{
     userName: string;
@@ -116,7 +150,6 @@ export const ChangeMyStatus = ({ props }) => {
         introduction: props.introduction,
         language: props.language
       });
-      console.log(props);
     }
   }, [props]);
 
@@ -229,7 +262,6 @@ export const ChangeMyStatus = ({ props }) => {
     });
     setExpanded(false);
   };
-
   const updateName = () => {
     if (state.checkNameFaild === true) {
       accountDB
@@ -294,6 +326,46 @@ export const ChangeMyStatus = ({ props }) => {
         console.log("faild");
       });
   };
+  const [fileData, setFileData] = React.useState<any | null>(null);
+  // const [complate, setComplate] = React.useState(false);
+  const handleCloseImage = () => {
+    setOpenImage(false);
+    fileData.destroy()
+  };
+  // console.log(croppie);
+  const handleChangeFile = e => {
+    const createObjectURL = (window.URL || window.webkitURL).createObjectURL;
+    const target = e.target;
+    const file = target.files.item(0);
+    setFileData(file);
+    // setComplate(true);
+    if (process.browser) {
+      const myImage = document.getElementById("myImage");
+
+      const clipImage = new croppie(myImage, {
+        viewport: { width: 250, height: 250 },
+        boundary: { width: 500, height: 500 },
+        forceBoundary: false
+      });
+      const upimg = createObjectURL(file);
+      setFileData(clipImage);
+      clipImage.bind({
+        url: upimg
+      });
+      setOpenImage(true);
+    }
+  };
+  const updateImage = () => {
+    const image=fileData.result({type:'blob'});
+    accountDB
+      .updateImage(image)
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
   return (
     <div>
       <RegularButton label={"設定の変更"} onClick={handleClickOpen} />
@@ -328,6 +400,52 @@ export const ChangeMyStatus = ({ props }) => {
             aria-controls="panel1bh-content"
             id="panel1bh-header"
           >
+            <Typography className={classes.heading}>
+              プロフィール画像
+            </Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails className={classes.detail}>
+            <Divider className={classes.divider} component="div" />
+            <Dialog
+              open={openImage}
+              keepMounted
+              onClose={handleCloseImage}
+              aria-labelledby="alert-dialog-slide-title"
+              aria-describedby="alert-dialog-slide-description"
+            >
+              <DialogContent>
+                <div id="myImage"></div>
+                <div className={classes.flexRow}>
+                <RegularButton label={"変更する"} onClick={updateImage} />
+                <Button className={classes.buttonMain+" "+classes.buttonCancel} onClick={handleCloseImage}>キャンセル</Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+            <input
+              accept="image/*"
+              className={classes.input}
+              id="contained-button-file"
+              multiple
+              type="file"
+              onChange={event => handleChangeFile(event)}
+            />
+            <label htmlFor="contained-button-file">
+              <Button variant="contained" className={classes.buttonMain} component="span">
+                画像を選択する
+              </Button>
+            </label>
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+        <ExpansionPanel
+          expanded={expanded === "panel2"}
+          onChange={handleChange("panel2")}
+          className={classes.expansion}
+        >
+          <ExpansionPanelSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1bh-content"
+            id="panel1bh-header"
+          >
             <Typography className={classes.heading}>ユーザ名</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails className={classes.detail}>
@@ -341,8 +459,8 @@ export const ChangeMyStatus = ({ props }) => {
           </ExpansionPanelDetails>
         </ExpansionPanel>
         <ExpansionPanel
-          expanded={expanded === "panel2"}
-          onChange={handleChange("panel2")}
+          expanded={expanded === "panel3"}
+          onChange={handleChange("panel3")}
           className={classes.expansion}
         >
           <ExpansionPanelSummary
@@ -370,8 +488,8 @@ export const ChangeMyStatus = ({ props }) => {
           </ExpansionPanelDetails>
         </ExpansionPanel>
         <ExpansionPanel
-          expanded={expanded === "panel3"}
-          onChange={handleChange("panel3")}
+          expanded={expanded === "panel4"}
+          onChange={handleChange("panel4")}
           className={classes.expansion}
         >
           <ExpansionPanelSummary
@@ -406,8 +524,8 @@ export const ChangeMyStatus = ({ props }) => {
           </ExpansionPanelDetails>
         </ExpansionPanel>
         <ExpansionPanel
-          expanded={expanded === "panel4"}
-          onChange={handleChange("panel4")}
+          expanded={expanded === "panel5"}
+          onChange={handleChange("panel5")}
           className={classes.expansion}
         >
           <ExpansionPanelSummary
@@ -433,8 +551,8 @@ export const ChangeMyStatus = ({ props }) => {
           </ExpansionPanelDetails>
         </ExpansionPanel>
         <ExpansionPanel
-          expanded={expanded === "panel5"}
-          onChange={handleChange("panel5")}
+          expanded={expanded === "panel6"}
+          onChange={handleChange("panel6")}
           className={classes.expansion}
         >
           <ExpansionPanelSummary

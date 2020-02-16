@@ -150,7 +150,14 @@ export const accountDB = {
     }
     return false;
   },
+  updateImage: async image => {
+    const userinfo = auth.currentUser;
+    if (userinfo) {
+      const userBacket = storage
+        .ref()
+        .child(`userImages/${userinfo.uid}.png`)
+        .put(await image);
+      return userBacket;
+    }
+  }
 };
-
-
-

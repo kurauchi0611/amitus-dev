@@ -7,7 +7,7 @@ import theme from "../themes/theme";
 import "react-mde/lib/styles/css/react-mde-all.css";
 import Alert from "@material-ui/lab/Alert";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
-
+import "../components/croppie/croppie.css"
 import { auth, db } from "../firebase/firebase";
 
 // function MyApp({ Component, pageProps }) {
