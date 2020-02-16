@@ -94,7 +94,7 @@ const Index = ({ props }) => {
             introduction: userData.introduction,
             language: userData.language,
             name: userData.name,
-            photoURL: userData.photoUrl,
+            photoURL: userData.photoURL,
             rating: userData.rating,
             follow: userData.follow,
             follower: userData.follower,

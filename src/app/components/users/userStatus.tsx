@@ -68,9 +68,20 @@ export const UserStatus = ({ props }) => {
   return (
     <Grid item xs={2}>
       <Paper className={classes.paper + " " + classes.status} elevation={6}>
-        <Avatar variant="square" className={classes.avatar}>
-          NO
-        </Avatar>
+      {typeof state.userData !== "undefined" && state.userData.photoURL && (
+          <Avatar
+            variant="square"
+            className={classes.avatar}
+            alt={state.userData.name}
+            src={state.userData.photoURL}
+          />
+        )}
+        {typeof state.userData !== "undefined" &&
+          state.userData.photoURL === null && (
+            <Avatar variant="square" className={classes.avatar}>
+              NO
+            </Avatar>
+          )}
         <Typography variant="h4" component="p" className={classes.typo}>
           {typeof state.userData !== "undefined" &&state.userData.name}
         </Typography>

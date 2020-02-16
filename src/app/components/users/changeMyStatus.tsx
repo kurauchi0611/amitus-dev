@@ -69,8 +69,8 @@ const useStyles = makeStyles((theme: Theme) =>
     input: {
       display: "none"
     },
-    buttonMain:{
-      minWidth:theme.spacing(10),
+    buttonMain: {
+      minWidth: theme.spacing(10),
       maxWidth: theme.spacing(40),
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(1),
@@ -84,14 +84,14 @@ const useStyles = makeStyles((theme: Theme) =>
       boxShadow: `0 3px 5px 2px ${theme.palette.buttonMain.dark}`,
       display: "flex"
     },
-    buttonCancel:{
+    buttonCancel: {
       background: theme.palette.buttonCancel.main,
       boxShadow: `0 3px 5px 2px ${theme.palette.buttonCancel.dark}`,
-      marginLeft:theme.spacing(4)
+      marginLeft: theme.spacing(4)
     },
-    flexRow:{
-      display:"flex",
-      flexFlow:"row",
+    flexRow: {
+      display: "flex",
+      flexFlow: "row"
     }
   })
 );
@@ -330,7 +330,7 @@ export const ChangeMyStatus = ({ props }) => {
   // const [complate, setComplate] = React.useState(false);
   const handleCloseImage = () => {
     setOpenImage(false);
-    fileData.destroy()
+    fileData.destroy();
   };
   // console.log(croppie);
   const handleChangeFile = e => {
@@ -356,11 +356,11 @@ export const ChangeMyStatus = ({ props }) => {
     }
   };
   const updateImage = () => {
-    const image=fileData.result({type:'blob'});
+    const image = fileData.result({ type: "blob" });
     accountDB
       .updateImage(image)
-      .then(res => {
-        console.log(res);
+      .then(() => {
+        setOpenImage(false);
       })
       .catch(err => {
         console.log(err);
@@ -416,8 +416,13 @@ export const ChangeMyStatus = ({ props }) => {
               <DialogContent>
                 <div id="myImage"></div>
                 <div className={classes.flexRow}>
-                <RegularButton label={"変更する"} onClick={updateImage} />
-                <Button className={classes.buttonMain+" "+classes.buttonCancel} onClick={handleCloseImage}>キャンセル</Button>
+                  <RegularButton label={"変更する"} onClick={updateImage} />
+                  <Button
+                    className={classes.buttonMain + " " + classes.buttonCancel}
+                    onClick={handleCloseImage}
+                  >
+                    キャンセル
+                  </Button>
                 </div>
               </DialogContent>
             </Dialog>
@@ -430,7 +435,11 @@ export const ChangeMyStatus = ({ props }) => {
               onChange={event => handleChangeFile(event)}
             />
             <label htmlFor="contained-button-file">
-              <Button variant="contained" className={classes.buttonMain} component="span">
+              <Button
+                variant="contained"
+                className={classes.buttonMain}
+                component="span"
+              >
                 画像を選択する
               </Button>
             </label>
