@@ -156,7 +156,6 @@ export const LoginForm = ({ label }) => {
           </Button>
         </DialogActions>
       </Dialog>
-     
     </div>
   );
 };

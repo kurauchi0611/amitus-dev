@@ -7,7 +7,8 @@ const useStyles = makeStyles((theme: Theme) =>
     button: {
       minWidth:theme.spacing(10),
       maxWidth: theme.spacing(40),
-      margin: theme.spacing(2),
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
       fontSize: "1rem",
       background: theme.palette.buttonMain.main,
       borderRadius: 3,

@@ -1,5 +1,5 @@
 import React from "react";
-import { Dialog, TextField } from "@material-ui/core";
+import { Dialog, TextField, Divider } from "@material-ui/core";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -34,6 +34,20 @@ const useStyles = makeStyles((theme: Theme) =>
     detail: {
       flexFlow: "column",
       alignItems: "flex-end"
+    },
+    divider: {
+      background: theme.palette.buttonMain.main,
+      width: "100%",
+      height: "2px",
+      marginBottom: theme.spacing(1)
+    },
+    marginTop: {
+      marginTop: theme.spacing(1)
+    },
+    expansion: { 
+      "&:before":{
+        background: theme.palette.buttonMain.main 
+      }
     }
   })
 );
@@ -98,8 +112,9 @@ export const ChangeMyStatus = ({ props }) => {
     return true;
   };
   const passwordValidation = password => {
-    if (!password && password.length < 5)
-      return "6文字以上でパスワードを入力してください";
+    console.log(password.length);
+
+    if (password.length < 5) return "6文字以上でパスワードを入力してください";
     return true;
   };
   const nameValidation = name => {
@@ -135,13 +150,13 @@ export const ChangeMyStatus = ({ props }) => {
         [prop]: event.target.value,
         newPasswordFaild: passwordValidation(event.target.value)
       };
-    } else if (prop === "checNewkPassword") {
+    } else if (prop === "checkNewPassword") {
       settingState = {
         ...state,
         [prop]: event.target.value,
         checkNewPasswordFaild: passwordValidation(event.target.value)
       };
-    } else if (prop === "npwPassword") {
+    } else if (prop === "nowPassword") {
       settingState = {
         ...state,
         [prop]: event.target.value,
@@ -212,7 +227,7 @@ export const ChangeMyStatus = ({ props }) => {
       state.newPassword === state.checkNewPassword
     ) {
       accountDB
-        .updatePassword(state.password, state.newPassword)
+        .updatePassword(state.nowPassword, state.newPassword)
         .then(() => {
           console.log("success");
         })
@@ -236,7 +251,7 @@ export const ChangeMyStatus = ({ props }) => {
   };
   return (
     <div>
-      <RegularButton label={"情報の変更"} onClick={handleClickOpen} />
+      <RegularButton label={"設定の変更"} onClick={handleClickOpen} />
       <Dialog
         open={open}
         TransitionComponent={Transition}
@@ -245,18 +260,16 @@ export const ChangeMyStatus = ({ props }) => {
         aria-labelledby="alert-dialog-slide-title"
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle id="alert-dialog-slide-title">
-          {"Use Google's location service?"}
-        </DialogTitle>
+        <DialogTitle id="alert-dialog-slide-title">{"設定の変更"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            Let Google help apps determine location. This means sending
-            anonymous location data to Google, even when no apps are running.
+            ユーザの情報やスキルの登録ができます。
           </DialogContentText>
         </DialogContent>
         <ExpansionPanel
           expanded={expanded === "panel1"}
           onChange={handleChange("panel1")}
+          className={classes.expansion}
         >
           <ExpansionPanelSummary
             expandIcon={<ExpandMoreIcon />}
@@ -266,6 +279,7 @@ export const ChangeMyStatus = ({ props }) => {
             <Typography className={classes.heading}>ユーザ名</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails className={classes.detail}>
+            <Divider className={classes.divider} component="div" />
             <UserNameForm
               label={"ユーザ名"}
               name={state.userName}
@@ -277,6 +291,7 @@ export const ChangeMyStatus = ({ props }) => {
         <ExpansionPanel
           expanded={expanded === "panel2"}
           onChange={handleChange("panel2")}
+          className={classes.expansion}
         >
           <ExpansionPanelSummary
             expandIcon={<ExpandMoreIcon />}
@@ -288,6 +303,7 @@ export const ChangeMyStatus = ({ props }) => {
             </Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails className={classes.detail}>
+            <Divider className={classes.divider} component="div" />
             <MailForm
               label={"メールアドレス"}
               email={state.email}
@@ -304,6 +320,7 @@ export const ChangeMyStatus = ({ props }) => {
         <ExpansionPanel
           expanded={expanded === "panel3"}
           onChange={handleChange("panel3")}
+          className={classes.expansion}
         >
           <ExpansionPanelSummary
             expandIcon={<ExpandMoreIcon />}
@@ -313,6 +330,16 @@ export const ChangeMyStatus = ({ props }) => {
             <Typography className={classes.heading}>パスワード</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails className={classes.detail}>
+            <Divider className={classes.divider} component="div" />
+            <PasswordForm
+              label={"現在のパスワード"}
+              password={state.nowPassword}
+              handlechange={stateChange("nowPassword")}
+            />
+            <Divider
+              className={classes.divider + " " + classes.marginTop}
+              component="div"
+            />
             <PasswordForm
               label={"新しいパスワード"}
               password={state.newPassword}
@@ -323,17 +350,13 @@ export const ChangeMyStatus = ({ props }) => {
               password={state.checkNewPassword}
               handlechange={stateChange("checkNewPassword")}
             />
-            <PasswordForm
-              label={"現在のパスワード"}
-              password={state.nowPassword}
-              handlechange={stateChange("nowPassword")}
-            />
             <RegularButton label={"変更する"} onClick={updatePassword} />
           </ExpansionPanelDetails>
         </ExpansionPanel>
         <ExpansionPanel
           expanded={expanded === "panel4"}
           onChange={handleChange("panel4")}
+          className={classes.expansion}
         >
           <ExpansionPanelSummary
             expandIcon={<ExpandMoreIcon />}
@@ -343,6 +366,7 @@ export const ChangeMyStatus = ({ props }) => {
             <Typography className={classes.heading}>自己紹介</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails className={classes.detail}>
+            <Divider className={classes.divider} component="div" />
             <TextField
               fullWidth
               id="outlined-multiline-static"
@@ -359,6 +383,7 @@ export const ChangeMyStatus = ({ props }) => {
         <ExpansionPanel
           expanded={expanded === "panel5"}
           onChange={handleChange("panel5")}
+          className={classes.expansion}
         >
           <ExpansionPanelSummary
             expandIcon={<ExpandMoreIcon />}
@@ -367,7 +392,8 @@ export const ChangeMyStatus = ({ props }) => {
           >
             <Typography className={classes.heading}>スキル登録</Typography>
           </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
+          <ExpansionPanelDetails className={classes.detail}>
+            <Divider className={classes.divider} component="div" />
             <Typography>
               Nunc vitae orci ultricies, auctor nunc in, volutpat nisl. Integer
               sit amet egestas eros, vitae egestas augue. Duis vel est augue.
