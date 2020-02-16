@@ -4,7 +4,7 @@ import React from "react";
 import { RegularButton } from "../regularButton";
 import { Chips } from "../mdEditor/chips";
 import { Ratings } from "./rating";
-import {ChangeMyStatus} from "./changeMyStatus"
+import { ChangeMyStatus } from "./changeMyStatus";
 // import { useRouter } from "next/router";
 // import Alert from "@material-ui/lab/Alert";
 const useStyles = makeStyles((theme: Theme) =>
@@ -55,8 +55,13 @@ export const MyStatus = ({ props }) => {
   }>({
     userData: props
   });
+  const [langState, setLangState] = React.useState<any | null>([]);
   React.useEffect(() => {
     setState({ ...state, userData: props });
+    if (props.language !== null) {
+      const lang = props.language.map(item => item.lang);
+      setLangState(lang);
+    }
   }, [props]);
   return (
     <Grid item xs={2}>
@@ -65,33 +70,39 @@ export const MyStatus = ({ props }) => {
           NO
         </Avatar>
         <Typography variant="h4" component="p" className={classes.typo}>
-          {typeof state.userData !== "undefined" &&state.userData.name}
+          {typeof state.userData !== "undefined" && state.userData.name}
         </Typography>
         <Divider className={classes.divider} component="div" />
         <Typography variant="body1" component="p" className={classes.typo}>
-        {typeof state.userData !== "undefined" &&state.userData.introduction}
+          {typeof state.userData !== "undefined" && state.userData.introduction}
         </Typography>
         <Divider className={classes.divider} component="div" />
         <ChangeMyStatus props={state.userData} />
         <Divider className={classes.divider} component="div" />
         <Grid item className={classes.ff}>
           <Typography variant="body1" component="p">
-            フォロー：{typeof state.userData !== "undefined" &&state.userData.follow}人
+            フォロー：
+            {typeof state.userData !== "undefined" && state.userData.follow}人
           </Typography>
           <Typography variant="body1" component="p" gutterBottom>
-            フォロワー:{typeof state.userData !== "undefined" &&state.userData.follower}人
+            フォロワー:
+            {typeof state.userData !== "undefined" && state.userData.follower}人
           </Typography>
         </Grid>
         <RegularButton label={"フォローする"} />
         <Divider className={classes.divider} component="div" />
-        <Ratings rating={typeof state.userData !== "undefined" &&state.userData.rating} />
+        <Ratings
+          rating={
+            typeof state.userData !== "undefined" && state.userData.rating
+          }
+        />
         <RegularButton label={"評価一覧"} />
         <Divider className={classes.divider} component="div" />
         <Grid item>
           <Typography variant="body1" component="p">
             スキル一覧
           </Typography>
-          <Chips labels={ typeof state.userData !== "undefined" &&state.userData.language} />
+          <Chips labels={langState} />
         </Grid>
       </Paper>
     </Grid>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Dialog, TextField, Divider } from "@material-ui/core";
+import { Dialog, TextField, Divider, IconButton } from "@material-ui/core";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -16,6 +16,8 @@ import { PasswordForm } from "../account/passwordForm";
 import { MailForm } from "../account/mailForm";
 import { UserNameForm } from "../account/userNameForm";
 import { accountDB } from "../../firebase/account";
+import CloseIcon from "@material-ui/icons/Close";
+import { Tags } from "../mdEditor/Tags";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -44,10 +46,17 @@ const useStyles = makeStyles((theme: Theme) =>
     marginTop: {
       marginTop: theme.spacing(1)
     },
-    expansion: { 
-      "&:before":{
-        background: theme.palette.buttonMain.main 
+    expansion: {
+      "&:before": {
+        background: theme.palette.buttonMain.main
       }
+    },
+    closeButton: {
+      position: "absolute",
+      right: 0
+    },
+    dialogWidth: {
+      width: "600px"
     }
   })
 );
@@ -58,6 +67,8 @@ const Transition = React.forwardRef<unknown, TransitionProps>(
 );
 
 export const ChangeMyStatus = ({ props }) => {
+  console.log(props);
+
   const [open, setOpen] = React.useState(false);
   const classes = useStyles();
   const [state, setState] = React.useState<{
@@ -68,6 +79,7 @@ export const ChangeMyStatus = ({ props }) => {
     checkNewPassword: string;
     nowPassword: string;
     introduction: string;
+    language: any;
     faild: string | boolean;
     emailFaild: string | boolean;
     passwordFaild: string | boolean;
@@ -84,6 +96,7 @@ export const ChangeMyStatus = ({ props }) => {
     checkNewPassword: "",
     nowPassword: "",
     introduction: "",
+    language: null,
     faild: "",
     emailFaild: "",
     passwordFaild: "",
@@ -100,8 +113,10 @@ export const ChangeMyStatus = ({ props }) => {
         ...state,
         userName: props.name,
         email: props.email,
-        introduction: props.introduction
+        introduction: props.introduction,
+        language: props.language
       });
+      console.log(props);
     }
   }, [props]);
 
@@ -112,8 +127,6 @@ export const ChangeMyStatus = ({ props }) => {
     return true;
   };
   const passwordValidation = password => {
-    console.log(password.length);
-
     if (password.length < 5) return "6文字以上でパスワードを入力してください";
     return true;
   };
@@ -129,8 +142,8 @@ export const ChangeMyStatus = ({ props }) => {
 
   const stateChange = prop => event => {
     let settingState = {
-      ...state,
-      [prop]: event.target.value
+      ...state
+      // [prop]: event.target.value
     };
     if (prop === "email") {
       settingState = {
@@ -174,17 +187,17 @@ export const ChangeMyStatus = ({ props }) => {
         [prop]: event.target.value,
         introductionFaild: introductionValidation(event.target.value)
       };
+    } else if (prop === "language") {
+      console.log(event);
+      settingState = {
+        ...state,
+        [prop]: event
+        // introductionFaild: introductionValidation(event.target.value)
+      };
     }
     setState(settingState);
   };
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
   const [expanded, setExpanded] = React.useState<string | false>(false);
 
   const handleChange = (panel: string) => (
@@ -193,6 +206,28 @@ export const ChangeMyStatus = ({ props }) => {
   ) => {
     if (false) console.log(event);
     setExpanded(isExpanded ? panel : false);
+  };
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setState({
+      ...state,
+      password: "",
+      newPassword: "",
+      checkNewPassword: "",
+      nowPassword: "",
+      faild: "",
+      emailFaild: "",
+      passwordFaild: "",
+      newPasswordFaild: "",
+      checkNewPasswordFaild: "",
+      nowPasswordFaild: "",
+      checkNameFaild: ""
+    });
+    setExpanded(false);
   };
 
   const updateName = () => {
@@ -249,6 +284,16 @@ export const ChangeMyStatus = ({ props }) => {
         });
     }
   };
+  const updateLanguage = () => {
+    accountDB
+      .updateLanguage(state.language)
+      .then(() => {
+        console.log("success");
+      })
+      .catch(() => {
+        console.log("faild");
+      });
+  };
   return (
     <div>
       <RegularButton label={"設定の変更"} onClick={handleClickOpen} />
@@ -261,7 +306,14 @@ export const ChangeMyStatus = ({ props }) => {
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle id="alert-dialog-slide-title">{"設定の変更"}</DialogTitle>
-        <DialogContent>
+        <IconButton
+          aria-label="close"
+          className={classes.closeButton}
+          onClick={handleClose}
+        >
+          <CloseIcon fontSize="large" />
+        </IconButton>
+        <DialogContent className={classes.dialogWidth}>
           <DialogContentText id="alert-dialog-slide-description">
             ユーザの情報やスキルの登録ができます。
           </DialogContentText>
@@ -394,10 +446,14 @@ export const ChangeMyStatus = ({ props }) => {
           </ExpansionPanelSummary>
           <ExpansionPanelDetails className={classes.detail}>
             <Divider className={classes.divider} component="div" />
-            <Typography>
-              Nunc vitae orci ultricies, auctor nunc in, volutpat nisl. Integer
-              sit amet egestas eros, vitae egestas augue. Duis vel est augue.
-            </Typography>
+            {typeof props !== "undefined" && props.language !== null && (
+              <Tags
+                maxVal={10}
+                handleChange={stateChange("language")}
+                tags={props.language}
+              />
+            )}
+            <RegularButton label={"変更する"} onClick={updateLanguage} />
           </ExpansionPanelDetails>
         </ExpansionPanel>
       </Dialog>

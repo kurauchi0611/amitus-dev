@@ -72,7 +72,7 @@ const Index = ({ props }) => {
     createdAt: null,
     email: "",
     introduction: "",
-    language: [],
+    language: null,
     name: "",
     photoURL: "",
     rating: 1,

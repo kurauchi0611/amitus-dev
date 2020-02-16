@@ -32,7 +32,7 @@ const Index = ({ props }) => {
     userData: any;
   }>({
     title: "",
-    tags: null,
+    tags: [],
     text: sampleMoji,
     index: 0,
     userData: props
@@ -56,6 +56,8 @@ const Index = ({ props }) => {
         ...state,
         [name]: tagsArray
       });
+      console.log(tagsArray);
+      
     } else if (name === "index") {
       setState({
         ...state,
@@ -124,7 +126,7 @@ const Index = ({ props }) => {
           variant="outlined"
           value={state.title}
         />
-        <Tags handleChange={handleChange("tags")} />
+        <Tags handleChange={handleChange("tags")} tags={state.tags}/>
         <MarkDownEditor handleChange={handleChange("text")} text={state.text} />
         {typeof state.userData !== "undefined" && state.userData !== null && (
           <SendButton

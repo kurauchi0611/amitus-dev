@@ -31,7 +31,7 @@ export const Chips = ({ labels, }) => {
   }, [labels]);
   return (
     <div className={classes.root}>
-      {typeof state !== "undefined" &&
+      {typeof state !== "undefined" &&state!==null&&
         state.map((element,index) => {
           return <Chip key={index} className={classes.chip} label={element} />;
         })}

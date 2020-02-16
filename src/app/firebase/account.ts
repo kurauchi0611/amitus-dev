@@ -137,6 +137,19 @@ export const accountDB = {
     }
     return false;
   },
+  updateLanguage: async lang => {
+    const userinfo = auth.currentUser;
+    if (userinfo) {
+      const updateLanguage = await user.doc(userinfo.uid).set(
+        {
+          language: lang
+        },
+        { merge: true }
+      );
+      return updateLanguage;
+    }
+    return false;
+  },
 };
 
 

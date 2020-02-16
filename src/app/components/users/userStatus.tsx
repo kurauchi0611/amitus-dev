@@ -54,8 +54,13 @@ export const UserStatus = ({ props }) => {
   }>({
     userData: props
   });
+  const [langState, setLangState] = React.useState<any | null>([]);
   React.useEffect(() => {
     setState({ ...state, userData: props });
+    if (props.language !== null) {
+      const lang = props.language.map(item => item.lang);
+      setLangState(lang);
+    }
   }, [props]);
   const check = () => {
     console.log(state.userData);
@@ -93,7 +98,7 @@ export const UserStatus = ({ props }) => {
           <Typography variant="body1" component="p">
             スキル一覧
           </Typography>
-          <Chips labels={ typeof state.userData !== "undefined" &&state.userData.language} />
+          <Chips labels={langState} />
         </Grid>
       </Paper>
     </Grid>

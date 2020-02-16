@@ -16,37 +16,38 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     tagColor: {
       background: theme.palette.buttonMain.main,
-      color:"#fff",
+      color: "#fff",
       marginRight: theme.spacing(1)
     }
   })
 );
 
-export const Tags = ({ handleChange }) => {
+export const Tags = ({ handleChange, maxVal, tags }) => {
   const classes = useStyles();
-  const[lang,setLang]=React.useState();
+  const [lang, setLang] = React.useState();
   React.useEffect(() => {
-    const langList:any=localStorage.getItem("langList");
+    const langList: any = localStorage.getItem("langList");
     setLang(JSON.parse(langList));
   }, []);
-
+  const [defaultLang,setDefaultLang]=React.useState(tags);
+  React.useEffect(() => {
+    setDefaultLang(tags);
+  }, [])
   const [isUse, setIsUse] = React.useState(false);
   const [unClose, setUnClose] = React.useState(true);
   const set = (event, value) => {
-    if (value.length > 3) {
+    handleChange(value);
+    if (value.length > maxVal - 2) {
       setUnClose(false);
     } else {
       setUnClose(true);
     }
-    if (value.length > 4) {
+    if (value.length > maxVal - 1) {
       setIsUse(true);
     } else {
       setIsUse(false);
     }
-    handleChange(value);
-    console.log(event);
-    console.log(value);
-    
+    if(false)console.log(event);
   };
 
   return (
@@ -58,6 +59,7 @@ export const Tags = ({ handleChange }) => {
         options={lang}
         getOptionLabel={option => option.lang}
         filterSelectedOptions={true}
+        defaultValue={defaultLang}
         disableCloseOnSelect={unClose}
         disabled={isUse}
         renderTags={(value, getTagProps) =>
@@ -74,7 +76,7 @@ export const Tags = ({ handleChange }) => {
           <TextField
             {...params}
             variant="outlined"
-            label="関連するタグ名を選択・入力してください。（5つまで）"
+            label={`関連するタグ名を選択・入力してください。（${maxVal}個まで）`}
             placeholder="language"
             fullWidth
           />
@@ -82,6 +84,11 @@ export const Tags = ({ handleChange }) => {
       />
     </div>
   );
+};
+
+Tags.defaultProps = {
+  handleChange: null,
+  maxVal: 5,
 };
 
 // Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
