@@ -30,8 +30,8 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingRight: theme.spacing(5)
     },
     title: { background: "#fff", marginBottom: theme.spacing(1) },
-    userInfo: { width: "30%", display: "flex", alignItems: "center" },
-    timestamp: { fontSize: ".8rem", width: "500px" },
+    userInfo: { width: "100%", display: "flex", alignItems: "center" },
+    timestamp: { fontSize: ".8rem", width: "500px",marginLeft:theme.spacing(2) },
     commentWrap: {
       background: "#fff",
       marginTop: theme.spacing(3),
