@@ -7,9 +7,9 @@ import theme from "../themes/theme";
 import "react-mde/lib/styles/css/react-mde-all.css";
 import Alert from "@material-ui/lab/Alert";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
-import "../components/croppie/croppie.css"
+import "../components/croppie/croppie.css";
 import { auth, db } from "../firebase/firebase";
-
+import { DMWindow } from "../components/chat/chatwrap";
 // function MyApp({ Component, pageProps }) {
 //   return <Component {...pageProps} />
 // }
@@ -28,6 +28,8 @@ const MyApp = ({ Component }) => {
   const [isUser, setIsUser] = React.useState();
   const [success, setSuccess] = React.useState();
   const [successOpen, setSuccessOpen] = React.useState(false);
+  const [dMopen, setDMopen] = React.useState(false);
+  const [dMMember, setDMMember] = React.useState<string|null>(null);
   React.useEffect(() => {
     return auth.onAuthStateChanged(async user => {
       if (user) {
@@ -57,7 +59,7 @@ const MyApp = ({ Component }) => {
       }
     });
   }, []);
-  // const [localLang,setLocalLang] = React.useState();
+  // const [localLang, setLocalLang] = React.useState();
   React.useEffect(() => {
     const cleanup = async () => {
       if (localStorage.getItem("langList") === null) {
@@ -74,9 +76,18 @@ const MyApp = ({ Component }) => {
     };
     cleanup();
   }, []);
+  const handleDMOpen = () => {
+    setDMopen(true);
+  };
+  const handleDMClose = () => {
+    setDMopen(false);
+  };
   const successHandleClose = () => {
     setSuccessOpen(false);
   };
+  const handleDMMember=(member)=>{
+    setDMMember(member)
+  }
   return (
     <div>
       <Head>
@@ -84,8 +95,9 @@ const MyApp = ({ Component }) => {
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <MenuAppBar user={isUser} />
-        <Component props={isUser} />
+        <MenuAppBar user={isUser} dm={{handleDMOpen:handleDMOpen, handleDMClose: handleDMClose,dMopen:dMopen,handleDMMember:handleDMMember}} />
+        <Component props={isUser} dm={{handleDMOpen:handleDMOpen, handleDMClose: handleDMClose,dMopen:dMopen,handleDMMember:handleDMMember}}/>
+        {dMopen && <DMWindow dm={{handleDMOpen:handleDMOpen, handleDMClose: handleDMClose,dMopen:dMopen,user:isUser}} member={dMMember} />}
       </ThemeProvider>
       <Snackbar
         autoHideDuration={2000}

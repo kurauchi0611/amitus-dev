@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const UserStatus = ({ props }) => {
+export const UserStatus = ({ props,dm }) => {
   const classes = useStyles();
   // const router = useRouter();
   const [state, setState] = React.useState<{
@@ -62,17 +62,23 @@ export const UserStatus = ({ props }) => {
       setLangState(lang);
     }
   }, [props]);
-  const check = () => {
-    console.log(state.userData);
+
+  const toggleDM = () => {
+    if (!dm.dMopen) {
+      dm.handleDMMember(state.userData.uid)
+      return dm.handleDMOpen;
+    }
+    else return dm.handleDMClose;
   };
+
   return (
     <Grid item xs={2}>
       <Paper className={classes.paper + " " + classes.status} elevation={6}>
-      {typeof state.userData !== "undefined" && state.userData.photoURL && (
+        {typeof state.userData !== "undefined" && state.userData.photoURL && (
           <Avatar
             variant="square"
             className={classes.avatar}
-            alt={state.userData.name}
+            alt={state.userData.displayName}
             src={state.userData.photoURL}
           />
         )}
@@ -83,26 +89,32 @@ export const UserStatus = ({ props }) => {
             </Avatar>
           )}
         <Typography variant="h4" component="p" className={classes.typo}>
-          {typeof state.userData !== "undefined" &&state.userData.name}
+          {typeof state.userData !== "undefined" && state.userData.name}
         </Typography>
         <Divider className={classes.divider} component="div" />
         <Typography variant="body1" component="p" className={classes.typo}>
-        {typeof state.userData !== "undefined" &&state.userData.introduction}
+          {typeof state.userData !== "undefined" && state.userData.introduction}
         </Typography>
         <Divider className={classes.divider} component="div" />
-        <RegularButton label={"DMを送る"} onClick={check} />
+        <RegularButton label={"DMを送る"} onClick={toggleDM()}/>
         <Divider className={classes.divider} component="div" />
         <Grid item className={classes.ff}>
           <Typography variant="body1" component="p">
-            フォロー：{typeof state.userData !== "undefined" &&state.userData.follow}人
+            フォロー：
+            {typeof state.userData !== "undefined" && state.userData.follow}人
           </Typography>
           <Typography variant="body1" component="p" gutterBottom>
-            フォロワー:{typeof state.userData !== "undefined" &&state.userData.follower}人
+            フォロワー:
+            {typeof state.userData !== "undefined" && state.userData.follower}人
           </Typography>
         </Grid>
         <RegularButton label={"フォローする"} />
         <Divider className={classes.divider} component="div" />
-        <Ratings rating={typeof state.userData !== "undefined" &&state.userData.rating} />
+        <Ratings
+          rating={
+            typeof state.userData !== "undefined" && state.userData.rating
+          }
+        />
         <RegularButton label={"評価一覧"} />
         <Divider className={classes.divider} component="div" />
         <Grid item>

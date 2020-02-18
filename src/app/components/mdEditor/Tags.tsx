@@ -21,18 +21,22 @@ const useStyles = makeStyles((theme: Theme) =>
     }
   })
 );
-
-export const Tags = ({ handleChange, maxVal, tags }) => {
+interface Myprops {
+  handleChange?: any|null;
+  maxVal:number;
+  tags?:any|null;
+}
+export const Tags = ({ handleChange, maxVal, tags }:Myprops) => {
   const classes = useStyles();
   const [lang, setLang] = React.useState();
   React.useEffect(() => {
     const langList: any = localStorage.getItem("langList");
     setLang(JSON.parse(langList));
   }, []);
-  const [defaultLang,setDefaultLang]=React.useState(tags);
+  const [defaultLang, setDefaultLang] = React.useState(tags);
   React.useEffect(() => {
     setDefaultLang(tags);
-  }, [])
+  }, []);
   const [isUse, setIsUse] = React.useState(false);
   const [unClose, setUnClose] = React.useState(true);
   const set = (event, value) => {
@@ -47,7 +51,7 @@ export const Tags = ({ handleChange, maxVal, tags }) => {
     } else {
       setIsUse(false);
     }
-    if(false)console.log(event);
+    if (false) console.log(event);
   };
 
   return (
@@ -86,9 +90,9 @@ export const Tags = ({ handleChange, maxVal, tags }) => {
   );
 };
 
-Tags.defaultProps = {
+Tags.defaultProps= {
   handleChange: null,
-  maxVal: 5,
+  maxVal: 5
 };
 
 // Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top

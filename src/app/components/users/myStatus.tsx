@@ -70,7 +70,7 @@ export const MyStatus = ({ props }) => {
           <Avatar
             variant="square"
             className={classes.avatar}
-            alt={state.userData.name}
+            alt={state.userData.displayName}
             src={state.userData.photoURL}
           />
         )}

@@ -171,7 +171,8 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const MenuAppBar = ({ user }) => {
+export const MenuAppBar = ({ user, dm }) => {
+
   const [state, setState] = React.useState<{
     searchType: string;
     searchValue: string;
@@ -245,7 +246,7 @@ export const MenuAppBar = ({ user }) => {
       className={classes.ajustTop}
     >
       <MenuItem>
-        <UserInfo userInfo={user}/>
+        <UserInfo userInfo={user} />
       </MenuItem>
       <MenuItem onClick={handleMenuClose} className={classes.paddingNone}>
         <LinkWrap href="/mypage" passHref>
@@ -331,6 +332,11 @@ export const MenuAppBar = ({ user }) => {
     </Menu>
   );
 
+  const toggleDM = () => {
+    if (!dm.dMopen) return dm.handleDMOpen;
+    else return dm.handleDMClose;
+  };
+
   return (
     <div className={classes.grow}>
       <AppBar position="fixed">
@@ -399,9 +405,13 @@ export const MenuAppBar = ({ user }) => {
           <div className={classes.grow} />
           {/* デスクトップ用通知とか */}
           <div className={classes.sectionDesktop}>
-            {(typeof user !== "undefined" && user !== null) && (
+            {typeof user !== "undefined" && user !== null && (
               <div>
-                <IconButton aria-label="show 4 new mails" color="inherit">
+                <IconButton
+                  aria-label="show 4 new mails"
+                  color="inherit"
+                  onClick={toggleDM()}
+                >
                   <Badge badgeContent={100} color="primary">
                     <MailIcon />
                   </Badge>
@@ -426,7 +436,7 @@ export const MenuAppBar = ({ user }) => {
                 </IconButton>
               </div>
             )}
-            {(typeof user !== "undefined" && user === null) && (
+            {typeof user !== "undefined" && user === null && (
               <div className={classes.flex}>
                 <RegistForm label={"新規登録"}></RegistForm>
                 <LoginForm label={"ログイン"}></LoginForm>

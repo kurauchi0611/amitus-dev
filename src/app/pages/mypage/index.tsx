@@ -93,7 +93,7 @@ const Index = ({ props }) => {
             email: userData.email,
             introduction: userData.introduction,
             language: userData.language,
-            name: userData.name,
+            name: userData.displayName,
             photoURL: userData.photoURL,
             rating: userData.rating,
             follow: userData.follow,

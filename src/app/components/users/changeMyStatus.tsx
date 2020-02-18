@@ -145,7 +145,7 @@ export const ChangeMyStatus = ({ props }) => {
     if (typeof props !== "undefined") {
       setState({
         ...state,
-        userName: props.name,
+        userName: props.displayName,
         email: props.email,
         introduction: props.introduction,
         language: props.language

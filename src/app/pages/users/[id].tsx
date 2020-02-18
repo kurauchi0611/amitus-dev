@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Index = ({ props }) => {
+const Index = ({ props,dm }) => {
   if(false)console.log(props);
   const classes = useStyles();
   const router = useRouter();
@@ -93,7 +93,7 @@ const Index = ({ props }) => {
             email: userData.email,
             introduction: userData.introduction,
             language: userData.language,
-            name: userData.name,
+            name: userData.displayName,
             photoURL: userData.photoURL,
             rating: userData.rating,
             follow: userData.follow,
@@ -110,7 +110,7 @@ const Index = ({ props }) => {
       <CssBaseline />
       <Container maxWidth="xl" className={classes.margin}>
         <Grid container spacing={3}>
-          <UserStatus props={userState} />
+          <UserStatus props={userState} dm={dm}/>
           <UserContent props={userState} />
         </Grid>
       </Container>
