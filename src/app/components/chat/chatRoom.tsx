@@ -86,18 +86,23 @@ export const ChatRoom = ({ roomId, myUid }) => {
         setTalkData(talkArray);
       });
   }, [roomId]);
+
   const classes = useStyles();
 
   const handleChange = event => {
     setMessage(event.target.value);
   };
-
+  const keyPress = e => {
+    console.log(e.which);
+    if (e.which == 13) postMessage();
+  };
   const postMessage = () => {
     if (message !== "") {
       chatDB
         .postMessage(roomId, myUid, message)
         .then(() => {
           console.log("success");
+          setMessage("");
         })
         .catch(() => {
           console.log("error");
@@ -158,10 +163,13 @@ export const ChatRoom = ({ roomId, myUid }) => {
             </IconButton>
           </label>
           <InputBase
+            autoFocus={true}
             className={classes.input}
             placeholder="メッセージ"
             inputProps={{ "aria-label": "search google maps" }}
             onChange={handleChange}
+            value={message}
+            onKeyDown={e => keyPress(e)}
           />
           <IconButton
             className={classes.iconButton}
