@@ -121,6 +121,15 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
   const [talkData, setTalkData] = React.useState<any | null>(null);
   const [message, setMessage] = React.useState<string>("");
   React.useEffect(() => {
+    function scrollBottom(){
+      var elm:any|null = document.getElementById('height');
+      var winHeight = elm.scrollHeight - elm.clientHeight;
+      elm.scroll(0, winHeight);
+      console.log(elm);
+      console.log(winHeight);
+      
+      
+    }
     db.collection("talks")
       .doc(roomId)
       .collection("talk")
@@ -131,6 +140,7 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
           talkArray[index] = doc.data();
         });
         setTalkData(talkArray);
+        scrollBottom();
       });
   }, [roomId]);
 

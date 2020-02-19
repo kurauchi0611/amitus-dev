@@ -217,7 +217,7 @@ export const DMWindow = ({ dm, member }) => {
                 ))}
             </List>
           </Drawer>
-          <CardContent className={classes.margin} onClick={handleDrawerClose}>
+          <CardContent className={classes.margin} id="height" onClick={handleDrawerClose}>
             {talkId !== null && (
               <ChatRoom roomId={talkId} myUid={dm.user.uid} userData={dMUserData}/>
             )}
