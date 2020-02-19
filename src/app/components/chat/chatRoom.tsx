@@ -75,7 +75,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const ChatRoom = ({ roomId, myUid ,userData}) => {
+export const ChatRoom = ({ roomId, myUid, userData }) => {
   const [talkData, setTalkData] = React.useState<any | null>(null);
   const [message, setMessage] = React.useState<string>("");
   React.useEffect(() => {
@@ -98,7 +98,6 @@ export const ChatRoom = ({ roomId, myUid ,userData}) => {
     setMessage(event.target.value);
   };
   const keyPress = e => {
-    console.log(e.which);
     if (e.which == 13) postMessage();
   };
   const postMessage = () => {
@@ -107,11 +106,11 @@ export const ChatRoom = ({ roomId, myUid ,userData}) => {
         .postMessage(roomId, myUid, message)
         .then(() => {
           console.log("success");
-          setMessage("");
         })
         .catch(() => {
           console.log("error");
         });
+      setMessage("");
     }
   };
   const displayChat = (doc, index) => {
@@ -162,12 +161,12 @@ export const ChatRoom = ({ roomId, myUid ,userData}) => {
     return (
       <Box className={classes.chatBox} key={index}>
         {/* 画像入れる */}
-        {userData!==null&&userData.photoURL===null&&
-        <Avatar>{userData.displayName}</Avatar>
-        }
-        {userData!==null&&userData.photoURL!==null&&
-        <Avatar src={userData.photoURL} />
-        }
+        {userData !== null && userData.photoURL === null && (
+          <Avatar>{userData.displayName}</Avatar>
+        )}
+        {userData !== null && userData.photoURL !== null && (
+          <Avatar src={userData.photoURL} />
+        )}
         <Paper elevation={2} className={classes.chatTextArea}>
           {message}
         </Paper>
