@@ -1,6 +1,7 @@
 import React from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import {
+  Dialog,
   Box,
   Container,
   Paper,
@@ -9,13 +10,16 @@ import {
   InputBase,
   Divider,
   Avatar,
-  Link
+  Link,
+  DialogContent,
+  Button
 } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { db } from "../../firebase/firebase";
 import PhotoCamera from "@material-ui/icons/PhotoCamera";
 import SendIcon from "@material-ui/icons/Send";
 import { chatDB } from "../../firebase/chat";
+import { RegularButton } from "../regularButton";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -69,8 +73,46 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: "flex-end"
     },
     img: {
-      width: "100%",
+      maxWidth: "100%",
       height: "auto"
+    },
+    buttonCancel: {
+      background: theme.palette.buttonCancel.main,
+      boxShadow: `0 3px 5px 2px ${theme.palette.buttonCancel.dark}`,
+      marginLeft: theme.spacing(4)
+    },
+    flexRow: {
+      display: "flex",
+      flexFlow: "row",
+      justifyContent: "space-around",
+      maxHeight: "100%",
+      width: "100%"
+    },
+    buttonMain: {
+      minWidth: theme.spacing(10),
+      maxWidth: theme.spacing(40),
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
+      fontSize: "1rem",
+      background: theme.palette.buttonCancel.main,
+      boxShadow: `0 3px 5px 2px ${theme.palette.buttonCancel.dark}`,
+      borderRadius: 3,
+      border: 0,
+      color: "white",
+      height: 35,
+      padding: "0 20px",
+      display: "flex"
+    },
+    postImage: {
+      width: "90%",
+      height: "auto"
+    },
+    imgWrap: {
+      display: "flex",
+      flexFlow: "column",
+      justifyContent: "center",
+      overflow: "hidden",
+      alignItems: "center"
     }
   })
 );
@@ -173,6 +215,38 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
       </Box>
     );
   };
+
+  const [openImage, setOpenImage] = React.useState(false);
+  const [fileData, setFileData] = React.useState<any | null>(null);
+  // const [complate, setComplate] = React.useState(false);
+  const handleCloseImage = () => {
+    setOpenImage(false);
+  };
+  // console.log(croppie);
+  const handleChangeFile = e => {
+    const createObjectURL = (window.URL || window.webkitURL).createObjectURL;
+    const target = e.target;
+    const file = target.files.item(0);
+    // setComplate(true);
+    const upimg = createObjectURL(file);
+    setFileData(upimg);
+    setOpenImage(true);
+  };
+
+  const updateImage = () => {
+    // const image = fileData.result({ type: "blob" });
+    console.log();
+
+    // chatDB
+    //   .updateImage(image)
+    //   .then(() => {
+    //     setOpenImage(false);
+    //   })
+    //   .catch(err => {
+    //     console.log(err);
+    //   });
+  };
+
   return (
     <React.Fragment>
       <CssBaseline />
@@ -191,6 +265,7 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
             className={classes.imageInput}
             id="icon-button-file"
             type="file"
+            onChange={event => handleChangeFile(event)}
           />
           <label htmlFor="icon-button-file">
             <IconButton
@@ -218,6 +293,26 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
             <SendIcon />
           </IconButton>
         </Paper>
+
+        <Dialog
+          container={() => document.querySelector(".move")}
+          open={openImage}
+          keepMounted
+          onClose={handleCloseImage}
+          aria-labelledby="alert-dialog-slide-title"
+          aria-describedby="alert-dialog-slide-description"
+          // children={Container}
+        >
+          <DialogContent className={classes.imgWrap}>
+            <img src={fileData} className={classes.postImage} />
+            <div className={classes.flexRow}>
+              <RegularButton label={"送信する"} onClick={updateImage} />
+              <Button className={classes.buttonMain} onClick={handleCloseImage}>
+                キャンセル
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </Container>
     </React.Fragment>
   );
