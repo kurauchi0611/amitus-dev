@@ -218,33 +218,38 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
 
   const [openImage, setOpenImage] = React.useState(false);
   const [fileData, setFileData] = React.useState<any | null>(null);
+  const [file, setFile] = React.useState<any | null>(null);
   // const [complate, setComplate] = React.useState(false);
   const handleCloseImage = () => {
     setOpenImage(false);
   };
+
   // console.log(croppie);
   const handleChangeFile = e => {
     const createObjectURL = (window.URL || window.webkitURL).createObjectURL;
     const target = e.target;
     const file = target.files.item(0);
-    // setComplate(true);
+    console.log(file);
+    
     const upimg = createObjectURL(file);
     setFileData(upimg);
+    setFile(file)
     setOpenImage(true);
+    target.value = null;
   };
 
   const updateImage = () => {
     // const image = fileData.result({ type: "blob" });
-    console.log();
-
-    // chatDB
-    //   .updateImage(image)
-    //   .then(() => {
-    //     setOpenImage(false);
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //   });
+    console.log(fileData);
+    console.log(file);
+    chatDB
+      .postImage(roomId,myUid,file)
+      .then(() => {
+        setOpenImage(false);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   return (
