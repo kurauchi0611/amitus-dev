@@ -8,7 +8,8 @@ import {
   IconButton,
   InputBase,
   Divider,
-  Avatar
+  Avatar,
+  Link
 } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { db } from "../../firebase/firebase";
@@ -66,11 +67,15 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       alignItems: "center",
       justifyContent: "flex-end"
+    },
+    img: {
+      width: "100%",
+      height: "auto"
     }
   })
 );
 
-export const ChatRoom = ({ roomId, myUid }) => {
+export const ChatRoom = ({ roomId, myUid ,userData}) => {
   const [talkData, setTalkData] = React.useState<any | null>(null);
   const [message, setMessage] = React.useState<string>("");
   React.useEffect(() => {
@@ -115,21 +120,56 @@ export const ChatRoom = ({ roomId, myUid }) => {
     } else return yourTemplate(doc, index);
   };
   const myTemplate = (doc, index) => {
+    let message = doc.message;
+    if (doc.type === "link") {
+      message = (
+        <Link href={doc.message} target="_blank" rel="noopener">
+          {doc.message}
+        </Link>
+      );
+    }
+    if (doc.type === "image") {
+      message = (
+        <Link href={doc.message} target="_blank" rel="noopener">
+          <img src={doc.message} className={classes.img} />
+        </Link>
+      );
+    }
     return (
       <Box className={classes.chatBox2} key={index}>
         <Paper elevation={2} className={classes.chatTextArea}>
-          {doc.message}
+          {message}
         </Paper>
       </Box>
     );
   };
   const yourTemplate = (doc, index) => {
+    let message = doc.message;
+    if (doc.type === "link") {
+      message = (
+        <Link href={doc.message} target="_blank" rel="noopener">
+          {doc.message}
+        </Link>
+      );
+    }
+    if (doc.type === "image") {
+      message = (
+        <Link href={doc.message} target="_blank" rel="noopener">
+          <img src={doc.message} />
+        </Link>
+      );
+    }
     return (
       <Box className={classes.chatBox} key={index}>
         {/* 画像入れる */}
-        <Avatar>hoge</Avatar>
+        {userData!==null&&userData.photoURL===null&&
+        <Avatar>{userData.displayName}</Avatar>
+        }
+        {userData!==null&&userData.photoURL!==null&&
+        <Avatar src={userData.photoURL} />
+        }
         <Paper elevation={2} className={classes.chatTextArea}>
-          {doc.message}
+          {message}
         </Paper>
       </Box>
     );

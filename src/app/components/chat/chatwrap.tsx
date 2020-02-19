@@ -118,6 +118,7 @@ export const DMWindow = ({ dm, member }) => {
   const [talkList, setTalkList] = React.useState<any | null>(null);
   const [talkId, setTalkId] = React.useState<string | null>(null);
   const [dMUserName, setDMUserName] = React.useState<string | null>(null);
+  const [dMUserData, setDMUserData] = React.useState<string | null>(null);
   React.useEffect(() => {
     db.collection("talks")
       .where("member", "array-contains", `${dm.user.uid}`)
@@ -153,6 +154,7 @@ export const DMWindow = ({ dm, member }) => {
   const getTalks = data => {
     setTalkId(data.roomId);
     setDMUserName(data.displayName);
+    setDMUserData(data);
     console.log(data.roomId);
     console.log(talkId);
     handleDrawerClose();
@@ -216,7 +218,9 @@ export const DMWindow = ({ dm, member }) => {
             </List>
           </Drawer>
           <CardContent className={classes.margin} onClick={handleDrawerClose}>
-            {talkId !== null && <ChatRoom roomId={talkId} myUid={dm.user.uid}/>}
+            {talkId !== null && (
+              <ChatRoom roomId={talkId} myUid={dm.user.uid} userData={dMUserData}/>
+            )}
           </CardContent>
         </Card>
       </Draggable>
