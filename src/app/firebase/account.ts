@@ -88,7 +88,7 @@ export const accountDB = {
           const updateEmail = await user.doc(userinfo.uid).set(
             {
               email: newEmail,
-              updateAt: FieldValue.serverTimestamp()
+              updatedAt: FieldValue.serverTimestamp()
             },
             { merge: true }
           );
@@ -129,7 +129,8 @@ export const accountDB = {
     if (userinfo) {
       const updateIntroduction = await user.doc(userinfo.uid).set(
         {
-          introduction: text
+          introduction: text,
+          updatedAt: FieldValue.serverTimestamp()
         },
         { merge: true }
       );
@@ -142,7 +143,8 @@ export const accountDB = {
     if (userinfo) {
       const updateLanguage = await user.doc(userinfo.uid).set(
         {
-          language: lang
+          language: lang,
+          updatedAt: FieldValue.serverTimestamp()
         },
         { merge: true }
       );

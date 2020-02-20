@@ -20,6 +20,7 @@ import PhotoCamera from "@material-ui/icons/PhotoCamera";
 import SendIcon from "@material-ui/icons/Send";
 import { chatDB } from "../../firebase/chat";
 import { RegularButton } from "../regularButton";
+import { MediaCard } from "./ogpTemplate";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -59,17 +60,16 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     chatBox: {
       display: "flex",
-      alignItems: "center"
+      alignItems: "flex-end"
     },
     chatTextArea: {
       margin: theme.spacing(2),
+      marginBottom: 0,
       padding: theme.spacing(1),
       borderRadius: "15px",
       maxWidth: "250px"
     },
-    chatBox2: {
-      display: "flex",
-      alignItems: "center",
+    myChatBox: {
       justifyContent: "flex-end"
     },
     img: {
@@ -113,6 +113,13 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: "center",
       overflow: "hidden",
       alignItems: "center"
+    },
+    flexAnchor:{
+      display:"flex"
+    },
+    paddingImg:{
+      padding:0,
+      overflow:"hidden"
     }
   })
 );
@@ -121,15 +128,11 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
   const [talkData, setTalkData] = React.useState<any | null>(null);
   const [message, setMessage] = React.useState<string>("");
   React.useEffect(() => {
-    function scrollBottom(){
-      var elm:any|null = document.getElementById('height');
+    const scrollBottom = () => {
+      var elm: any | null = document.getElementById("height");
       var winHeight = elm.scrollHeight - elm.clientHeight;
       elm.scroll(0, winHeight);
-      console.log(elm);
-      console.log(winHeight);
-      
-      
-    }
+    };
     db.collection("talks")
       .doc(roomId)
       .collection("talk")
@@ -167,61 +170,49 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
   };
   const displayChat = (doc, index) => {
     if (doc.uid === myUid) {
-      return myTemplate(doc, index);
-    } else return yourTemplate(doc, index);
+      return template("me", doc, index);
+    } else return template("you", doc, index);
   };
-  const myTemplate = (doc, index) => {
-    let message = doc.message;
-    if (doc.type === "link") {
-      message = (
-        <Link href={doc.message} target="_blank" rel="noopener">
-          {doc.message}
-        </Link>
-      );
-    }
-    if (doc.type === "image") {
-      message = (
-        <Link href={doc.message} target="_blank" rel="noopener">
-          <img src={doc.message} className={classes.img} />
-        </Link>
-      );
-    }
+  const isLink = message => {
     return (
-      <Box className={classes.chatBox2} key={index}>
-        <Paper elevation={2} className={classes.chatTextArea}>
-          {message}
-        </Paper>
-      </Box>
+      <Link href={message} target="_blank" rel="noopener">
+        {message}
+      </Link>
     );
   };
-  const yourTemplate = (doc, index) => {
+  const isImage = message => {
+    return (
+      <Link href={message} target="_blank" rel="noopener" className={classes.flexAnchor}>
+        <img src={message} className={classes.img} />
+      </Link>
+    );
+  };
+  const template = (who, doc, index) => {
     let message = doc.message;
     if (doc.type === "link") {
-      message = (
-        <Link href={doc.message} target="_blank" rel="noopener">
-          {doc.message}
-        </Link>
-      );
+      message = isLink(message);
     }
     if (doc.type === "image") {
-      message = (
-        <Link href={doc.message} target="_blank" rel="noopener">
-          <img src={doc.message} />
-        </Link>
-      );
+      message = isImage(message);
     }
     return (
-      <Box className={classes.chatBox} key={index}>
+      <Box
+        className={classes.chatBox + ` ${who !== "you" && classes.myChatBox}`}
+        key={index}
+      >
         {/* 画像入れる */}
-        {userData !== null && userData.photoURL === null && (
+        {who === "you" && userData !== null && userData.photoURL === null && (
           <Avatar>{userData.displayName}</Avatar>
         )}
-        {userData !== null && userData.photoURL !== null && (
+        {who === "you" && userData !== null && userData.photoURL !== null && (
           <Avatar src={userData.photoURL} />
         )}
-        <Paper elevation={2} className={classes.chatTextArea}>
-          {message}
-        </Paper>
+        {doc.type !== "ogp" && (
+          <Paper elevation={2} className={classes.chatTextArea+` ${doc.type === "image"&&classes.paddingImg}`}>
+            {message}
+          </Paper>
+        )}
+        {doc.type === "ogp" && <MediaCard message={message} />}
       </Box>
     );
   };
@@ -240,10 +231,10 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
     const target = e.target;
     const file = target.files.item(0);
     console.log(file);
-    
+
     const upimg = createObjectURL(file);
     setFileData(upimg);
-    setFile(file)
+    setFile(file);
     setOpenImage(true);
     target.value = null;
   };
@@ -253,7 +244,7 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
     console.log(fileData);
     console.log(file);
     chatDB
-      .postImage(roomId,myUid,file)
+      .postImage(roomId, myUid, file)
       .then(() => {
         setOpenImage(false);
       })
@@ -274,6 +265,7 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
               return displayChat(doc, index);
             })}
         </Box>
+        {/* 入力欄 */}
         <Paper component="div" className={classes.roots} elevation={8}>
           <input
             accept="image/*"

@@ -1,19 +1,12 @@
-import { db, FieldValue, functions,talkStorage } from "./firebase";
+import { db, FieldValue, talkStorage } from "./firebase";
 
 const talks = db.collection("talks");
 const user = db.collection("user");
-const ogpParser = functions.httpsCallable("ogpParser");
+// const ogpParser = functions.httpsCallable("ogpParser");
 export const chatDB = {
   postMessage: async (roomId, uid, message) => {
     let type = "string";
-    if (isUrl(message)) {
-      type = "link";
-      await ogpParser(message).then(res => {
-        if (res.data[0] === "ogp") {
-          message = [res.data[1], res.data[2], res.data[3], res.data[4]];
-        }
-      });
-    }
+    if (isUrl(message)) type = "link";
     // urlの識別追加する。
     return talks
       .doc(roomId)
@@ -27,32 +20,39 @@ export const chatDB = {
         type: type
       });
   },
-  postImage:async (roomId, uid, file)=>{
+  postImage: async (roomId, uid, file) => {
     console.log(roomId);
     console.log(uid);
     console.log(file);
-    const type=file.name.split('.');
-    const uploadName =`${roomId}-${uid}-${generateUuid()}.${type[type.length-1]}`;
+    const type = file.name.split(".");
+    const uploadName = `${roomId}-${uid}-${generateUuid()}.${
+      type[type.length - 1]
+    }`;
     console.log(uploadName);
-    talkStorage.ref()
-    .child(`talkImages/${uploadName}`)
-    .put(file).then(snapshot=>{
-      console.log(snapshot);
-      talkStorage.ref()
-    .child(`talkImages/${uploadName}`).getDownloadURL().then((url)=>{
-      return talks
-        .doc(roomId)
-        .collection("talk")
-        .doc()
-        .set({
-          message: url,
-          user: user.doc(uid),
-          uid: uid,
-          createdAt: FieldValue.serverTimestamp(),
-          type: "image"
-        });
-    })
-    })
+    talkStorage
+      .ref()
+      .child(`talkImages/${uploadName}`)
+      .put(file)
+      .then(snapshot => {
+        console.log(snapshot);
+        talkStorage
+          .ref()
+          .child(`talkImages/${uploadName}`)
+          .getDownloadURL()
+          .then(url => {
+            return talks
+              .doc(roomId)
+              .collection("talk")
+              .doc()
+              .set({
+                message: url,
+                user: user.doc(uid),
+                uid: uid,
+                createdAt: FieldValue.serverTimestamp(),
+                type: "image"
+              });
+          });
+      });
   }
 };
 
@@ -76,8 +76,7 @@ const isUrl = str => {
 
 // uuid作成
 const generateUuid = () => {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
     .replace(/x/g, () => Math.floor(Math.random() * 16).toString(16))
-    .replace(/y/g, () => (Math.floor(Math.random() * 4) + 8).toString(16))
-    ;
+    .replace(/y/g, () => (Math.floor(Math.random() * 4) + 8).toString(16));
 };
