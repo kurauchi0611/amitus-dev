@@ -29,6 +29,7 @@ const MyApp = ({ Component }) => {
   const [success, setSuccess] = React.useState();
   const [successOpen, setSuccessOpen] = React.useState(false);
   const [dMopen, setDMopen] = React.useState(false);
+  const [isUserPage, setIsUserPage] = React.useState(false);
   const [dMMember, setDMMember] = React.useState<string|null>(null);
   React.useEffect(() => {
     return auth.onAuthStateChanged(async user => {
@@ -79,15 +80,20 @@ const MyApp = ({ Component }) => {
   const handleDMOpen = () => {
     setDMopen(true);
   };
+  const handleDMOpenUserPage = () => {
+    setDMopen(true);
+    setIsUserPage(true);
+  };
   const handleDMClose = () => {
     setDMopen(false);
+    setIsUserPage(false);
   };
   const successHandleClose = () => {
     setSuccessOpen(false);
   };
   const handleDMMember=(member)=>{
     setDMMember(member)
-  }
+  };
   return (
     <div>
       <Head>
@@ -96,8 +102,8 @@ const MyApp = ({ Component }) => {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <MenuAppBar user={isUser} dm={{handleDMOpen:handleDMOpen, handleDMClose: handleDMClose,dMopen:dMopen,handleDMMember:handleDMMember}} />
-        <Component props={isUser} dm={{handleDMOpen:handleDMOpen, handleDMClose: handleDMClose,dMopen:dMopen,handleDMMember:handleDMMember}}/>
-        {dMopen && <DMWindow dm={{handleDMOpen:handleDMOpen, handleDMClose: handleDMClose,dMopen:dMopen,user:isUser}} member={dMMember} />}
+        <Component props={isUser} dm={{handleDMOpen:handleDMOpenUserPage, handleDMClose: handleDMClose,dMopen:dMopen,handleDMMember:handleDMMember}}/>
+        {dMopen && <DMWindow dm={{handleDMOpen:handleDMOpen, handleDMClose: handleDMClose,dMopen:dMopen,user:isUser}} member={dMMember} userPage={isUserPage}/>}
       </ThemeProvider>
       <Snackbar
         autoHideDuration={2000}

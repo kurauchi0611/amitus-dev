@@ -113,7 +113,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const DMWindow = ({ dm, member }) => {
+export const DMWindow = ({ dm, member,userPage }) => {
   console.log(member);
   const [talkList, setTalkList] = React.useState<any | null>(null);
   const [talkId, setTalkId] = React.useState<string | null>(null);
@@ -133,6 +133,9 @@ export const DMWindow = ({ dm, member }) => {
             getUser = await doc.data().member2.get();
           } else {
             getUser = await doc.data().member1.get();
+          }
+          if(userPage&&member===getUser.id){
+            setTalkId(doc.id);
           }
           console.log(getUser);
           talkArray[index] = Object.assign(getUser.data(), { roomId: doc.id });

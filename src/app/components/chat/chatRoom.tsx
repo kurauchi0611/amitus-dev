@@ -371,3 +371,6 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
     </React.Fragment>
   );
 };
+
+
+// 画像投稿→documentクリエイト→img判定→リサイズ→リサイズ画像登録
