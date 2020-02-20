@@ -12,8 +12,9 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       maxWidth: 240,
-      marginTop: theme.spacing(1),
-      marginLeft: theme.spacing(1)
+      marginTop: theme.spacing(2),
+      marginLeft: theme.spacing(1),
+      marginRight: theme.spacing(1)
     },
     media: {
       height: 140
@@ -41,7 +42,7 @@ export const MediaCard = ({ message }) => {
       className={classes.root}
       underline="none"
     >
-      <Card className={classes.root} elevation={4}>
+      <Card elevation={4}>
         <CardActionArea>
           <CardMedia
             className={classes.media}
@@ -54,7 +55,7 @@ export const MediaCard = ({ message }) => {
                 {message[0]}
               </Typography>
             </Tooltip>
-            <Tooltip title={message[2]}  enterDelay={800} leaveDelay={200}>
+            <Tooltip title={message[2]} enterDelay={800} leaveDelay={200}>
               <Typography
                 variant="body2"
                 color="textSecondary"

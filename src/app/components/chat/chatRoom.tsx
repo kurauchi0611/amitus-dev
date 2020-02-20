@@ -1,18 +1,19 @@
 import React from "react";
-import CssBaseline from "@material-ui/core/CssBaseline";
 import {
-  Dialog,
+  Avatar,
   Box,
+  Button,
+  Chip,
   Container,
-  Paper,
-  Typography,
+  CssBaseline,
+  Dialog,
+  DialogContent,
+  Divider,
   IconButton,
   InputBase,
-  Divider,
-  Avatar,
   Link,
-  DialogContent,
-  Button
+  Paper,
+  Typography
 } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { db } from "../../firebase/firebase";
@@ -21,6 +22,7 @@ import SendIcon from "@material-ui/icons/Send";
 import { chatDB } from "../../firebase/chat";
 import { RegularButton } from "../regularButton";
 import { MediaCard } from "./ogpTemplate";
+import { format } from "date-fns";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -63,14 +65,16 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: "flex-end"
     },
     chatTextArea: {
-      margin: theme.spacing(2),
+      marginTop: theme.spacing(2),
+      marginLeft: theme.spacing(1),
+      marginRight: theme.spacing(1),
       marginBottom: 0,
-      padding: theme.spacing(1),
+      padding: theme.spacing(0.75),
       borderRadius: "15px",
       maxWidth: "250px"
     },
     myChatBox: {
-      justifyContent: "flex-end"
+      flexFlow: "row-reverse"
     },
     img: {
       maxWidth: "100%",
@@ -114,12 +118,22 @@ const useStyles = makeStyles((theme: Theme) =>
       overflow: "hidden",
       alignItems: "center"
     },
-    flexAnchor:{
-      display:"flex"
+    flexAnchor: {
+      display: "flex"
     },
-    paddingImg:{
-      padding:0,
-      overflow:"hidden"
+    paddingImg: {
+      padding: 0,
+      overflow: "hidden"
+    },
+    date: {
+      marginTop:theme.spacing(1),
+      padding:"1px 0",
+      height:"auto",
+      color: "#fff",
+      background: theme.palette.buttonMain.main
+    },
+    chatBoxWrap:{
+      textAlign:"center"
     }
   })
 );
@@ -127,23 +141,38 @@ const useStyles = makeStyles((theme: Theme) =>
 export const ChatRoom = ({ roomId, myUid, userData }) => {
   const [talkData, setTalkData] = React.useState<any | null>(null);
   const [message, setMessage] = React.useState<string>("");
+  const [postedDate, setPostedDate] = React.useState<any | null>(null);
+
+  const scrollBottom = () => {
+    const elm: any | null = document.getElementById("height");
+    const winHeight = elm.scrollHeight - elm.clientHeight;
+    elm.scroll(0, winHeight);
+  };
   React.useEffect(() => {
-    const scrollBottom = () => {
-      var elm: any | null = document.getElementById("height");
-      var winHeight = elm.scrollHeight - elm.clientHeight;
-      elm.scroll(0, winHeight);
-    };
     db.collection("talks")
       .doc(roomId)
       .collection("talk")
       .orderBy("createdAt", "desc")
       .onSnapshot(snapshot => {
-        const talkArray: any = [];
-        snapshot.docs.map((doc, index) => {
-          talkArray[index] = doc.data();
-        });
-        setTalkData(talkArray);
-        scrollBottom();
+        var source = snapshot.metadata.hasPendingWrites ? "Local" : "Server";
+        if (snapshot.metadata.hasPendingWrites === false) {
+          console.log(source);
+          const talkArray: any = [];
+          const dateArray: any = [];
+          Promise.all(
+            snapshot.docs.map((doc, index) => {
+              talkArray[index] = doc.data();
+              dateArray[index] = format(
+                new Date(doc.data().createdAt.seconds * 1000),
+                "MM/dd"
+              );
+            })
+          ).then(() => {
+            setTalkData(talkArray);
+            setPostedDate(dateArray);
+            scrollBottom();
+          });
+        }
       });
   }, [roomId]);
 
@@ -182,7 +211,12 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
   };
   const isImage = message => {
     return (
-      <Link href={message} target="_blank" rel="noopener" className={classes.flexAnchor}>
+      <Link
+        href={message}
+        target="_blank"
+        rel="noopener"
+        className={classes.flexAnchor}
+      >
         <img src={message} className={classes.img} />
       </Link>
     );
@@ -196,27 +230,40 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
       message = isImage(message);
     }
     return (
-      <Box
-        className={classes.chatBox + ` ${who !== "you" && classes.myChatBox}`}
-        key={index}
-      >
-        {/* 画像入れる */}
-        {who === "you" && userData !== null && userData.photoURL === null && (
-          <Avatar>{userData.displayName}</Avatar>
+      <Box key={index} className={classes.chatBoxWrap}>
+        {postedDate != null && postedDate[index] !== postedDate[index + 1] && (
+          <Chip label={postedDate[index]} className={classes.date} />
         )}
-        {who === "you" && userData !== null && userData.photoURL !== null && (
-          <Avatar src={userData.photoURL} />
-        )}
-        {doc.type !== "ogp" && (
-          <Paper elevation={2} className={classes.chatTextArea+` ${doc.type === "image"&&classes.paddingImg}`}>
-            {message}
-          </Paper>
-        )}
-        {doc.type === "ogp" && <MediaCard message={message} />}
+        <Box
+          className={classes.chatBox + ` ${who !== "you" && classes.myChatBox}`}
+        >
+          {/* 画像入れる */}
+          {who === "you" && userData !== null && userData.photoURL === null && (
+            <Avatar>{userData.displayName}</Avatar>
+          )}
+          {who === "you" && userData !== null && userData.photoURL !== null && (
+            <Avatar src={userData.photoURL} />
+          )}
+          {doc.type !== "ogp" && (
+            <Paper
+              elevation={2}
+              className={
+                classes.chatTextArea +
+                ` ${doc.type === "image" && classes.paddingImg}`
+              }
+            >
+              {message}
+            </Paper>
+          )}
+          {doc.type === "ogp" && <MediaCard message={message} />}
+          <Typography variant="caption">{`${format(
+            new Date(doc.createdAt.seconds * 1000),
+            "HH:mm"
+          )}`}</Typography>
+        </Box>
       </Box>
     );
   };
-
   const [openImage, setOpenImage] = React.useState(false);
   const [fileData, setFileData] = React.useState<any | null>(null);
   const [file, setFile] = React.useState<any | null>(null);
