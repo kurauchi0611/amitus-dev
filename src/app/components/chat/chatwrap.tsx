@@ -1,27 +1,28 @@
-import React from "react";
-import {
-  makeStyles,
-  useTheme,
-  Theme,
-  createStyles
-} from "@material-ui/core/styles";
+import AppBar from "@material-ui/core/AppBar";
 import Card from "@material-ui/core/Card";
 // import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
+import Divider from "@material-ui/core/Divider";
+import Drawer from "@material-ui/core/Drawer";
+import IconButton from "@material-ui/core/IconButton";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import {
+  createStyles,
+  makeStyles,
+  Theme,
+  useTheme
+} from "@material-ui/core/styles";
+import Toolbar from "@material-ui/core/Toolbar";
 // import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
-import Draggable from "react-draggable";
-import CloseIcon from "@material-ui/icons/Close";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import IconButton from "@material-ui/core/IconButton";
-import Drawer from "@material-ui/core/Drawer";
-import List from "@material-ui/core/List";
-import Divider from "@material-ui/core/Divider";
-import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import ListItem from "@material-ui/core/ListItem";
+import CloseIcon from "@material-ui/icons/Close";
+import MenuIcon from "@material-ui/icons/Menu";
+import { chatDB } from "../../firebase/chat";
+import React from "react";
+import Draggable from "react-draggable";
 import { db } from "../../firebase/firebase";
 import { UserInfo } from "../account/userInfo";
 import { ChatRoom } from "./chatRoom";
@@ -113,8 +114,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const DMWindow = ({ dm, member,userPage }) => {
-  console.log(member);
+export const DMWindow = ({ dm, member, userPage }) => {
   const [talkList, setTalkList] = React.useState<any | null>(null);
   const [talkId, setTalkId] = React.useState<string | null>(null);
   const [dMUserName, setDMUserName] = React.useState<string | null>(null);
@@ -127,20 +127,36 @@ export const DMWindow = ({ dm, member,userPage }) => {
         console.log(snapshot);
         setTalkList(snapshot.docs);
         const talkArray: any = [];
-        snapshot.docs.map(async (doc, index) => {
-          let getUser;
-          if (doc.data().member1.id === dm.user.uid) {
-            getUser = await doc.data().member2.get();
-          } else {
-            getUser = await doc.data().member1.get();
+        let isExistsRoom = false;
+        Promise.all(
+          snapshot.docs.map(async (doc, index) => {
+            let getUser;
+            if (doc.data().member1.id === dm.user.uid) {
+              getUser = await doc.data().member2.get();
+            } else {
+              getUser = await doc.data().member1.get();
+            }
+            if (userPage && member === getUser.id) {
+              setTalkId(doc.id);
+              isExistsRoom = true;
+            }
+            talkArray[index] = Object.assign(getUser.data(), {
+              roomId: doc.id
+            });
+          })
+        ).then(() => {
+          setTalkList(talkArray);
+          console.log(isExistsRoom);
+          if (
+            userPage &&
+            (snapshot.docs.length === 0 || isExistsRoom === false)
+          ) {
+            chatDB.createRoom(dm.user.uid, member).then(res => {
+              setTalkId(res.id);
+            });
+            console.log("roomcreate");
           }
-          if(userPage&&member===getUser.id){
-            setTalkId(doc.id);
-          }
-          console.log(getUser);
-          talkArray[index] = Object.assign(getUser.data(), { roomId: doc.id });
         });
-        setTalkList(talkArray);
       });
   }, []);
   const classes = useStyles();
@@ -220,9 +236,17 @@ export const DMWindow = ({ dm, member,userPage }) => {
                 ))}
             </List>
           </Drawer>
-          <CardContent className={classes.margin} id="height" onClick={handleDrawerClose}>
+          <CardContent
+            className={classes.margin}
+            id="height"
+            onClick={handleDrawerClose}
+          >
             {talkId !== null && (
-              <ChatRoom roomId={talkId} myUid={dm.user.uid} userData={dMUserData}/>
+              <ChatRoom
+                roomId={talkId}
+                myUid={dm.user.uid}
+                userData={dMUserData}
+              />
             )}
           </CardContent>
         </Card>

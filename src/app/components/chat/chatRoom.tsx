@@ -8,7 +8,6 @@ import {
   CssBaseline,
   Dialog,
   DialogContent,
-  Divider,
   IconButton,
   InputBase,
   Link,
@@ -126,14 +125,14 @@ const useStyles = makeStyles((theme: Theme) =>
       overflow: "hidden"
     },
     date: {
-      marginTop:theme.spacing(1),
-      padding:"1px 0",
-      height:"auto",
+      marginTop: theme.spacing(1),
+      padding: "1px 0",
+      height: "auto",
       color: "#fff",
       background: theme.palette.buttonMain.main
     },
-    chatBoxWrap:{
-      textAlign:"center"
+    chatBoxWrap: {
+      textAlign: "center"
     }
   })
 );
@@ -304,8 +303,6 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
     <React.Fragment>
       <CssBaseline />
       <Container maxWidth="xl" className={classes.root}>
-        <Typography component="div">{roomId}</Typography>
-        <Divider />
         <Box className={classes.chatWrap}>
           {talkData !== null &&
             talkData.map((doc, index) => {
@@ -371,6 +368,5 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
     </React.Fragment>
   );
 };
-
 
 // 画像投稿→documentクリエイト→img判定→リサイズ→リサイズ画像登録

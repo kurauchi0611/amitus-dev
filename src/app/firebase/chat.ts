@@ -1,9 +1,17 @@
 import { db, FieldValue, talkStorage } from "./firebase";
 
 const talks = db.collection("talks");
-const user = db.collection("user");
+const user = db.collection("users");
 // const ogpParser = functions.httpsCallable("ogpParser");
 export const chatDB = {
+  createRoom:(uid1,uid2)=>{
+    return talks.add({
+      member:[uid1,uid2],
+      member1:user.doc(uid1),
+      member2:user.doc(uid2),
+      updatedAt:FieldValue.serverTimestamp()
+    })
+  },
   postMessage: async (roomId, uid, message) => {
     let type = "string";
     if (isUrl(message)) type = "link";
