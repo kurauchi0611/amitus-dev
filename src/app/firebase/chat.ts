@@ -16,6 +16,7 @@ export const chatDB = {
     let type = "string";
     if (isUrl(message)) type = "link";
     // urlの識別追加する。
+    updateTime(roomId);
     return talks
       .doc(roomId)
       .collection("talk")
@@ -48,6 +49,7 @@ export const chatDB = {
           .child(`talkImages/${uploadName}`)
           .getDownloadURL()
           .then(url => {
+            updateTime(uid);
             return talks
               .doc(roomId)
               .collection("talk")
@@ -63,6 +65,12 @@ export const chatDB = {
       });
   }
 };
+
+const updateTime=(uid)=>{
+  return talks.doc(uid).set({
+    updatedAt:FieldValue.serverTimestamp()
+  },{merge:true})
+}
 
 const isUrl = str => {
   var pattern = new RegExp(
