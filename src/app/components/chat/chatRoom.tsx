@@ -211,12 +211,12 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
   const isImage = message => {
     return (
       <Link
-        href={message}
+        href={message[0]}
         target="_blank"
         rel="noopener"
         className={classes.flexAnchor}
       >
-        <img src={message} className={classes.img} />
+        <img src={message[1]} className={classes.img} />
       </Link>
     );
   };

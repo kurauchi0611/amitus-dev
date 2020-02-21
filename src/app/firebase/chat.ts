@@ -55,7 +55,7 @@ export const chatDB = {
               .collection("talk")
               .doc()
               .set({
-                message: url,
+                message: [url,url],
                 user: user.doc(uid),
                 uid: uid,
                 createdAt: FieldValue.serverTimestamp(),
