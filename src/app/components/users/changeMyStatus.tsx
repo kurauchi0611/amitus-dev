@@ -25,6 +25,7 @@ import { accountDB } from "../../firebase/account";
 import CloseIcon from "@material-ui/icons/Close";
 import { Tags } from "../mdEditor/Tags";
 import croppie from "../croppie/";
+import {RegistCard} from "../stripe/purchase"
 console.log(croppie);
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -581,6 +582,23 @@ export const ChangeMyStatus = ({ props }) => {
               />
             )}
             <RegularButton label={"変更する"} onClick={updateLanguage} />
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+        <ExpansionPanel
+          expanded={expanded === "panel7"}
+          onChange={handleChange("panel7")}
+          className={classes.expansion}
+        >
+          <ExpansionPanelSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel4bh-content"
+            id="panel4bh-header"
+          >
+            <Typography className={classes.heading}>支払い方法の登録</Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails className={classes.detail}>
+            <Divider className={classes.divider} component="div" />
+            <RegistCard props={props}/>
           </ExpansionPanelDetails>
         </ExpansionPanel>
       </Dialog>

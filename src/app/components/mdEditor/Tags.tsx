@@ -28,7 +28,7 @@ interface Myprops {
 }
 export const Tags = ({ handleChange, maxVal, tags }:Myprops) => {
   const classes = useStyles();
-  const [lang, setLang] = React.useState();
+  const [lang, setLang] = React.useState([]);
   React.useEffect(() => {
     const langList: any = localStorage.getItem("langList");
     setLang(JSON.parse(langList));

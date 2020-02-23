@@ -82,8 +82,8 @@ const useStyles = makeStyles((theme: Theme) =>
       height: "auto"
     },
     buttonCancel: {
-      background: theme.palette.buttonCancel.main,
-      boxShadow: `0 3px 5px 2px ${theme.palette.buttonCancel.dark}`,
+      background: theme.palette.info.main,
+      boxShadow: `0 3px 5px 2px ${theme.palette.info.dark}`,
       marginLeft: theme.spacing(4)
     },
     flexRow: {
@@ -99,8 +99,8 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(1),
       fontSize: "1rem",
-      background: theme.palette.buttonCancel.main,
-      boxShadow: `0 3px 5px 2px ${theme.palette.buttonCancel.dark}`,
+      background: theme.palette.info.main,
+      boxShadow: `0 3px 5px 2px ${theme.palette.info.dark}`,
       borderRadius: 3,
       border: 0,
       color: "white",
@@ -131,7 +131,7 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: "1px 0",
       height: "auto",
       color: "#fff",
-      background: theme.palette.buttonMain.main
+      background: theme.palette.success.main
     },
     chatBoxWrap: {
       textAlign: "center"
