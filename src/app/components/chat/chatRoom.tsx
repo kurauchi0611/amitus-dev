@@ -70,7 +70,9 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: 0,
       padding: theme.spacing(0.75),
       borderRadius: "15px",
-      maxWidth: "250px"
+      maxWidth: "250px",
+      wordBreak:"break-all",
+      textAlign:"left"
     },
     myChatBox: {
       flexFlow: "row-reverse"
@@ -190,8 +192,9 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
         .then(() => {
           console.log("success");
         })
-        .catch(() => {
+        .catch(err => {
           console.log("error");
+          console.log(err);
         });
       setMessage("");
     }

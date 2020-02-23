@@ -4,17 +4,21 @@ const talks = db.collection("talks");
 const user = db.collection("users");
 // const ogpParser = functions.httpsCallable("ogpParser");
 export const chatDB = {
-  createRoom:(uid1,uid2)=>{
+  createRoom: (uid1, uid2) => {
     return talks.add({
-      member:[uid1,uid2],
-      member1:user.doc(uid1),
-      member2:user.doc(uid2),
-      updatedAt:FieldValue.serverTimestamp()
-    })
+      member: [uid1, uid2],
+      member1: user.doc(uid1),
+      member2: user.doc(uid2),
+      updatedAt: FieldValue.serverTimestamp()
+    });
   },
   postMessage: async (roomId, uid, message) => {
     let type = "string";
     if (isUrl(message)) type = "link";
+    if (message.match(/\.(jpg|png|gif)$/)) {
+      type="image";
+      message=[message,message]
+    }
     // urlの識別追加する。
     updateTime(roomId);
     return talks
@@ -55,7 +59,7 @@ export const chatDB = {
               .collection("talk")
               .doc()
               .set({
-                message: [url,url],
+                message: [url, url],
                 user: user.doc(uid),
                 uid: uid,
                 createdAt: FieldValue.serverTimestamp(),
@@ -66,11 +70,14 @@ export const chatDB = {
   }
 };
 
-const updateTime=(uid)=>{
-  return talks.doc(uid).set({
-    updatedAt:FieldValue.serverTimestamp()
-  },{merge:true})
-}
+const updateTime = uid => {
+  return talks.doc(uid).set(
+    {
+      updatedAt: FieldValue.serverTimestamp()
+    },
+    { merge: true }
+  );
+};
 
 const isUrl = str => {
   var pattern = new RegExp(
