@@ -4,7 +4,7 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle,
+  DialogTitle
 } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import React from "react";
@@ -129,20 +129,22 @@ export const LoginForm = ({ label }) => {
           <DialogContentText>
             メールアドレスとパスワードを入力してください。
           </DialogContentText>
-          <MailForm
-            label="メールアドレス"
-            handlechange={handleChange("email")}
-            email={state.email}
-            autoFocus={true}
-          />
-          <div className={classes.error}>{state.emailFaild}</div>
-          <PasswordForm
-            label="パスワード"
-            handlechange={handleChange("password")}
-            password={state.password}
-          ></PasswordForm>
-          <div className={classes.error}>{state.passwordFaild}</div>
-          <div className={classes.error}>{state.faild}</div>
+          <form method="POST">
+            <MailForm
+              label="メールアドレス"
+              handlechange={handleChange("email")}
+              email={state.email}
+              autoFocus={true}
+            />
+            <div className={classes.error}>{state.emailFaild}</div>
+            <PasswordForm
+              label="パスワード"
+              handlechange={handleChange("password")}
+              password={state.password}
+            ></PasswordForm>
+            <div className={classes.error}>{state.passwordFaild}</div>
+            <div className={classes.error}>{state.faild}</div>
+          </form>
         </DialogContent>
         <DialogActions>
           <Button onClick={loginUser} className={classes.searchButton}>
