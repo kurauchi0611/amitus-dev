@@ -22,18 +22,12 @@ function subscribeSignaling({ clientId, hostId }) {
     //     emit(actions[type]({ ...data.val() }))
     //   }
     // })
-    console.log('hoge1')
-    console.log(clientId)
-    console.log(hostId)
     ref.doc(hostId)
       .onSnapshot(doc => {
-        console.log(doc.data())
+        // console.log(doc.data())
         if (typeof doc.data() !== "undefined") {
           const { from, type } = doc.data()
           if (from !== clientId && type) {
-            console.log(from)
-            console.log(type)
-            console.log(clientId)
             emit(actions[type]({ ...doc.data() }))
           }
         }
@@ -46,6 +40,8 @@ function subscribeCandidate(peer) {
   return eventChannel(emit => {
     peer.onicecandidate = e => {
       if (e.candidate) {
+        console.log(43,e);
+        
         emit(actions.setHostCandidate({ candidate: e.candidate }))
       }
     }
@@ -56,6 +52,8 @@ function subscribeCandidate(peer) {
 function subscribeDataChannel(peer) {
   return eventChannel(emit => {
     peer.ondatachannel = e => {
+      console.log(53,e);
+      
       emit(actions.setDataChannel({ dataChannel: e.channel }))
     }
     return () => { }
@@ -80,12 +78,15 @@ function* handleSendOffer(action) {
     const dataChannel = yield call(() =>
       peer.createDataChannel('editor', dataChannelOption)
     )
+    console.log(dataChannel);
+    
     yield put(actions.setDataChannel({ dataChannel }))
     const sdp = yield call(() => peer.createOffer())
     yield call(() => peer.setLocalDescription(sdp))
     yield call(() => {
       console.log('hoge2')
       ref.doc(to).set({
+        kuso:"hoge",
         from: clientId,
         ...sdp.toJSON()
       }, { merge: true })

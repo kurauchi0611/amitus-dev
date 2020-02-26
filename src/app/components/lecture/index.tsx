@@ -1,5 +1,5 @@
 import React from "react";
-import App from "./containers/App";
+import {App} from "./containers/App";
 import { Provider } from "react-redux";
 import configureStore from "./store";
 
@@ -29,8 +29,6 @@ const useStyles = makeStyles((theme: Theme) =>
 export default () => {
   const classes=useStyles();
   const store = configureStore();
-  console.log(store);
-  
   return (
     <Container className={classes.margin}>
       <Provider store={store}>

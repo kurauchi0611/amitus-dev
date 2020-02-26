@@ -7,7 +7,7 @@ export const initialState = {
   peer: createPeerConnection(),
   clientId: uuid(),
   host: false,
-  mode: 'ruby'
+  mode: 'javascript'
 }
 
 export default handleActions(
