@@ -24,7 +24,7 @@ import "brace/keybinding/emacs";
 import "brace/keybinding/vim";
 import "brace/ext/language_tools";
 import PropTypes from "prop-types";
-
+import "ayu-ace/mirage";
 const modes = {
   ruby: "Ruby",
   javascript: "JavaScript",
@@ -46,7 +46,7 @@ const modes = {
   swift: "Swift"
 };
 
-const keybinds = [null, "vim", "emacs"];
+const keybinds = [null, "vim", "emacs", "vscode"];
 const fontSizes = [14, 16, 18, 20, 22, 24, 28, 32];
 
 export const Editor = ({ value, onChange, onChangeMode, mode }) => {
@@ -114,7 +114,7 @@ export const Editor = ({ value, onChange, onChangeMode, mode }) => {
       <Ace
         mode={mode}
         fontSize={state.fontSize}
-        theme="monokai"
+        theme="ayu-mirage"
         onChange={newValue => onChange(newValue)}
         editorProps={{ $blockScrolling: true }}
         value={value}

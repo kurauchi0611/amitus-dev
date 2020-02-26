@@ -1,16 +1,13 @@
-import dynamic from 'next/dynamic'
-
-const DynamicComponentWithNoSSR = dynamic(
-  () => import('../../components/lecture/index'),
-  { ssr: false }
-)
-
+// import uuid from "uuid-v4";
+import random from "unique-string";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 function Lecture() {
-  return (
-    <div>
-      <DynamicComponentWithNoSSR />
-    </div>
-  )
+  const router = useRouter();
+  useEffect(() => {
+    router.push("/lecture/[id]", `/lecture/${random()}`);
+  }, []);
+  return <div />;
 }
 
-export default Lecture
+export default Lecture;

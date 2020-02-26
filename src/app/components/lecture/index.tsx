@@ -1,8 +1,5 @@
 import React from "react";
 import {App} from "./containers/App";
-import { Provider } from "react-redux";
-import configureStore from "./store";
-
 import {
   // Box,
   //   Button,
@@ -26,14 +23,11 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export default () => {
+export default ({props}) => {
   const classes=useStyles();
-  const store = configureStore();
   return (
     <Container className={classes.margin}>
-      <Provider store={store}>
-        <App />
-      </Provider>
+        <App props={props} />
     </Container>
   );
 };
