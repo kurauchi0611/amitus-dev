@@ -67,7 +67,7 @@ export const accountDB = {
           // Update successful.
           const updateName = await user
             .doc(userinfo.uid)
-            .set({ name: name }, { merge: true });
+            .set({ displayName: name }, { merge: true });
           return updateName;
         });
     }
