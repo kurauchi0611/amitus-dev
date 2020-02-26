@@ -1,11 +1,10 @@
 import { Container, CssBaseline, Grid } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import React from "react";
-import { MyStatus } from "../../components/users/myStatus";
+import { UserStatus } from "../../components/users/userStatus";
 import { UserContent } from "../../components/users/userContent";
-// import { accountDB } from "../../firebase/account";
-
-import { db } from "../../firebase/firebase";
+import { useRouter } from "next/router";
+import { accountDB } from "../../firebase/account";
 // import Alert from "@material-ui/lab/Alert";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -55,8 +54,10 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Index = ({ props }) => {
+const Index = ({ props,dm }) => {
+  if(false)console.log(props);
   const classes = useStyles();
+  const router = useRouter();
   const [userState, setUserState] = React.useState<{
     createdAt: any;
     email: string;
@@ -67,26 +68,25 @@ const Index = ({ props }) => {
     rating: number;
     follow: number;
     follower: number;
-    uid: any;
+    uid:any;
   }>({
     createdAt: null,
     email: "",
     introduction: "",
-    language: null,
+    language: [],
     name: "",
     photoURL: "",
     rating: 1,
     follow: 0,
     follower: 0,
-    uid: ""
+    uid:""
   });
   React.useEffect(() => {
-    if (typeof props !== "undefined") {
-      db.collection("users")
-        .doc(props.uid)
-        .onSnapshot(doc => {
-          console.log(doc);
-          const userData:any|null = doc.data();
+    if (typeof router.query.id !== "undefined") {
+      const cleanup = async () => {
+        const getUser = await accountDB.getUser(router.query.id);
+        const userData: any = getUser.data();
+        if (typeof userData != "undefined") {
           setUserState({
             ...userState,
             createdAt: userData.createdAt,
@@ -98,17 +98,19 @@ const Index = ({ props }) => {
             rating: userData.rating,
             follow: userData.follow,
             follower: userData.follower,
-            uid: props.uid
+            uid:router.query.id
           });
-        });
+        }
+      };
+      cleanup();
     }
-  }, [props]);
+  }, [router.query.id]);
   return (
     <React.Fragment>
       <CssBaseline />
       <Container maxWidth="xl" className={classes.margin}>
         <Grid container spacing={3}>
-          <MyStatus props={userState} />
+          <UserStatus props={userState} dm={dm}/>
           <UserContent props={userState} />
         </Grid>
       </Container>

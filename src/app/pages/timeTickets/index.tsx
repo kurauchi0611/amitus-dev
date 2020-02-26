@@ -4,7 +4,7 @@ import { MarkDownEditor } from "../../components/mdEditor/MarkDownEditor";
 import { Tags } from "../../components/mdEditor/Tags";
 import { SendButton } from "../../components/mdEditor/sendButton";
 import React from "react";
-import { ticketDB  } from "../../firebase/timeTickets";
+import { ticketDB } from "../../firebase/timeTickets";
 import { useRouter } from "next/router";
 import Alert from "@material-ui/lab/Alert";
 const useStyles = makeStyles((theme: Theme) =>
@@ -82,16 +82,38 @@ const Index = ({ props }) => {
   const handleClose = () => {
     setOpen(false);
   };
-  const sendTicket = () => {
+  const sendTicket = async () => {
     if (state.text !== "" && state.tags !== null && state.text !== "") {
       if (state.index === 0) {
-        ticketDB.postTicket(state).then(res => {
-          router.push("/timeTickets/[id]", `/timeTickets/${res.id}`);
-        });
+        const postTicket = await ticketDB.postTicket(state);
+        if (postTicket !== null) {
+          console.log(postTicket);
+          
+          router.push("/timeTickets/[id]", `/timeTickets/${postTicket}`);
+        } else {
+          setError(
+            <Alert severity="error" className={classes.error} variant="filled">
+              投稿に失敗しました
+            </Alert>
+          );
+        }
       } else if (state.index === 1) {
-        ticketDB.draftTickets(state).then(() => {
-          router.push("/mypage");
-        });
+        ticketDB
+          .draftTickets(state)
+          .then(() => {
+            router.push("/mypage");
+          })
+          .catch(() => {
+            setError(
+              <Alert
+                severity="error"
+                className={classes.error}
+                variant="filled"
+              >
+                下書き保存に失敗しました
+              </Alert>
+            );
+          });
       }
     } else {
       setError(
@@ -142,6 +164,5 @@ const Index = ({ props }) => {
 
 export default Index;
 
-
 const sampleMoji =
-    "# 助けて(´;ω;｀)\n```js\nconst arrowDisplayNone = () => {\n  document.querySelectorAll('.arrow').forEach(item => {\n    item.style.display = 'none';\n  }\n)}\n```";
+  "# 助けて(´;ω;｀)\n```js\nconst arrowDisplayNone = () => {\n  document.querySelectorAll('.arrow').forEach(item => {\n    item.style.display = 'none';\n  }\n)}\n```";

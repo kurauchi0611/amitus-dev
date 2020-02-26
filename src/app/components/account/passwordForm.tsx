@@ -164,37 +164,35 @@ export const PasswordForm = ({ label, handlechange, password }) => {
     event.preventDefault();
   };
   return (
-    <div>
-      <FormControl
-        className={classes.margin + " " + classes.back}
-        variant="filled"
-        fullWidth
-      >
-        <InputLabel htmlFor="filled-adornment-password">{label}</InputLabel>
-        <FilledInput
-          className={classes.back}
-          type={values.showPassword ? "text" : "password"}
-          value={password || ""}
-          onChange={handlechange}
-          startAdornment={
-            <InputAdornment position="start">
-              <VpnKeyIcon color={"primary"} />
-            </InputAdornment>
-          }
-          endAdornment={
-            <InputAdornment position="end">
-              <IconButton
-                aria-label="toggle password visibility"
-                onClick={handleClickShowPassword}
-                onMouseDown={handleMouseDownPassword}
-                edge="end"
-              >
-                {values.showPassword ? <Visibility /> : <VisibilityOff />}
-              </IconButton>
-            </InputAdornment>
-          }
-        />
-      </FormControl>
-    </div>
+    <FormControl
+      className={classes.margin + " " + classes.back}
+      variant="filled"
+      fullWidth
+    >
+      <InputLabel htmlFor="filled-adornment-password">{label}</InputLabel>
+      <FilledInput
+        className={classes.back}
+        type={values.showPassword ? "text" : "password"}
+        value={password || ""}
+        onChange={handlechange}
+        startAdornment={
+          <InputAdornment position="start">
+            <VpnKeyIcon color={"primary"} />
+          </InputAdornment>
+        }
+        endAdornment={
+          <InputAdornment position="end">
+            <IconButton
+              aria-label="toggle password visibility"
+              onClick={handleClickShowPassword}
+              onMouseDown={handleMouseDownPassword}
+              edge="end"
+            >
+              {values.showPassword ? <Visibility /> : <VisibilityOff />}
+            </IconButton>
+          </InputAdornment>
+        }
+      />
+    </FormControl>
   );
 };

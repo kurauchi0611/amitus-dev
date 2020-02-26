@@ -9,13 +9,17 @@ const useStyles = makeStyles((theme: Theme) =>
       cursor: "auto",
       display: "flex",
       flexFlow: "row",
-      justifyContent: "space-evenly",
-      width: "100%"
+      justifyContent: "space-evenly"
+      // width: "100%"
     },
     avatar: {
       fontSize: "1.2rem",
       color: "#fff",
       background: theme.palette.buttonMain.main
+    },
+    typoWidth: {
+      marginLeft: theme.spacing(2),
+      maxWidth: "400px"
     }
   })
 );
@@ -36,7 +40,7 @@ export const UserInfo = ({ userInfo }) => {
       {userData && userData.photoURL && (
         <Avatar alt={userData.displayName} src={`${userData.photoURL}`} />
       )}
-      <Typography component="h6" variant="h6">
+      <Typography component="h6" variant="h6" className={classes.typoWidth}>
         {userData && userData.displayName}
       </Typography>
     </div>

@@ -31,8 +31,8 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingRight: theme.spacing(5)
     },
     title: { background: "#fff", marginBottom: theme.spacing(1) },
-    userInfo: { width: "30%", display: "flex", alignItems: "center" },
-    timestamp: { fontSize: ".8rem", width: "500px" },
+    userInfo: { width: "100%", display: "flex", alignItems: "center" },
+    timestamp: { fontSize: ".8rem", width: "500px",marginLeft:theme.spacing(2) },
     commentWrap: {
       background: "#fff",
       marginTop: theme.spacing(3),
@@ -71,7 +71,8 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       flexFlow: "column",
       alignItems: "flex-end"
-    }
+    },
+    paddingLR: { paddingLeft: theme.spacing(5), paddingRight: theme.spacing(5) }
   })
 );
 
@@ -104,7 +105,6 @@ const Index = ({ props }) => {
     setmyData(props);
   }, [props]);
 
-  
   React.useEffect(() => {
     if (typeof router.query.id !== "undefined") {
       const cleanup = async () => {
@@ -165,7 +165,9 @@ const Index = ({ props }) => {
         <Typography className={classes.padding} variant="h3">
           {state.title}
         </Typography>
-        <Chips labels={state.tags} />
+        <div className={classes.paddingLR}>
+          <Chips labels={state.tags} />
+        </div>
         <MarkDownViewer text={state.text} />
       </Container>
       <Container maxWidth="lg" className={classes.commentWrap}>

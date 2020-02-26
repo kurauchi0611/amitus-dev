@@ -1,4 +1,5 @@
 import {
+  Box,
   //   Button,
   //   Grid,
   //   Paper,
@@ -15,6 +16,7 @@ import React from "react";
 import { ticketDB } from "../../firebase/timeTickets";
 import { useRouter } from "next/router";
 import format from "date-fns/format";
+import {Charge} from "../../components/stripe/charge"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -30,8 +32,12 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingRight: theme.spacing(5)
     },
     title: { background: "#fff", marginBottom: theme.spacing(1) },
-    userInfo: { width: "30%", display: "flex", alignItems: "center" },
-    timestamp: { fontSize: ".8rem", width: "500px" },
+    userInfo: { width: "100%", display: "flex", alignItems: "center" },
+    timestamp: {
+      fontSize: ".8rem",
+      width: "500px",
+      marginLeft: theme.spacing(2)
+    },
     commentWrap: {
       background: "#fff",
       marginTop: theme.spacing(3),
@@ -70,6 +76,11 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       flexFlow: "column",
       alignItems: "flex-end"
+    },
+    paddingLR: { paddingLeft: theme.spacing(5), paddingRight: theme.spacing(5) },
+    amountBox:{
+      marginTop:theme.spacing(5),
+      textAlign:"center"
     }
   })
 );
@@ -100,7 +111,6 @@ const Index = ({ props }) => {
   React.useEffect(() => {
     setmyData(props);
     console.log(myData);
-    
   }, [props]);
 
   React.useEffect(() => {
@@ -141,8 +151,14 @@ const Index = ({ props }) => {
         <Typography className={classes.padding} variant="h3">
           {state.title}
         </Typography>
-        <Chips labels={state.tags} />
+        <div className={classes.paddingLR}>
+          <Chips labels={state.tags} />
+        </div>
         <MarkDownViewer text={state.text} />
+        <Box className={classes.amountBox}>
+          <Typography variant="h6" component="p">{state.amount}円/30分</Typography>
+          <Charge label={"購入"} amount={state.amount} userData={props}/>
+        </Box>
       </Container>
     </React.Fragment>
   );

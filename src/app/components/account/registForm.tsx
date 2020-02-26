@@ -202,32 +202,34 @@ export const RegistForm = ({ label }) => {
           <DialogContentText>
             ユーザ名、メールアドレスとパスワードを入力してください。
           </DialogContentText>
-          <UserNameForm
-            label="ユーザ名"
-            handlechange={handleChange("userName")}
-            name={state.userName}
-            autoFocus={true}
-          />
-          <MailForm
-            label="メールアドレス"
-            handlechange={handleChange("email")}
-            autoFocus={false}
-            email={state.email}
-          />
-          <div className={classes.error}>{state.emailFaild}</div>
-          <PasswordForm
-            label="パスワード"
-            handlechange={handleChange("password")}
-            password={state.password}
-          ></PasswordForm>
-          <div className={classes.error}>{state.passwordFaild}</div>
-          <PasswordForm
-            label="パスワードをもう一度入力してください"
-            handlechange={handleChange("checkPassword")}
-            password={state.checkPassword}
-          ></PasswordForm>
-          <div className={classes.error}>{state.checkPasswordFaild}</div>
-          <div className={classes.error}>{state.faild}</div>
+          <form method="POST">
+            <UserNameForm
+              label="ユーザ名"
+              handlechange={handleChange("userName")}
+              name={state.userName}
+              autoFocus={true}
+            />
+            <MailForm
+              label="メールアドレス"
+              handlechange={handleChange("email")}
+              autoFocus={false}
+              email={state.email}
+            />
+            <div className={classes.error}>{state.emailFaild}</div>
+            <PasswordForm
+              label="パスワード"
+              handlechange={handleChange("password")}
+              password={state.password}
+            ></PasswordForm>
+            <div className={classes.error}>{state.passwordFaild}</div>
+            <PasswordForm
+              label="パスワードをもう一度入力してください"
+              handlechange={handleChange("checkPassword")}
+              password={state.checkPassword}
+            ></PasswordForm>
+            <div className={classes.error}>{state.checkPasswordFaild}</div>
+            <div className={classes.error}>{state.faild}</div>
+          </form>
         </DialogContent>
         <DialogActions className={classes.padding}>
           <Button onClick={createUser} className={classes.searchButton}>

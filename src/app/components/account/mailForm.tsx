@@ -157,7 +157,6 @@ export const MailForm = ({
 
   const classes = useStyles();
   return (
-    <div>
       <FormControl className={classes.margin} fullWidth variant="filled">
         <InputLabel htmlFor="filled-adornment-email">{label}</InputLabel>
         <FilledInput
@@ -174,6 +173,12 @@ export const MailForm = ({
           }
         />
       </FormControl>
-    </div>
   );
 };
+
+MailForm.defaultProps={
+  label:null,
+  handlechange:null,
+  email:null,
+  autoFocus:false
+}

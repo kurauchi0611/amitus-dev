@@ -1,4 +1,4 @@
-import firebase from "firebase/app";
+import * as firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 import "firebase/functions";
@@ -26,4 +26,5 @@ export const db = firebase.firestore();
 export const auth = firebase.auth();
 export const functions = firebase.app().functions("asia-northeast1");
 export const storage = firebase.storage();
+export const talkStorage = firebase.app().storage("gs://amitus-99097");
 export const FieldValue = firebase.firestore.FieldValue;
