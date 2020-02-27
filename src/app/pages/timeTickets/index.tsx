@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const Index = ({ props }) => {
   const classes = useStyles();
   const router = useRouter();
-  const [error, setError] = React.useState();
+  const [error, setError] = React.useState<any|null>();
   const [open, setOpen] = React.useState(false);
   const [state, setState] = React.useState<{
     title: string;

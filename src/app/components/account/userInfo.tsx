@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export const UserInfo = ({ userInfo }) => {
-  const [userData, setuserData] = React.useState();
+  const [userData, setuserData] = React.useState<any|null>();
   const classes = useStyles();
   useEffect(() => {
     setuserData(userInfo);

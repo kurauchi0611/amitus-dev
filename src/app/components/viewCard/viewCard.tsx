@@ -33,7 +33,7 @@ const useStyles = makeStyles({
 
 export const ViewCard = ({ views, label }) => {
   const classes = useStyles();
-  const [state, setState] = React.useState();
+  const [state, setState] = React.useState<any|null>();
   React.useEffect(() => {
     if (views) setState(views);
   }, [views]);

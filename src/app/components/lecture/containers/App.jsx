@@ -32,7 +32,7 @@ export const App = ({ props }) => {
         const localStream = await navigator.mediaDevices
           .getUserMedia({
             audio: true,
-            video: false
+            video: true
           })
           .catch(console.error);
         console.log(player);
