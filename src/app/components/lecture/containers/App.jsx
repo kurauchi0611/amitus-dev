@@ -119,6 +119,7 @@ export const App = ({ props }) => {
   );
 };
 
+
 // export default connect(
 //   state => ({ ...state }),
 //   dispatch => bindActionCreators(actions, dispatch)
