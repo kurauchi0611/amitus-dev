@@ -22,7 +22,7 @@ const Index = ({ props }) => {
   const router = useRouter();
   const sampleMoji =
     "# 助けて(´;ω;｀)\n```js\nconst arrowDisplayNone = () => {\n  document.querySelectorAll('.arrow').forEach(item => {\n    item.style.display = 'none';\n  }\n)}\n```";
-  const [error, setError] = React.useState();
+  const [error, setError] = React.useState<any|null>();
   const [open, setOpen] = React.useState(false);
   const [state, setState] = React.useState<{
     title: string;

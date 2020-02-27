@@ -37,8 +37,8 @@ export const UserContent = ({ props }) => {
   }>({
     userData: props
   });
-  const [myQuestions, setMyQuestions] = React.useState();
-  const [myTickets, setMyTickets] = React.useState();
+  const [myQuestions, setMyQuestions] = React.useState<any|null>();
+  const [myTickets, setMyTickets] = React.useState<any|null>();
   React.useEffect(() => {
     setState({ ...state, userData: props });
     if (typeof props !== "undefined" && props.uid !== "") {

@@ -99,7 +99,7 @@ const Index = ({ props }) => {
     createdAt: null,
     isResolve: false
   });
-  const [commentState, setCommentState] = React.useState();
+  const [commentState, setCommentState] = React.useState<any|null>();
   const [myData, setmyData] = React.useState();
   React.useEffect(() => {
     setmyData(props);

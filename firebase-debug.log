@@ -1,0 +1,30 @@
+[debug] [2020-02-26T17:19:30.995Z] ----------------------------------------------------------------------
+[debug] [2020-02-26T17:19:30.997Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\5kuu0\Documents\amicus-dev\newnext\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2020-02-26T17:19:30.997Z] CLI Version:   7.12.1
+[debug] [2020-02-26T17:19:30.997Z] Platform:      win32
+[debug] [2020-02-26T17:19:30.997Z] Node Version:  v10.15.1
+[debug] [2020-02-26T17:19:30.999Z] Time:          Thu Feb 27 2020 02:19:30 GMT+0900 (GMT+09:00)
+[debug] [2020-02-26T17:19:30.999Z] ----------------------------------------------------------------------
+[debug] [2020-02-26T17:19:30.999Z] 
+[debug] [2020-02-26T17:19:31.010Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-02-26T17:19:31.012Z] > authorizing via signed-in user
+[debug] [2020-02-26T17:19:31.012Z] [iam] checking project amitus-99097 for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2020-02-26T17:19:31.014Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2020-02-26T17:19:31.014Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2020-02-26T17:19:31.256Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-26T17:19:31.271Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/amitus-99097:testIamPermissions  
+
+[debug] [2020-02-26T17:19:32.074Z] <<< HTTP RESPONSE 200
+[debug] [2020-02-26T17:19:32.075Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/amitus-99097  
+ 
+[debug] [2020-02-26T17:19:32.535Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Deploying to 'amitus-99097'...
+[info] 
+[info] i  deploying functions, hosting
+[info] Running command: npm run typecheck-app
+[info] Running command: npm run build-functions
+[info] Running command: npm run build-app
+[info] Running command: npm run copy-deps
+[info] Running command: npm run install-deps

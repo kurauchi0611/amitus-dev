@@ -25,7 +25,7 @@ createStyles({
 
 export const Chips = ({ labels, }) => {
   const classes = useStyles();
-  const [state, setState] = React.useState();
+  const [state, setState] = React.useState<any|null>();
   React.useEffect(() => {
     setState(labels);
   }, [labels]);
