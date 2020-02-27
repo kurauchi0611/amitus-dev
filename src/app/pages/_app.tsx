@@ -147,7 +147,6 @@ const MyApp = ({ Component }) => {
   );
 };
 
-
 // // do something
 // const userData = await auth.onAuthStateChanged(user => {
 //   if (user) {
