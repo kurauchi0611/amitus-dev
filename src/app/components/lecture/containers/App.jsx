@@ -17,7 +17,7 @@ export const App = ({ props }) => {
     if (typeof props !== "undefined") {
       setPeer(
         new Peer(props.uid, {
-          key: skywayKey,
+          key: skywayKey
           // debug: 3
         })
       );
