@@ -1,23 +1,24 @@
-import React from "react";
-import { Editor } from "../Editor";
 import { useRouter } from "next/router";
+import React from "react";
 import Peer from "skyway-js";
 import { skywayKey } from "../../../config";
+import { Editor } from "../Editor";
+
 export const App = ({ props }) => {
   const router = useRouter();
   const roomId = router.query.id;
-  const [peer, setPeer] = React.useState("");
-  const [room, setRoom] = React.useState("");
+  const [peer, setPeer] = React.useState<any>("");
+  const [room, setRoom] = React.useState<any>("");
   const [value, setValue] = React.useState("");
   const [mode, setMode] = React.useState("javascript");
-  const player = document.querySelector("#player");
-  const remote = document.querySelector("#remote");
+  const player: any | null = document.querySelector("#player");
+  const remote: any | null = document.querySelector("#remote");
   React.useEffect(() => {
     // 自分のデータが来たらpeerを作る。
     if (typeof props !== "undefined") {
       setPeer(
         new Peer(props.uid, {
-          key: skywayKey,
+          key: skywayKey
           // debug: 3
         })
       );
@@ -62,7 +63,7 @@ export const App = ({ props }) => {
           // 相手から映像、音声が送られてきたらここが走る。
           meshRoom.on("stream", async stream => {
             console.log("recieve Stream");
-            const newVideo = document.createElement("video");
+            const newVideo: any = document.createElement("video");
             newVideo.srcObject = stream;
             newVideo.playsInline = true;
             // mark peerId to find it later at peerLeave event
@@ -108,8 +109,8 @@ export const App = ({ props }) => {
   return (
     <div>
       <Editor
-        onChange={handleEditorOnChange.bind(this)}
-        onChangeMode={onChangeMode.bind(this)}
+        onChange={handleEditorOnChange}
+        onChangeMode={onChangeMode}
         value={value}
         mode={mode}
       />

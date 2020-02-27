@@ -1,7 +1,7 @@
 // import uuid from "uuid-v4";
-import random from "unique-string";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import random from "unique-string";
 function Lecture() {
   const router = useRouter();
   useEffect(() => {

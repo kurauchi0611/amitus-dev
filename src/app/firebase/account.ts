@@ -1,9 +1,8 @@
-import { storage, auth, functions, db, FieldValue } from "./firebase";
 import firebase from "firebase";
+import { auth, db, FieldValue, functions, storage } from "./firebase";
 const user = db.collection("users");
 export const accountDB = {
   loginUser: async account => {
-    console.log("startLogin");
     return await auth.signInWithEmailAndPassword(
       account.email,
       account.password
@@ -17,7 +16,6 @@ export const accountDB = {
   },
   createUser: async account => {
     let result = false;
-    console.log("startRegist");
     const createUser = functions.httpsCallable("createUser");
     await createUser(account)
       .then(res => {
