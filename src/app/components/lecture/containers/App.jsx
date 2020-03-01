@@ -3,6 +3,9 @@ import { Editor } from "../Editor";
 import { useRouter } from "next/router";
 import Peer from "skyway-js";
 import { skywayKey } from "../../../config";
+// import clm from "clmtrackr/build/clmtrackr";
+import {pModel} from "./pModel"
+import Head from 'next/head'
 export const App = ({ props }) => {
   const router = useRouter();
   const roomId = router.query.id;
@@ -38,6 +41,7 @@ export const App = ({ props }) => {
         console.log(player);
         player.muted = true;
         player.srcObject = localStream;
+        hoge(player);
         // ここでroom作成
         const meshRoom = peer.joinRoom(roomId, {
           mode: "mesh",
@@ -107,20 +111,174 @@ export const App = ({ props }) => {
   };
   return (
     <div>
+      <Head>
+        <script src="/clmtrackr.js"></script>
+      </Head>
       <Editor
         onChange={handleEditorOnChange.bind(this)}
         onChangeMode={onChangeMode.bind(this)}
         value={value}
         mode={mode}
       />
-      <video id="player" autoPlay></video>
-      <div id="remote"></div>
+      <div id="wrapper">
+        <div id="inner">
+          <video id="player" autoPlay></video>
+          <canvas id="wireframe"></canvas>
+          <div id="remote"></div>
+          <p id="log"></p>
+        </div>
+      </div>
     </div>
   );
 };
-
 
 // export default connect(
 //   state => ({ ...state }),
 //   dispatch => bindActionCreators(actions, dispatch)
 // )(App)
+
+const hoge = video => {
+  var wrapper = document.getElementById("wrapper");
+  var inner = document.getElementById("inner");
+
+  // 顔のワイヤーフレームが表示されるcanvas
+  var wireframe = document.getElementById("wireframe");
+  var wireframeContext = wireframe.getContext("2d");
+
+  // video
+  // var video = document.getElementById("player");
+
+  // ログ表示用
+  var log = document.getElementById("log");
+
+  // // clmtrackr
+  var ctrack;
+
+  // 描画用RequestAnimationFrame
+  var drawRequest;
+
+  //ベンダープリフィックスの有無を吸収
+  navigator.getUserMedia =
+    navigator.getUserMedia ||
+    navigator.webkitGetUserMedia ||
+    navigator.mozGetUserMedia;
+
+  // 処理開始
+  start();
+
+  /**
+   * 処理開始
+   */
+  function start() {
+    drowLog("Webカメラ読込中...");
+
+    // clmtrackrをインスタンス化
+    ctrack = new clm.tracker();
+
+    // MediaStream APIでWebカメラへアクセス
+
+    // videoのメタデータの取得が成功
+    video.addEventListener("loadedmetadata", function(event) {
+      console.log(event);
+      
+      // videoのサイズを取得
+      var videoW = video.clientWidth;
+      var videoH = video.clientHeight;
+      // windowの横幅を取得
+      var windowW = inner.clientWidth;
+      // windowの横幅と動画の横幅の比率を算出
+      var videoRate = windowW / videoW;
+
+      // サイズを設定
+      video.width = wireframe.width = windowW;
+      video.height = wireframe.height = videoH * videoRate;
+
+      // 繰り返し処理開始
+      loop();
+
+      drowLog("顔検出中...");
+
+      // 顔を検出できたときのEvent
+      document.addEventListener(
+        "clmtrackrConverged",
+        clmtrackrConvergedHandler
+      );
+      console.log("hoge");
+
+      // 顔を検出できなかったときのEvent
+      document.addEventListener("clmtrackrLost", clmtrackrLostHandler);
+      // 顔のモデルデータを設定
+      ctrack.init(pModel);
+      // 顔の検出を開始
+
+      ctrack.start(video);
+      console.log("aaaa");
+    });
+
+    // videoでWebカメラの映像を表示
+    // video.src = URL.createObjectURL(mediaStream);
+  }
+
+  /**
+   * 繰り返し処理
+   */
+  function loop() {
+    
+    // requestAnimationFrame
+    // console.log('loop');
+    drawRequest = requestAnimationFrame(loop);
+
+    // canvasの描画をクリア
+    wireframeContext.clearRect(0, 0, wireframe.width, wireframe.height);
+
+    // 座標が取得できたかどうか
+    if (ctrack.getCurrentPosition()) {
+      // ワイヤーフレームを描画
+      ctrack.draw(wireframe);
+    }
+  }
+
+  /**
+   * 顔検出失敗
+   */
+  function clmtrackrLostHandler() {
+    console.log("hogehoge");
+    // Remove Event
+    document.removeEventListener("clmtrackrLost", clmtrackrLostHandler);
+    document.removeEventListener(
+      "clmtrackrConverged",
+      clmtrackrConvergedHandler
+    );
+
+    drowLog("顔検出失敗");
+
+    // 繰り返し処理停止
+    cancelAnimationFrame(drawRequest);
+    // 顔検出処理停止
+    ctrack.stop();
+  }
+
+  /**
+   * 顔検出成功
+   */
+  function clmtrackrConvergedHandler() {
+    console.log("hogehogehoge");
+    // Remove Event
+    document.removeEventListener("clmtrackrLost", clmtrackrLostHandler);
+    document.removeEventListener(
+      "clmtrackrConverged",
+      clmtrackrConvergedHandler
+    );
+
+    drowLog("顔検出成功");
+  }
+
+  /**
+   * ログを表示
+   * @param str
+   */
+  function drowLog(str) {
+    log.innerHTML = str;
+  }
+};
+
