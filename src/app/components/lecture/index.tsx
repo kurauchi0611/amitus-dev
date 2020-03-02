@@ -11,14 +11,15 @@ import {
   // Divider
 } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     margin: {
       marginTop: theme.spacing(10),
       background: "#fff",
       padding: "0",
-      paddingBottom: theme.spacing(10)
+      paddingBottom: theme.spacing(10),
+      display:"flex",
+      flexFlow:"row",
     },
   })
 )
@@ -26,8 +27,10 @@ const useStyles = makeStyles((theme: Theme) =>
 export default ({props}) => {
   const classes=useStyles();
   return (
-    <Container className={classes.margin}>
+    <Container className={classes.margin} maxWidth="xl">
         <App props={props} />
     </Container>
   );
 };
+
+

@@ -26,7 +26,6 @@ export const main = async (id) => {
   /**
    * Canvasの初期化
    */
-console.log(id);
 
   const canvas = document.getElementById(id) as HTMLCanvasElement;
 console.log(canvas);
@@ -36,8 +35,7 @@ console.log(canvas);
    */
 
   const gl = canvas.getContext("webgl");
-  console.log(gl);
-  
+
   if (gl === null) return alert("WebGL未対応のブラウザです。");
 
   gl.enable(gl.BLEND);
@@ -229,7 +227,7 @@ console.log(canvas);
    */
 
   // フレームバッファとビューポートを、フレームワーク設定
-  const viewport: number[] = [-156, 0, canvas.width/2, canvas.height];
+  const viewport: number[] = [180, 0, canvas.width, canvas.height];
 
   // 最後の更新時間
   let lastUpdateTime = 0;
