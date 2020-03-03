@@ -23,7 +23,7 @@ export const App = ({ props }) => {
     if (typeof props !== "undefined") {
       setPeer(
         new Peer(props.uid, {
-          key: skywayKey,
+          // key: skywayKey,
           debug: 3
         })
       );
@@ -149,10 +149,10 @@ export const App = ({ props }) => {
         value={value}
         mode={mode}
       />
-      <Live2dHost id={"myself"} peer={peer} handlePosOnChange={handlePosOnChange} />
+      <Live2dHost  peer={peer} handlePosOnChange={handlePosOnChange} />
       <div style={{visibility:"hidden",transform:"scale(0)",position:"absolute"}}>
         <div id="remote"></div>
-        <Live2dGuest id={"myself"} pos={param} />
+        <Live2dGuest pos={param} />
         <video id="voice" autoPlay ></video>
       </div>
     </React.Fragment>

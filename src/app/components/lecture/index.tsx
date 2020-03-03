@@ -14,12 +14,14 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     margin: {
-      marginTop: theme.spacing(10),
+      marginTop: theme.spacing(9),
       background: "#fff",
-      padding: "0",
-      paddingBottom: theme.spacing(10),
+      // padding: "0",
+      paddingTop:theme.spacing(2),
+      // paddingBottom: theme.spacing(10),
       display:"flex",
       flexFlow:"row",
+      // justifyContent:"center"
     },
   })
 )

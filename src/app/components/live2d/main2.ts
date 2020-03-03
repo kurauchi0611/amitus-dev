@@ -18,8 +18,8 @@ import AppCubismUserModel from "./AppCubismUserModel";
 // console.log(document.readyState);
 export let model;
 export let deltaTimeSecond = 0;
-export const main = async id => {
-  const modelName = "Hiyori";
+export const main = async () => {
+  const modelName = "yukari_BS4";
   const resourcesDir = `/Resources/${modelName}/`;
   const model3JsonFilename = `${modelName}.model3.json`;
 
@@ -27,7 +27,7 @@ export const main = async id => {
    * Canvasの初期化
    */
 
-  const canvas = document.getElementById(id) as HTMLCanvasElement;
+  const canvas = document.getElementById("live2d") as HTMLCanvasElement;
 
   /**
    * WebGLコンテキストの初期化
@@ -198,7 +198,7 @@ export const main = async id => {
     // NOTE: modelMatrixは、モデルのユニット単位での幅と高さが1×1に収まるように縮めようとしている？
     const modelMatrix = model.getModelMatrix();
     projectionMatrix.loadIdentity();
-    const scale = 6;
+    const scale = 4;
     // NOTE:
     // 1×1にしたモデルを、キャンバスの縦横比になるように引き延ばそうとする
     // 高さを調整してモデルを正しく表示するには、高さを canvas.width/canvas.height 倍する
@@ -214,7 +214,7 @@ export const main = async id => {
 
     // モデルが良い感じの大きさになるように拡大・縮小
     projectionMatrix.scaleRelative(scale, scale);
-    projectionMatrix.translateRelative(0, -0.3);
+    projectionMatrix.translateRelative(0, -0.25);
 
     projectionMatrix.multiplyByMatrix(modelMatrix);
     model.getRenderer().setMvpMatrix(projectionMatrix);

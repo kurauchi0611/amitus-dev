@@ -18,8 +18,34 @@ import AppCubismUserModel from "./AppCubismUserModel";
 // console.log(document.readyState);
 export let model;
 export let deltaTimeSecond = 0;
-export const main = async id => {
-  const modelName = "Hiyori";
+export const main = async selectedModel => {
+  // キャラによって位置調整しよう
+  // Hiyori scale=6 trans=-0.3  "Hiyori","Haru","Natori" new
+  // Mark 3.5 -0.1 "Mark", new
+  // wuzei 3.5 -0.2 "wuzei","ika3_2", ika3 new
+  // 129 2.5 -0.2 "129","nezuko","mur", hakuto
+  // yukari 4 -0.25 "yukari_BS4", old
+  // akane 3.5 -0.3
+  // el0 3 0.15 "el0",
+  // ,"yokubarisu", "Thinking_Face", "CN_Pikachu","Bronia"
+  const modelList: any[] = [
+    { name: "Hiyori", scale: 6, trans: -0.3 },
+    { name: "Haru", scale: 6, trans: -0.3 },
+    { name: "Natori", scale: 6, trans: -0.3 },
+    { name: "Mark", scale: 3.5, trans: -0.1 },
+    { name: "wuzei", scale: 3.5, trans: -0.2 },
+    { name: "ika3_2", scale: 3.5, trans: -0.2 },
+    { name: "129", scale: 2.5, trans: -0.2 },
+    { name: "nezuko", scale: 2.5, trans: -0.2 },
+    { name: "hakuto", scale: 2.5, trans: -0.2 },
+    { name: "mur", scale: 2, trans: -0.15 },
+    { name: "yukari_BS4", scale: 4, trans: -0.25 },
+    { name: "Akane_BS4", scale: 3.5, trans: -0.3 },
+    { name: "el0", scale: 3, trans: 0.15 }
+  ];
+  const modelName = modelList[selectedModel].name;
+  const modelScale = modelList[selectedModel].scale;
+  const modelTrans = modelList[selectedModel].trans;
   const resourcesDir = `/Resources/${modelName}/`;
   const model3JsonFilename = `${modelName}.model3.json`;
 
@@ -27,7 +53,7 @@ export const main = async id => {
    * Canvasの初期化
    */
 
-  const canvas = document.getElementById(id) as HTMLCanvasElement;
+  const canvas = document.getElementById("live2d") as HTMLCanvasElement;
 
   /**
    * WebGLコンテキストの初期化
@@ -110,12 +136,12 @@ export const main = async id => {
     const groupName = modelSetting.getMotionGroupName(i);
 
     for (let j = 0; j < modelSetting.getMotionCount(groupName); j++) {
-      const filename = modelSetting.getMotionFileName(groupName, j);
-      motionMetaDataArr.push({
-        path: `${resourcesDir}${filename}`,
-        fadeIn: modelSetting.getMotionFadeInTimeValue(groupName, j),
-        fadeOut: modelSetting.getMotionFadeOutTimeValue(groupName, j)
-      });
+      // const filename = modelSetting.getMotionFileName(groupName, j);
+      // motionMetaDataArr.push({
+      //   path: `${resourcesDir}${filename}`,
+      //   fadeIn: modelSetting.getMotionFadeInTimeValue(groupName, j),
+      //   fadeOut: modelSetting.getMotionFadeOutTimeValue(groupName, j)
+      // });
     }
   }
 
@@ -125,7 +151,13 @@ export const main = async id => {
   /**
    * ファイル、テクスチャをまとめてロード
    */
-  const [moc3ArrayBuffer, textures, pose3ArrayBuffer]: // motionArrayBuffers,
+  const [
+    moc3ArrayBuffer,
+    textures,
+    pose3ArrayBuffer,
+    motionArrayBuffers,
+    physics3ArrayBuffer
+  ]: // motionArrayBuffers,
   // physics3ArrayBuffer
   any = await Promise.all([
     loadAsArrayBufferAsync(moc3FilePath), // モデルファイル
@@ -173,17 +205,19 @@ export const main = async id => {
     model.addLipSyncParameterId(modelSetting.getLipSyncParameterId(i));
   }
   // モーションを登録
-  // motionArrayBuffers.forEach((buffer: ArrayBuffer, idx: number) => {
-  //   model.addMotion(
-  //     buffer,
-  //     motionMetaDataArr[idx].path,
-  //     motionMetaDataArr[idx].fadeIn,
-  //     motionMetaDataArr[idx].fadeOut
-  //   );
-  // });
+  motionArrayBuffers.forEach((buffer: ArrayBuffer, idx: number) => {
+    if (false) console.log(buffer);
+    if (false) console.log(idx);
+    // model.addMotion(
+    //   buffer,
+    //   motionMetaDataArr[idx].path,
+    //   motionMetaDataArr[idx].fadeIn,
+    //   motionMetaDataArr[idx].fadeOut
+    // );
+  });
 
   // 物理演算設定
-  // model.loadPhysics(physics3ArrayBuffer, physics3ArrayBuffer.byteLength);
+  model.loadPhysics(physics3ArrayBuffer, physics3ArrayBuffer.byteLength);
 
   /**
    * Live2Dモデルのサイズ調整
@@ -198,7 +232,8 @@ export const main = async id => {
     // NOTE: modelMatrixは、モデルのユニット単位での幅と高さが1×1に収まるように縮めようとしている？
     const modelMatrix = model.getModelMatrix();
     projectionMatrix.loadIdentity();
-    const scale = 6;
+    // ここスケール
+    const scale = modelScale;
     // NOTE:
     // 1×1にしたモデルを、キャンバスの縦横比になるように引き延ばそうとする
     // 高さを調整してモデルを正しく表示するには、高さを canvas.width/canvas.height 倍する
@@ -214,7 +249,8 @@ export const main = async id => {
 
     // モデルが良い感じの大きさになるように拡大・縮小
     projectionMatrix.scaleRelative(scale, scale);
-    projectionMatrix.translateRelative(0, -0.3);
+    // 位置合わせ
+    projectionMatrix.translateRelative(0, modelTrans);
 
     projectionMatrix.multiplyByMatrix(modelMatrix);
     model.getRenderer().setMvpMatrix(projectionMatrix);
@@ -226,7 +262,7 @@ export const main = async id => {
    */
 
   // フレームバッファとビューポートを、フレームワーク設定
-  const viewport: number[] = [-156, 0, canvas.width / 2, canvas.height];
+  const viewport: number[] = [-156, 0, canvas.width, canvas.height];
 
   // 最後の更新時間
   let lastUpdateTime = 0;
@@ -294,8 +330,7 @@ async function createTexture(
 ): Promise<WebGLTexture> {
   return new Promise(
     (resolve: (texture: any) => void, reject: (e: string) => void) => {
-      console.log(reject);
-
+      if (false) console.log(reject);
       // データのオンロードをトリガーにする
       const img: HTMLImageElement = new Image();
       img.onload = () => {

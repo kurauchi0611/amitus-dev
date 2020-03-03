@@ -1,14 +1,38 @@
 import React from "react";
 import Head from "next/head";
 import { pModel } from "./pModel";
-// import "./live2dcubismcore";
-// import "./bundle"
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
 import { main, model, deltaTimeSecond } from "./main";
-export const Live2dHost = ({ id, peer, handlePosOnChange, room }) => {
+import { makeStyles } from "@material-ui/core/styles";
+import Grid from "@material-ui/core/Grid";
+const useStyles = makeStyles(theme => ({
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2)
+  },
+  column:{
+    display:"flex",
+    flexFlow:"row",
+    alignItems:"center"
+  }
+}));
+export const Live2dHost = ({ peer, handlePosOnChange }) => {
   const player = document.getElementById("player");
+  const classes = useStyles();
+  const inputLabel = React.useRef(null);
+  const [labelWidth, setLabelWidth] = React.useState(0);
+  React.useEffect(() => {
+    setLabelWidth(inputLabel.current.offsetWidth);
+  }, []);
   React.useEffect(() => {
     if (document.readyState !== "loading") {
-      main(id);
+      main(0);
     } else {
       document.addEventListener("DOMContentLoaded", main, false);
     }
@@ -43,14 +67,50 @@ export const Live2dHost = ({ id, peer, handlePosOnChange, room }) => {
   React.useEffect(() => {
     console.log(peer);
   }, [peer]);
+
+  const handleModelChange = event => {
+    main(event.target.value);
+  };
   return (
     <div>
       <Head>
         <script src="/clmtrackr.js"></script>
         <script src="https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js"></script>
       </Head>
-      <canvas id={id} width="700" height="512"></canvas>
-      <p id="log"></p>
+      <Grid container>
+        <Grid item xs={12} className={classes.column}>
+          <FormControl variant="outlined" className={classes.formControl}>
+            <InputLabel ref={inputLabel} id="demo-simple-select-outlined-label">
+              モデル
+            </InputLabel>
+            <Select
+              labelId="demo-simple-select-outlined-label"
+              id="demo-simple-select-outlined"
+              defaultValue={0}
+              onChange={handleModelChange}
+              labelWidth={labelWidth}
+            >
+              <MenuItem value={0}>ひより</MenuItem>
+              <MenuItem value={1}>ハル</MenuItem>
+              <MenuItem value={2}>なとり</MenuItem>
+              <MenuItem value={3}>マーク</MenuItem>
+              <MenuItem value={4}>イカ1</MenuItem>
+              <MenuItem value={5}>イカ2</MenuItem>
+              <MenuItem value={6}>ルフレ</MenuItem>
+              <MenuItem value={7}>ねずこ</MenuItem>
+              <MenuItem value={8}>はくと</MenuItem>
+              <MenuItem value={9}>スペース猫</MenuItem>
+              <MenuItem value={10}>ゆかり</MenuItem>
+              <MenuItem value={11}>あかね</MenuItem>
+              <MenuItem value={12}>無口少女</MenuItem>
+            </Select>
+          </FormControl>
+          <p id="log"></p>
+        </Grid>
+        <Grid item>
+          <canvas id="live2d" width="700" height="512"></canvas>
+        </Grid>
+      </Grid>
       <div id="inner" style={{ transform: "scale(0)" }}>
         <video
           id="player"
@@ -121,8 +181,8 @@ const skyWay = (video, handlePosOnChange) => {
       var videoRate = windowW / videoW;
 
       // サイズを設定
-      video.width  = windowW;
-      video.height  = videoH * videoRate;
+      video.width = windowW;
+      video.height = videoH * videoRate;
 
       // 繰り返し処理開始
       loop();

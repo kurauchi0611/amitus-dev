@@ -143,7 +143,8 @@ export default class AppCubismUserModel extends cubismusermodel.CubismUserModel 
     var vecR = [pos[12][0] - pos[7][0], pos[12][1] - pos[7][1]];
     var lipH = pos[53][1] - pos[57][1];
     var eyeHL = pos[26][1] - pos[24][1];
-    var eyeHR = pos[31][1] - pos[29][1];
+    // var eyeHR = pos[31][1] - pos[29][1];
+    // 3以降のモデル用
     this._model.setParameterValueById(
       Live2DCubismFramework.CubismFramework.getIdManager().getId("ParamAngleX"),
       (90 * (faceL - faceR)) / (faceL + faceR)
@@ -164,7 +165,7 @@ export default class AppCubismUserModel extends cubismusermodel.CubismUserModel 
       ),
       (pos[57][1] - pos[60][1]) / lipH - 0.2
     );
-    
+
     this._model.setParameterValueById(
       Live2DCubismFramework.CubismFramework.getIdManager().getId(
         "ParamMouthForm"
@@ -183,18 +184,18 @@ export default class AppCubismUserModel extends cubismusermodel.CubismUserModel 
       ),
       (pos[27][1] - pos[24][1]) / eyeHL - 0.5
     );
-    this._model.setParameterValueById(
-      Live2DCubismFramework.CubismFramework.getIdManager().getId(
-        "ParamEyeLOpen"
-      ),
-      (0.7 * eyeHL) / lipH
-    );
-    this._model.setParameterValueById(
-      Live2DCubismFramework.CubismFramework.getIdManager().getId(
-        "ParamEyeROpen"
-      ),
-      (0.7 * eyeHR) / lipH
-    );
+    // this._model.setParameterValueById(
+    //   Live2DCubismFramework.CubismFramework.getIdManager().getId(
+    //     "ParamEyeLOpen"
+    //   ),
+    //   (0.7 * eyeHL) / lipH
+    // );
+    // this._model.setParameterValueById(
+    //   Live2DCubismFramework.CubismFramework.getIdManager().getId(
+    //     "ParamEyeROpen"
+    //   ),
+    //   (0.7 * eyeHR) / lipH
+    // );
 
     this._model.setParameterValueById(
       Live2DCubismFramework.CubismFramework.getIdManager().getId("ParamBlowLY"),
@@ -204,22 +205,120 @@ export default class AppCubismUserModel extends cubismusermodel.CubismUserModel 
       Live2DCubismFramework.CubismFramework.getIdManager().getId("ParamBlowRY"),
       (2 * (pos[29][1] - pos[17][1])) / lipH - 4
     );
-    
+
     this._model.setParameterValueById(
-      Live2DCubismFramework.CubismFramework.getIdManager().getId("ParamBodyAngleX"),
-      ((90 * (faceL - faceR)) / (faceL + faceR))/3
+      Live2DCubismFramework.CubismFramework.getIdManager().getId(
+        "ParamBodyAngleX"
+      ),
+      (90 * (faceL - faceR)) / (faceL + faceR) / 3
     );
     this._model.setParameterValueById(
-      Live2DCubismFramework.CubismFramework.getIdManager().getId("ParamBodyAngleZ"),
-      ((-90 * (pos[33][0] - pos[62][0])) / (pos[33][1] - pos[62][1]))/3
+      Live2DCubismFramework.CubismFramework.getIdManager().getId(
+        "ParamBodyAngleZ"
+      ),
+      (-90 * (pos[33][0] - pos[62][0])) / (pos[33][1] - pos[62][1]) / 3
     );
     this._model.setParameterValueById(
-      Live2DCubismFramework.CubismFramework.getIdManager().getId("ParamBodyAngleY"),
-      ((-90 * (vecL[0] * vecR[0] + vecL[1] * vecR[1])) /
+      Live2DCubismFramework.CubismFramework.getIdManager().getId(
+        "ParamBodyAngleY"
+      ),
+      (-90 * (vecL[0] * vecR[0] + vecL[1] * vecR[1])) /
         Math.sqrt(vecL[0] * vecL[0] + vecL[1] * vecL[1]) /
-        Math.sqrt(vecR[0] * vecR[0] + vecR[1] * vecR[1]))/3
+        Math.sqrt(vecR[0] * vecR[0] + vecR[1] * vecR[1]) /
+        3
     );
 
+    // 2以前
+    this._model.setParameterValueById(
+      Live2DCubismFramework.CubismFramework.getIdManager().getId("PARAM_ANGLE_X"),
+      (90 * (faceL - faceR)) / (faceL + faceR)
+    );
+    this._model.setParameterValueById(
+      Live2DCubismFramework.CubismFramework.getIdManager().getId("PARAM_ANGLE_Z"),
+      (-90 * (pos[33][0] - pos[62][0])) / (pos[33][1] - pos[62][1])
+    );
+    this._model.setParameterValueById(
+      Live2DCubismFramework.CubismFramework.getIdManager().getId("PARAM_ANGLE_Y"),
+      (-90 * (vecL[0] * vecR[0] + vecL[1] * vecR[1])) /
+        Math.sqrt(vecL[0] * vecL[0] + vecL[1] * vecL[1]) /
+        Math.sqrt(vecR[0] * vecR[0] + vecR[1] * vecR[1])
+    );
+    this._model.setParameterValueById(
+      Live2DCubismFramework.CubismFramework.getIdManager().getId(
+        "PARAM_MOUTH_OPEN_Y"
+      ),
+      (pos[57][1] - pos[60][1]) / lipH - 0.2
+    );
+
+    // this._model.setParameterValueById(
+    //   Live2DCubismFramework.CubismFramework.getIdManager().getId(
+    //     "PARAM_MOUTH_FORM"
+    //   ),
+    //   (2 * (pos[50][0] - pos[44][0])) / (pos[30][0] - pos[25][0]) - 1
+    // );
+    this._model.setParameterValueById(
+      Live2DCubismFramework.CubismFramework.getIdManager().getId(
+        "PARAM_EYE_BALL_X"
+      ),
+      (pos[27][0] - pos[23][0]) / (pos[25][0] - pos[23][0]) - 0.5
+    );
+    this._model.setParameterValueById(
+      Live2DCubismFramework.CubismFramework.getIdManager().getId(
+        "PARAM_EYE_BALL_Y"
+      ),
+      (pos[27][1] - pos[24][1]) / eyeHL - 0.5
+    );
+    // this._model.setParameterValueById(
+    //   Live2DCubismFramework.CubismFramework.getIdManager().getId(
+    //     "PARAM_EYE_L_OPEN"
+    //   ),
+    //   (0.7 * eyeHL) / lipH
+    // );
+    // this._model.setParameterValueById(
+    //   Live2DCubismFramework.CubismFramework.getIdManager().getId(
+    //     "PARAM_EYE_R_OPEN"
+    //   ),
+    //   (0.7 * eyeHR) / lipH
+    // );
+
+    this._model.setParameterValueById(
+      Live2DCubismFramework.CubismFramework.getIdManager().getId("ParamBlowLY"),
+      (2 * (pos[24][1] - pos[21][1])) / lipH - 4
+    );
+    this._model.setParameterValueById(
+      Live2DCubismFramework.CubismFramework.getIdManager().getId("ParamBlowRY"),
+      (2 * (pos[29][1] - pos[17][1])) / lipH - 4
+    );
+
+    this._model.setParameterValueById(
+      Live2DCubismFramework.CubismFramework.getIdManager().getId(
+        "PARAM_BODY_ANGLE_X"
+      ),
+      (90 * (faceL - faceR)) / (faceL + faceR) / 3
+    );
+    this._model.setParameterValueById(
+      Live2DCubismFramework.CubismFramework.getIdManager().getId(
+        "PARAM_BODY_ANGLE_Z"
+      ),
+      (-90 * (pos[33][0] - pos[62][0])) / (pos[33][1] - pos[62][1]) / 3
+    );
+    this._model.setParameterValueById(
+      Live2DCubismFramework.CubismFramework.getIdManager().getId(
+        "PARAM_BODY_ANGLE_Y"
+      ),
+      (-90 * (vecL[0] * vecR[0] + vecL[1] * vecR[1])) /
+        Math.sqrt(vecL[0] * vecL[0] + vecL[1] * vecL[1]) /
+        Math.sqrt(vecR[0] * vecR[0] + vecR[1] * vecR[1]) /
+        3
+    );
+    this._model.setPartOpacityById(Live2DCubismFramework.CubismFramework.getIdManager().getId("PartArmA"), 0);
+    this._model.setPartOpacityById(Live2DCubismFramework.CubismFramework.getIdManager().getId("PartWatchB"), 0);
+    this._model.setPartOpacityById(Live2DCubismFramework.CubismFramework.getIdManager().getId("PartArmAL"), 0);
+    this._model.setPartOpacityById(Live2DCubismFramework.CubismFramework.getIdManager().getId("PartArmAR"), 0);
+    this._model.setPartOpacityById(Live2DCubismFramework.CubismFramework.getIdManager().getId("PartArmBR"), 0);
+    this._model.setPartOpacityById(Live2DCubismFramework.CubismFramework.getIdManager().getId("PartArmDL"), 0);
+    this._model.setPartOpacityById(Live2DCubismFramework.CubismFramework.getIdManager().getId("Part01ArmRA001"), 0);
+    this._model.setPartOpacityById(Live2DCubismFramework.CubismFramework.getIdManager().getId("Part01ArmLA001"), 0);
 
     // まばたき
     if (!motionUpdated && this._eyeBlink != null) {
@@ -227,7 +326,7 @@ export default class AppCubismUserModel extends cubismusermodel.CubismUserModel 
     }
 
     // ポーズ
-    if (this._pose !== null) this._pose.updateParameters(this._model, 0);
+    // if (this._pose !== null) this._pose.updateParameters(this._model, 0);
 
     // 物理演算
     if (this._physics != null)

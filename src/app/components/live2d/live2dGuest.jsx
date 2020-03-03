@@ -4,7 +4,7 @@ import { main, model, deltaTimeSecond } from "./main2";
 export const Live2dGuest = ({ id, pos }) => {
   React.useEffect(() => {
     if (document.readyState !== "loading") {
-      main(id);
+      main();
     } else {
       document.addEventListener("DOMContentLoaded", main, false);
     }
