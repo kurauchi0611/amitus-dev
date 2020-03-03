@@ -17,7 +17,7 @@ export const Live2dGuest = ({ id, pos }) => {
   }, [pos]);
   return (
     <div>
-      <Head>
+      {/* <Head>
         <script src="https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js"></script>
       </Head>
       <canvas id={id} width="512" height="512"></canvas>
@@ -28,7 +28,7 @@ export const Live2dGuest = ({ id, pos }) => {
           style={{ position: "absolute", left: "0" }}
         ></canvas>
         <p id="log"></p>
-      </div>
+      </div> */}
     </div>
   );
 };

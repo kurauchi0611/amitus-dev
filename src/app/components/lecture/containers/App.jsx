@@ -5,7 +5,7 @@ import Peer from "skyway-js";
 import { skywayKey } from "../../../config";
 
 import Head from "next/head";
-import { Live2d } from "../../live2d";
+import { Live2dHost } from "../../live2d/live2dHost";
 import { Live2dGuest } from "../../live2d/live2dGuest";
 export const App = ({ props }) => {
   const router = useRouter();
@@ -149,7 +149,7 @@ export const App = ({ props }) => {
         value={value}
         mode={mode}
       />
-      <Live2d id={"myself"} peer={peer} handlePosOnChange={handlePosOnChange} />
+      <Live2dHost id={"myself"} peer={peer} handlePosOnChange={handlePosOnChange} />
       <div style={{visibility:"hidden",transform:"scale(0)",position:"absolute"}}>
         <div id="remote"></div>
         <Live2dGuest id={"myself"} pos={param} />

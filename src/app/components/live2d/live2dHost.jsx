@@ -4,7 +4,7 @@ import { pModel } from "./pModel";
 // import "./live2dcubismcore";
 // import "./bundle"
 import { main, model, deltaTimeSecond } from "./main";
-export const Live2d = ({ id, peer, handlePosOnChange, room }) => {
+export const Live2dHost = ({ id, peer, handlePosOnChange, room }) => {
   const player = document.getElementById("player");
   React.useEffect(() => {
     if (document.readyState !== "loading") {
@@ -51,16 +51,19 @@ export const Live2d = ({ id, peer, handlePosOnChange, room }) => {
       </Head>
       <canvas id={id} width="700" height="512"></canvas>
       <p id="log"></p>
-      <video
-        id="player"
-        autoPlay
-        style={{
-          transform: "scale(0)",
-          position: "absolute",
-          zIndex: "-100",
-          top: "0"
-        }}
-      ></video>
+      <div id="inner" style={{ transform: "scale(0)" }}>
+        <video
+          id="player"
+          autoPlay
+          style={{
+            opacity: 0,
+            // transform: "scaleZ(-1)",
+            position: "absolute",
+            zIndex: "-100",
+            top: "0"
+          }}
+        ></video>
+      </div>
       {/* <canvas
           id="wireframe"
           style={{ position: "absolute", left: "0" }}
@@ -73,8 +76,8 @@ const skyWay = (video, handlePosOnChange) => {
   var inner = document.getElementById("inner");
 
   // 顔のワイヤーフレームが表示されるcanvas
-  var wireframe = document.getElementById("wireframe");
-  var wireframeContext = wireframe.getContext("2d");
+  // var wireframe = document.getElementById("wireframe");
+  // var wireframeContext = wireframe.getContext("2d");
 
   // video
   // var video = document.getElementById("player");
@@ -118,8 +121,8 @@ const skyWay = (video, handlePosOnChange) => {
       var videoRate = windowW / videoW;
 
       // サイズを設定
-      video.width = wireframe.width = windowW;
-      video.height = wireframe.height = videoH * videoRate;
+      video.width  = windowW;
+      video.height  = videoH * videoRate;
 
       // 繰り返し処理開始
       loop();
@@ -156,7 +159,7 @@ const skyWay = (video, handlePosOnChange) => {
     drawRequest = requestAnimationFrame(loop);
 
     // canvasの描画をクリア
-    wireframeContext.clearRect(0, 0, wireframe.width, wireframe.height);
+    // wireframeContext.clearRect(0, 0, wireframe.width, wireframe.height);
 
     // 座標が取得できたかどうか
     if (ctrack.getCurrentPosition()) {

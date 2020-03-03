@@ -17,9 +17,9 @@ import AppCubismUserModel from "./AppCubismUserModel";
 
 // console.log(document.readyState);
 export let model;
-export let deltaTimeSecond=0;
-export const main = async (id) => {
-  const modelName="Hiyori"
+export let deltaTimeSecond = 0;
+export const main = async id => {
+  const modelName = "Hiyori";
   const resourcesDir = `/Resources/${modelName}/`;
   const model3JsonFilename = `${modelName}.model3.json`;
 
@@ -28,7 +28,6 @@ export const main = async (id) => {
    */
 
   const canvas = document.getElementById(id) as HTMLCanvasElement;
-console.log(canvas);
 
   /**
    * WebGLコンテキストの初期化
@@ -145,7 +144,7 @@ console.log(canvas);
    */
 
   // const model = new AppCubismUserModel();
-  model =createModel()
+  model = createModel();
   // モデルデータをロード
   model.loadModel(moc3ArrayBuffer);
   // ポーズデータをロード
@@ -236,8 +235,8 @@ console.log(canvas);
     deltaTimeSecond = (time - lastUpdateTime) / 1000;
 
     // 頂点の更新
-    const pos=null;
-    model.update(deltaTimeSecond,pos);
+    const pos = null;
+    model.update(deltaTimeSecond, pos);
 
     if (model.isMotionFinished) {
       const idx = Math.floor(Math.random() * model.motionNames.length);
