@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
     alignItems:"center"
   }
 }));
-export const Live2dHost = ({ peer, handlePosOnChange }) => {
+export const Live2dHost = ({ peer, handlePosOnChange,handleModelOnChange }) => {
   const player = document.getElementById("player");
   const classes = useStyles();
   const inputLabel = React.useRef(null);
@@ -70,6 +70,7 @@ export const Live2dHost = ({ peer, handlePosOnChange }) => {
 
   const handleModelChange = event => {
     main(event.target.value);
+    handleModelOnChange(event.target.value);
   };
   return (
     <div>

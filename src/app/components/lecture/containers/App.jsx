@@ -15,6 +15,8 @@ export const App = ({ props }) => {
   const [value, setValue] = React.useState("");
   const [mode, setMode] = React.useState("javascript");
   const [param, setParam] = React.useState("");
+  const [myModel, setMyModel] = React.useState(0);
+  const [guestModel, setGuestModel] = React.useState(0);
   const voice = document.querySelector("#voice");
   const remote = document.querySelector("#remote");
   // live2dの描画
@@ -23,7 +25,7 @@ export const App = ({ props }) => {
     if (typeof props !== "undefined") {
       setPeer(
         new Peer(props.uid, {
-          // key: skywayKey,
+          key: skywayKey,
           debug: 3
         })
       );
@@ -63,6 +65,7 @@ export const App = ({ props }) => {
           meshRoom.on("data", ({ src, data }) => {
             // console.log(src);
             if (data.type === "live2dParam") setParam(data.pos);
+            if (data.type === "live2dModel") setGuestModel(data.myModel);
             if (data.type === "edit") setValue(data.text);
             if (data.type === "changeMode") setMode(data.changeMode);
           });
@@ -114,15 +117,15 @@ export const App = ({ props }) => {
   React.useEffect(() => {
     sendData({ type: "live2dParam", pos });
   }, [pos]);
+  React.useEffect(() => {
+    sendData({ type: "live2dModel", myModel });
+  }, [myModel]);
 
   const handlePosOnChange = param => {
     setPos(param);
-    // console.log(param);
-    // const aaa=JSON.stringify(param)
-    // if (room !== "") {
-    //   console.log(param);
-    //   sendData({ type: "live2dParam", param });
-    // }
+  };
+  const handleModelOnChange = param => {
+    setMyModel(param);
   };
   const handleEditorOnChange = text => {
     setValue(text);
@@ -149,10 +152,10 @@ export const App = ({ props }) => {
         value={value}
         mode={mode}
       />
-      <Live2dHost  peer={peer} handlePosOnChange={handlePosOnChange} />
+      <Live2dHost  peer={peer} handlePosOnChange={handlePosOnChange} handleModelOnChange={handleModelOnChange}/>
       <div style={{visibility:"hidden",transform:"scale(0)",position:"absolute"}}>
         <div id="remote"></div>
-        <Live2dGuest pos={param} />
+        <Live2dGuest pos={param} guestModel={guestModel} />
         <video id="voice" autoPlay ></video>
       </div>
     </React.Fragment>

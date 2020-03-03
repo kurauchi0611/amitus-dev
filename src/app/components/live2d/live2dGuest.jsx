@@ -1,10 +1,10 @@
 import React from "react";
 import Head from "next/head";
 import { main, model, deltaTimeSecond } from "./main2";
-export const Live2dGuest = ({ id, pos }) => {
+export const Live2dGuest = ({ pos,guestModel }) => {
   React.useEffect(() => {
     if (document.readyState !== "loading") {
-      main();
+      main(guestModel);
     } else {
       document.addEventListener("DOMContentLoaded", main, false);
     }
@@ -15,6 +15,11 @@ export const Live2dGuest = ({ id, pos }) => {
       model.update(deltaTimeSecond, pos);
     }
   }, [pos]);
+  React.useEffect(() => {
+    if (pos !== null && typeof model !== "undefined") {
+      main(guestModel);
+    }
+  }, [guestModel]);
   return (
     <div>
       {/* <Head>
