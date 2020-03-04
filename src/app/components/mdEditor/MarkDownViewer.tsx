@@ -6,10 +6,12 @@ import { CodeBlock } from "./codeBlock";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     wrap: {
-      marginLeft:theme.spacing(4),
-      marginRight:theme.spacing(4),
+      // marginLeft: theme.spacing(4),
+      // marginRight: theme.spacing(4),
       display: "flex",
-      justifyContent: "space-between"
+      justifyContent: "space-between",
+      // alignItems:"stretch"
+      height: "100%"
     },
     padding: {
       paddingLeft: theme.spacing(1),
@@ -19,7 +21,6 @@ const useStyles = makeStyles((theme: Theme) =>
       // border: "1px solid #c8ccd0",
       background: "#fff",
       width: "100%",
-      maxHeight: "70%",
       overflowY: "auto",
       wordBreak: "break-all"
     },
@@ -36,13 +37,13 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-
-export const MarkDownViewer = ({text,}) => {
+export const MarkDownViewer = ({ text }) => {
   const classes = useStyles();
-  
+
   return (
     <div className={classes.wrap}>
       <div className={classes.preview}>
+        <div className={classes.previewChar}>プレビュー</div>
         <ReactMarkdown
           className={classes.padding}
           source={text}
@@ -53,5 +54,3 @@ export const MarkDownViewer = ({text,}) => {
     </div>
   );
 };
-
-

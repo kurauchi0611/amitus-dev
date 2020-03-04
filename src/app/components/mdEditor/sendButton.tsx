@@ -17,8 +17,6 @@ import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
 import PublishIcon from "@material-ui/icons/Publish";
 import SaveIcon from "@material-ui/icons/Save";
 
-const options = ["質問を投稿する", "下書き保存する"];
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     button: {
@@ -30,13 +28,17 @@ const useStyles = makeStyles((theme: Theme) =>
       border: 0,
       color: "white",
       boxShadow: `0 3px 5px 2px ${theme.palette.buttonMain.dark}`
+    },
+    buttonReverse: {
+      background: "linear-gradient(45deg,  #32A2D3 30%,#16A196 80%)"
     }
   })
 );
 
-export const SendButton = ({ handleChange, selectedIndex,onClick }) => {
+export const SendButton = ({ handleChange, selectedIndex, onClick, label }) => {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef<HTMLDivElement>(null);
+  const options = [`${label}を投稿する`, "下書き保存する"];
 
   const classes = useStyles();
 
@@ -67,7 +69,7 @@ export const SendButton = ({ handleChange, selectedIndex,onClick }) => {
   };
 
   return (
-    <Grid container direction="column" alignItems="flex-end">
+    <Grid container direction="column" alignItems="center">
       <Grid item xs={12}>
         <ButtonGroup
           variant="contained"
@@ -81,7 +83,7 @@ export const SendButton = ({ handleChange, selectedIndex,onClick }) => {
             {options[selectedIndex]}
           </Button>
           <Button
-            className={classes.button}
+            className={classes.button + " " + classes.buttonReverse}
             color="primary"
             size="small"
             aria-controls={open ? "split-button-menu" : undefined}
