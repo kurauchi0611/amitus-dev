@@ -12,7 +12,8 @@ import { accountDB } from "../../firebase/account";
 import { PasswordForm } from "./passwordForm";
 import { MailForm } from "./mailForm";
 import { UserNameForm } from "./userNameForm";
-
+import { TarmsOfService } from "./termsOfService";
+import { ProgressModal } from "../progressModal";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     button: {
@@ -50,6 +51,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export const RegistForm = ({ label }) => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
+  const [progress, setProgress] = React.useState(false);
   const [state, setState] = React.useState<{
     userName: string;
     email: string;
@@ -75,7 +77,7 @@ export const RegistForm = ({ label }) => {
     setOpen(true);
   };
   const handleClose = () => {
-    setOpen(false);
+    setProgress(false);
     setState({
       userName: "",
       email: "",
@@ -87,6 +89,7 @@ export const RegistForm = ({ label }) => {
       checkPasswordFaild: "",
       checkNameFaild: ""
     });
+    setOpen(false);
   };
   const emailValidation = email => {
     if (!email) return "メールアドレスを入力してください";
@@ -95,7 +98,8 @@ export const RegistForm = ({ label }) => {
     return true;
   };
   const passwordValidation = password => {
-    if (!password) return "6文字以上でパスワードを入力してください";
+    if (!password || password.length < 6)
+      return "6文字以上でパスワードを入力してください";
     return true;
   };
   const nameValidation = name => {
@@ -143,6 +147,7 @@ export const RegistForm = ({ label }) => {
       state.checkNameFaild === true
     ) {
       if (state.password === state.checkPassword) {
+        setProgress(true);
         accountDB
           .createUser({
             email: state.email,
@@ -159,10 +164,9 @@ export const RegistForm = ({ label }) => {
                 ...state,
                 faild: "登録に成功しました"
               });
-              setTimeout(() => {
-                handleClose();
-              }, 1000);
+              handleClose();
             } else {
+              setProgress(false);
               setState({
                 ...state,
                 faild: "登録に失敗しました。"
@@ -230,18 +234,25 @@ export const RegistForm = ({ label }) => {
             <div className={classes.error}>{state.checkPasswordFaild}</div>
             <div className={classes.error}>{state.faild}</div>
           </form>
+          <TarmsOfService />
         </DialogContent>
         <DialogActions className={classes.padding}>
-          <Button onClick={createUser} className={classes.searchButton}>
+          <Button
+            onClick={createUser}
+            className={classes.searchButton}
+            disabled={progress}
+          >
             {"登録"}
           </Button>
           <Button
             onClick={handleClose}
             className={classes.searchButton + " " + classes.cancel}
+            disabled={progress}
           >
             {"キャンセル"}
           </Button>
         </DialogActions>
+        <ProgressModal progress={progress} />
       </Dialog>
     </div>
   );

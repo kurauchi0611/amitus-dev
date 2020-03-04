@@ -19,9 +19,11 @@ export const accountDB = {
     const createUser = functions.httpsCallable("createUser");
     await createUser(account)
       .then(res => {
-        console.log("compoleteRegist");
-        console.log(res);
-        result = true;
+        if (res.data) {
+          console.log("compoleteRegist");
+          console.log(res);
+          result = true;
+        }
       })
       .catch(error => {
         console.log("failedRegist");

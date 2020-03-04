@@ -11,6 +11,7 @@ import React from "react";
 import { accountDB } from "../../firebase/account";
 import { MailForm } from "./mailForm";
 import { PasswordForm } from "./passwordForm";
+import { ProgressModal } from "../progressModal";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -49,6 +50,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export const LoginForm = ({ label }) => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
+  const [progress, setProgress] = React.useState(false);
   const [state, setState] = React.useState<{
     email: string;
     password: string;
@@ -69,7 +71,7 @@ export const LoginForm = ({ label }) => {
   };
 
   const handleClose = () => {
-    setOpen(false);
+    setProgress(false);
     setState({
       email: "",
       password: "",
@@ -78,6 +80,7 @@ export const LoginForm = ({ label }) => {
       emailFaild: "",
       passwordFaild: ""
     });
+    setOpen(false);
   };
 
   const emailValidation = email => {
@@ -107,7 +110,30 @@ export const LoginForm = ({ label }) => {
     }
   };
   const loginUser = () => {
-    accountDB.loginUser({ email: state.email, password: state.password });
+    if (state.emailFaild === true && state.passwordFaild === true) {
+      setProgress(true);
+      accountDB
+        .loginUser({ email: state.email, password: state.password })
+        .then(() => {
+          setState({
+            ...state,
+            faild: "ログインに成功しました"
+          });
+          handleClose();
+        })
+        .catch(() => {
+          setProgress(false);
+          setState({
+            ...state,
+            faild: "ログインに失敗しました"
+          });
+        });
+    } else {
+      setState({
+        ...state,
+        faild: "正しく入力してください"
+      });
+    }
   };
 
   return (
@@ -147,16 +173,22 @@ export const LoginForm = ({ label }) => {
           </form>
         </DialogContent>
         <DialogActions>
-          <Button onClick={loginUser} className={classes.searchButton}>
+          <Button
+            onClick={loginUser}
+            className={classes.searchButton}
+            disabled={progress}
+          >
             {"ログイン"}
           </Button>
           <Button
             onClick={handleClose}
             className={classes.searchButton + " " + classes.cancel}
+            disabled={progress}
           >
             {"キャンセル"}
           </Button>
         </DialogActions>
+        <ProgressModal progress={progress} />
       </Dialog>
     </div>
   );
