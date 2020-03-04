@@ -84,14 +84,14 @@ const Index = ({ props }) => {
     text: any;
     index: number;
     userData: any;
-    amount: number | null;
+    amount?: number | null;
   }>({
     title: "",
     tags: null,
     text: sampleMoji,
     index: 0,
     userData: props,
-    amount: null
+    amount:undefined,
   });
   React.useEffect(() => {
     setState({ ...state, userData: props });
@@ -210,7 +210,6 @@ const Index = ({ props }) => {
                   id="outlined-adornment-moneyAmount"
                   className={classes.moneyField}
                   onChange={handleChange("amount")}
-                  value={state.amount}
                   endAdornment={
                     <InputAdornment
                       position="end"

@@ -4,7 +4,8 @@ import {
   Dialog,
   TextField,
   Divider,
-  IconButton
+  IconButton,
+  Snackbar
 } from "@material-ui/core";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
@@ -25,8 +26,9 @@ import { accountDB } from "../../firebase/account";
 import CloseIcon from "@material-ui/icons/Close";
 import { Tags } from "../mdEditor/Tags";
 import croppie from "../croppie/";
-import {RegistCard} from "../stripe/purchase"
-console.log(croppie);
+import { RegistCard } from "../stripe/purchase";
+import { ProgressModal } from "../progressModal";
+import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -93,6 +95,12 @@ const useStyles = makeStyles((theme: Theme) =>
     flexRow: {
       display: "flex",
       flexFlow: "row"
+    },
+    error: {
+      background: "linear-gradient(45deg, #fe5196 30%, #f77062 90%)"
+    },
+    success: {
+      background: "linear-gradient(45deg, #16A196 30%, #32A2D3 90%)"
     }
   })
 );
@@ -104,7 +112,10 @@ const Transition = React.forwardRef<unknown, TransitionProps>(
 
 export const ChangeMyStatus = ({ props }) => {
   const [open, setOpen] = React.useState(false);
+  const [progress, setProgress] = React.useState(false);
   const [openImage, setOpenImage] = React.useState(false);
+  const [success, setSuccess] = React.useState<any | null>();
+  const [successOpen, setSuccessOpen] = React.useState(false);
   const classes = useStyles();
   const [state, setState] = React.useState<{
     userName: string;
@@ -146,14 +157,31 @@ export const ChangeMyStatus = ({ props }) => {
     if (typeof props !== "undefined") {
       setState({
         ...state,
-        userName: props.displayName,
+        userName: props.name,
         email: props.email,
         introduction: props.introduction,
         language: props.language
       });
     }
   }, [props]);
-
+  const changeMessage = (prop, isSuccess) => {
+    if (isSuccess) {
+      return (
+        <Alert severity="info" className={classes.success} variant="filled">
+          {prop}を変更しました。
+        </Alert>
+      );
+    } else {
+      return (
+        <Alert severity="info" className={classes.error} variant="filled">
+          {prop}の変更に失敗しました。
+        </Alert>
+      );
+    }
+  };
+  const successHandleClose = () => {
+    setSuccessOpen(false);
+  };
   const emailValidation = email => {
     if (!email) return "メールアドレスを入力してください";
     const moji = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -246,6 +274,7 @@ export const ChangeMyStatus = ({ props }) => {
   };
 
   const handleClose = () => {
+    setProgress(false);
     setOpen(false);
     setState({
       ...state,
@@ -265,24 +294,38 @@ export const ChangeMyStatus = ({ props }) => {
   };
   const updateName = () => {
     if (state.checkNameFaild === true) {
+      setProgress(true);
       accountDB
         .updateName(state.userName)
         .then(() => {
+          setSuccess(changeMessage("名前", true));
+          setSuccessOpen(true);
+          setProgress(false);
           console.log("success");
         })
         .catch(() => {
+          setSuccess(changeMessage("名前", false));
+          setSuccessOpen(true);
+          setProgress(false);
           console.log("faild");
         });
     }
   };
   const updateEmail = () => {
     if (state.emailFaild === true && state.passwordFaild === true) {
+      setProgress(true);
       accountDB
         .updateEmail(state.email, state.password)
         .then(() => {
+          setSuccess(changeMessage("メールアドレス", true));
+          setSuccessOpen(true);
+          setProgress(false);
           console.log("success");
         })
         .catch(() => {
+          setSuccess(changeMessage("メールアドレス", false));
+          setSuccessOpen(true);
+          setProgress(false);
           console.log("faild");
         });
     }
@@ -294,36 +337,56 @@ export const ChangeMyStatus = ({ props }) => {
       state.nowPasswordFaild === true &&
       state.newPassword === state.checkNewPassword
     ) {
+      setProgress(true);
       accountDB
         .updatePassword(state.nowPassword, state.newPassword)
         .then(() => {
+          setSuccess(changeMessage("パスワード", true));
+          setSuccessOpen(true);
+          setProgress(false);
           console.log("success");
         })
         .catch(() => {
+          setSuccess(changeMessage("パスワード", false));
+          setSuccessOpen(true);
+          setProgress(false);
           console.log("faild");
         });
     }
   };
   const updateIntroduction = () => {
-    console.log(state.introductionFaild);
     if (state.introductionFaild === true) {
+      setProgress(true);
       accountDB
         .updateIntroduction(state.introduction)
         .then(() => {
+          setSuccess(changeMessage("自己紹介", true));
+          setSuccessOpen(true);
+          setProgress(false);
           console.log("success");
         })
         .catch(() => {
+          setSuccess(changeMessage("自己紹介", false));
+          setSuccessOpen(true);
+          setProgress(false);
           console.log("faild");
         });
     }
   };
   const updateLanguage = () => {
+    setProgress(true);
     accountDB
       .updateLanguage(state.language)
       .then(() => {
+        setSuccess(changeMessage("スキル", true));
+        setSuccessOpen(true);
+        setProgress(false);
         console.log("success");
       })
       .catch(() => {
+        setSuccess(changeMessage("スキル", false));
+        setSuccessOpen(true);
+        setProgress(false);
         console.log("faild");
       });
   };
@@ -357,16 +420,24 @@ export const ChangeMyStatus = ({ props }) => {
     }
   };
   const updateImage = () => {
+    setProgress(true);
     const image = fileData.result({ type: "blob" });
     accountDB
       .updateImage(image)
       .then(() => {
+        setSuccess(changeMessage("プロフィール画像", true));
+        setSuccessOpen(true);
         setOpenImage(false);
+        setProgress(false);
       })
       .catch(err => {
+        setSuccess(changeMessage("プロフィール画像", true));
+        setSuccessOpen(true);
+        setProgress(false);
         console.log(err);
       });
   };
+
   return (
     <div>
       <RegularButton label={"設定の変更"} onClick={handleClickOpen} />
@@ -594,14 +665,28 @@ export const ChangeMyStatus = ({ props }) => {
             aria-controls="panel4bh-content"
             id="panel4bh-header"
           >
-            <Typography className={classes.heading}>支払い方法の登録</Typography>
+            <Typography className={classes.heading}>
+              支払い方法の登録
+            </Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails className={classes.detail}>
             <Divider className={classes.divider} component="div" />
-            <RegistCard props={props}/>
+            <RegistCard props={props} />
           </ExpansionPanelDetails>
         </ExpansionPanel>
+        <ProgressModal progress={progress} />
       </Dialog>
+      <Snackbar
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "center"
+        }}
+        autoHideDuration={2000}
+        open={successOpen}
+        onClose={successHandleClose}
+      >
+        {success}
+      </Snackbar>
     </div>
   );
 };
