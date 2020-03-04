@@ -1,6 +1,18 @@
-import { Container, CssBaseline, Snackbar, TextField } from "@material-ui/core";
+import {
+  Box,
+  Container,
+  CssBaseline,
+  FormControl,
+  Grid,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+  Snackbar,
+  TextField
+} from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { MarkDownEditor } from "../../components/mdEditor/MarkDownEditor";
+import { MarkDownViewer } from "../../components/mdEditor/MarkDownViewer";
 import { Tags } from "../../components/mdEditor/Tags";
 import { SendButton } from "../../components/mdEditor/sendButton";
 import React from "react";
@@ -9,24 +21,41 @@ import { useRouter } from "next/router";
 import Alert from "@material-ui/lab/Alert";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    margin: { marginTop: theme.spacing(10) },
+    margin: {
+      marginTop: theme.spacing(10),
+      paddingBottom: theme.spacing(5),
+      height: `calc(100vh - ${theme.spacing(10)}px)`
+    },
     title: { background: "#fff", marginBottom: theme.spacing(1) },
     error: {
       background: theme.palette.buttonCancel.main
     },
-    flex: {
+    border: {
+      border: "1px solid #c8ccd0",
+      borderRadius: "5px",
+      marginLeft: theme.spacing(4),
+      overflow: "hidden",
+      height: "100%"
+    },
+    height: {
+      height: "100%"
+    },
+    rightWrap: {
       display: "flex",
-      flexFlow: "row",
-      alignItems: "end",
-      justifyContent: "flex-end"
-    }
+      flexFlow: "column"
+    },
+    setFlex: {
+      flex: "1 1 100%"
+    },
+    formMargin: { width: "100%" },
+    textField: {}
   })
 );
 
 const Index = ({ props }) => {
   const classes = useStyles();
   const router = useRouter();
-  const [error, setError] = React.useState<any|null>();
+  const [error, setError] = React.useState<any | null>();
   const [open, setOpen] = React.useState(false);
   const [state, setState] = React.useState<{
     title: string;
@@ -34,14 +63,14 @@ const Index = ({ props }) => {
     text: any;
     index: number;
     userData: any;
-    amount: number;
+    amount: number | null;
   }>({
     title: "",
     tags: null,
     text: sampleMoji,
     index: 0,
     userData: props,
-    amount: 1000
+    amount: null
   });
   React.useEffect(() => {
     setState({ ...state, userData: props });
@@ -88,7 +117,7 @@ const Index = ({ props }) => {
         const postTicket = await ticketDB.postTicket(state);
         if (postTicket !== null) {
           console.log(postTicket);
-          
+
           router.push("/timeTickets/[id]", `/timeTickets/${postTicket}`);
         } else {
           setError(
@@ -128,32 +157,65 @@ const Index = ({ props }) => {
     <React.Fragment>
       <CssBaseline />
       <Container maxWidth="xl" className={classes.margin}>
-        <TextField
-          className={classes.title}
-          fullWidth={true}
-          onChange={handleChange("title")}
-          label="タイトル"
-          variant="outlined"
-          value={state.title}
-        />
-        <Tags handleChange={handleChange("tags")} />
-        <MarkDownEditor handleChange={handleChange("text")} text={state.text} />
-        <div className={classes.flex}>
-          <TextField
-            className={classes.title}
-            onChange={handleChange("amount")}
-            variant="outlined"
-            value={state.amount}
-          />
-          <p>円/30分</p>
-          {typeof state.userData !== "undefined" && state.userData !== null && (
-            <SendButton
-              handleChange={handleChange("index")}
-              selectedIndex={state.index}
-              onClick={sendTicket}
+        <Grid
+          container
+          direction="row"
+          justify="center"
+          alignContent="stretch"
+          className={classes.height}
+        >
+          <Grid item xs={6} className={classes.rightWrap}>
+            <TextField
+              className={classes.title}
+              fullWidth={true}
+              onChange={handleChange("title")}
+              label="タイトル"
+              variant="outlined"
+              value={state.title}
             />
-          )}
-        </div>
+            <Tags handleChange={handleChange("tags")} />
+            <Box mt={1} className={classes.setFlex}>
+              <MarkDownEditor
+                handleChange={handleChange("text")}
+                text={state.text}
+              />
+            </Box>
+            <Box mt={1}>
+              <FormControl
+                className={classes.formMargin + " " + classes.textField}
+                variant="outlined"
+              >
+                <InputLabel htmlFor="outlined-adornment-password">
+                  金額を入力してください。
+                </InputLabel>
+                <OutlinedInput
+                  id="outlined-adornment-password"
+                  className={classes.title}
+                  onChange={handleChange("amount")}
+                  value={state.amount}
+                  endAdornment={
+                    <InputAdornment position="end">円/30分</InputAdornment>
+                  }
+                  labelWidth={210}
+                />
+              </FormControl>
+            </Box>
+            {typeof state.userData !== "undefined" &&
+              state.userData !== null && (
+                <SendButton
+                  handleChange={handleChange("index")}
+                  selectedIndex={state.index}
+                  onClick={sendTicket}
+                  label={"チケット"}
+                />
+              )}
+          </Grid>
+          <Grid item xs={6} className={classes.height}>
+            <Box className={classes.border}>
+              <MarkDownViewer text={state.text} />
+            </Box>
+          </Grid>
+        </Grid>
       </Container>
       <Snackbar autoHideDuration={2000} open={open} onClose={handleClose}>
         {error}
