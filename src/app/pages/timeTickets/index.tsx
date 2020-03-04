@@ -47,8 +47,29 @@ const useStyles = makeStyles((theme: Theme) =>
     setFlex: {
       flex: "1 1 100%"
     },
-    formMargin: { width: "100%" },
-    textField: {}
+    formMargin: {
+      width: "100%",
+      background: "#fff",
+      marginBottom: theme.spacing(1),
+      "& label": {
+        color: "#FFCB2E !important",
+        // 金額のシャドウ、微妙
+        textShadow: "1px 1px 1px rgba(66,33,11,.1)"
+      }
+    },
+    textField: { color: "#FFCB2E" },
+    moneyField: {
+      "& .MuiOutlinedInput-notchedOutline": {
+        borderColor: "#FFCB2E !important"
+      }
+    },
+    moneyRate: {
+      "& p":{
+        color: "#FFCB2E !important",
+        // 金額のシャドウ、微妙
+        textShadow: "1px 1px 1px rgba(66,33,11,.1)"
+      }
+    }
   })
 );
 
@@ -169,7 +190,7 @@ const Index = ({ props }) => {
               className={classes.title}
               fullWidth={true}
               onChange={handleChange("title")}
-              label="タイトル"
+              label="チケットタイトル"
               variant="outlined"
               value={state.title}
             />
@@ -181,20 +202,22 @@ const Index = ({ props }) => {
               />
             </Box>
             <Box mt={1}>
-              <FormControl
-                className={classes.formMargin + " " + classes.textField}
-                variant="outlined"
-              >
-                <InputLabel htmlFor="outlined-adornment-password">
+              <FormControl className={classes.formMargin} variant="outlined">
+                <InputLabel htmlFor="outlined-adornment-moneyAmount">
                   金額を入力してください。
                 </InputLabel>
                 <OutlinedInput
-                  id="outlined-adornment-password"
-                  className={classes.title}
+                  id="outlined-adornment-moneyAmount"
+                  className={classes.moneyField}
                   onChange={handleChange("amount")}
                   value={state.amount}
                   endAdornment={
-                    <InputAdornment position="end">円/30分</InputAdornment>
+                    <InputAdornment
+                      position="end"
+                      className={classes.moneyRate}
+                    >
+                      円/30分
+                    </InputAdornment>
                   }
                   labelWidth={210}
                 />
