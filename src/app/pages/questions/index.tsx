@@ -19,7 +19,7 @@ import Grid from "@material-ui/core/Grid";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     margin: {
-      overflow:"hidden",
+      overflow: "hidden",
       marginTop: theme.spacing(10),
       paddingBottom: theme.spacing(5),
       height: `calc(100vh - ${theme.spacing(10)}px)`
@@ -52,14 +52,14 @@ const useStyles = makeStyles((theme: Theme) =>
     setFlex: {
       flex: "1 1 100%"
     },
-    wrapBox:{
-      height:"105%",
-      background:"#fff",
-      paddingTop:theme.spacing(3),
-      paddingRight:theme.spacing(3),
-      paddingLeft:theme.spacing(3),
-      marginLeft:theme.spacing(5),
-      marginRight:theme.spacing(5),
+    wrapBox: {
+      height: "105%",
+      background: "#fff",
+      paddingTop: theme.spacing(3),
+      paddingRight: theme.spacing(3),
+      paddingLeft: theme.spacing(3),
+      marginLeft: theme.spacing(5),
+      marginRight: theme.spacing(5)
     }
   })
 );
@@ -190,7 +190,7 @@ const Index = ({ props }) => {
             </Grid>
             <Grid item xs={6} className={classes.height2}>
               <Box className={classes.border}>
-                <MarkDownViewer text={state.text} />
+                <MarkDownViewer text={state.text} isEdit={true} />
               </Box>
             </Grid>
             <Grid item xs={6}>

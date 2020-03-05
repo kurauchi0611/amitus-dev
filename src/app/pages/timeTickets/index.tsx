@@ -22,11 +22,12 @@ import Alert from "@material-ui/lab/Alert";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     margin: {
+      overflow: "hidden",
       marginTop: theme.spacing(10),
       paddingBottom: theme.spacing(5),
       height: `calc(100vh - ${theme.spacing(10)}px)`
     },
-    title: { background: "#fff", marginBottom: theme.spacing(1) },
+    title: { background: "#fff", marginBottom: theme.spacing(2) },
     error: {
       background: theme.palette.buttonCancel.main
     },
@@ -38,7 +39,12 @@ const useStyles = makeStyles((theme: Theme) =>
       height: "100%"
     },
     height: {
+      height: "85%"
+    },
+    height2: {
       height: "100%"
+      // paddingRight: theme.spacing(10),
+      // paddingLeft: theme.spacing(10),
     },
     rightWrap: {
       display: "flex",
@@ -50,25 +56,34 @@ const useStyles = makeStyles((theme: Theme) =>
     formMargin: {
       width: "100%",
       background: "#fff",
-      marginBottom: theme.spacing(1),
       "& label": {
-        color: "#FFCB2E !important",
+        color: "#FFA50E !important",
         // 金額のシャドウ、微妙
-        textShadow: "1px 1px 1px rgba(66,33,11,.1)"
+        textShadow: "1px 1px 4px rgba(66,33,11,.3)"
       }
     },
     textField: { color: "#FFCB2E" },
     moneyField: {
+      color: "#FFA50E",
       "& .MuiOutlinedInput-notchedOutline": {
-        borderColor: "#FFCB2E !important"
+        borderColor: "#FDC92B !important"
       }
     },
     moneyRate: {
-      "& p":{
-        color: "#FFCB2E !important",
+      "& p": {
+        color: "#FFA50E !important",
         // 金額のシャドウ、微妙
         textShadow: "1px 1px 1px rgba(66,33,11,.1)"
       }
+    },
+    wrapBox: {
+      height: "105%",
+      background: "#fff",
+      paddingTop: theme.spacing(3),
+      paddingRight: theme.spacing(3),
+      paddingLeft: theme.spacing(3),
+      marginLeft: theme.spacing(5),
+      marginRight: theme.spacing(5)
     }
   })
 );
@@ -91,7 +106,7 @@ const Index = ({ props }) => {
     text: sampleMoji,
     index: 0,
     userData: props,
-    amount:undefined,
+    amount: undefined
   });
   React.useEffect(() => {
     setState({ ...state, userData: props });
@@ -178,66 +193,71 @@ const Index = ({ props }) => {
     <React.Fragment>
       <CssBaseline />
       <Container maxWidth="xl" className={classes.margin}>
-        <Grid
-          container
-          direction="row"
-          justify="center"
-          alignContent="stretch"
-          className={classes.height}
-        >
-          <Grid item xs={6} className={classes.rightWrap}>
-            <TextField
-              className={classes.title}
-              fullWidth={true}
-              onChange={handleChange("title")}
-              label="チケットタイトル"
-              variant="outlined"
-              value={state.title}
-            />
-            <Tags handleChange={handleChange("tags")} />
-            <Box mt={1} className={classes.setFlex}>
-              <MarkDownEditor
-                handleChange={handleChange("text")}
-                text={state.text}
+        <Box className={classes.wrapBox}>
+          <Grid
+            container
+            direction="row"
+            alignContent="stretch"
+            className={classes.height}
+          >
+            <Grid item xs={6} className={classes.rightWrap}>
+              <TextField
+                className={classes.title}
+                fullWidth={true}
+                onChange={handleChange("title")}
+                label="チケットタイトル"
+                variant="outlined"
+                value={state.title}
               />
-            </Box>
-            <Box mt={1}>
-              <FormControl className={classes.formMargin} variant="outlined">
-                <InputLabel htmlFor="outlined-adornment-moneyAmount">
-                  金額を入力してください。
-                </InputLabel>
-                <OutlinedInput
-                  id="outlined-adornment-moneyAmount"
-                  className={classes.moneyField}
-                  onChange={handleChange("amount")}
-                  endAdornment={
-                    <InputAdornment
-                      position="end"
-                      className={classes.moneyRate}
-                    >
-                      円/30分
-                    </InputAdornment>
-                  }
-                  labelWidth={210}
+              <Tags handleChange={handleChange("tags")} />
+              <Box mt={2} className={classes.setFlex}>
+                <MarkDownEditor
+                  handleChange={handleChange("text")}
+                  text={state.text}
                 />
-              </FormControl>
-            </Box>
-            {typeof state.userData !== "undefined" &&
-              state.userData !== null && (
-                <SendButton
-                  handleChange={handleChange("index")}
-                  selectedIndex={state.index}
-                  onClick={sendTicket}
-                  label={"チケット"}
-                />
-              )}
+              </Box>
+              <Box mt={2}>
+                <FormControl className={classes.formMargin} variant="outlined">
+                  <InputLabel htmlFor="outlined-adornment-moneyAmount">
+                    金額を入力してください。
+                  </InputLabel>
+                  <OutlinedInput
+                    id="outlined-adornment-moneyAmount"
+                    className={classes.moneyField}
+                    onChange={handleChange("amount")}
+                    endAdornment={
+                      <InputAdornment
+                        position="end"
+                        className={classes.moneyRate}
+                      >
+                        円/30分
+                      </InputAdornment>
+                    }
+                    labelWidth={210}
+                  />
+                </FormControl>
+              </Box>
+            </Grid>
+            <Grid item xs={6} className={classes.height2}>
+              <Box className={classes.border}>
+                <MarkDownViewer text={state.text} isEdit={true} />
+              </Box>
+            </Grid>
           </Grid>
-          <Grid item xs={6} className={classes.height}>
-            <Box className={classes.border}>
-              <MarkDownViewer text={state.text} />
+          <Grid item xs={6}>
+            <Box mt={3}>
+              {typeof state.userData !== "undefined" &&
+                state.userData !== null && (
+                  <SendButton
+                    handleChange={handleChange("index")}
+                    selectedIndex={state.index}
+                    onClick={sendTicket}
+                    label={"チケット"}
+                  />
+                )}
             </Box>
           </Grid>
-        </Grid>
+        </Box>
       </Container>
       <Snackbar autoHideDuration={2000} open={open} onClose={handleClose}>
         {error}

@@ -37,13 +37,13 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const MarkDownViewer = ({ text }) => {
+export const MarkDownViewer = ({ text,isEdit }) => {
   const classes = useStyles();
 
   return (
     <div className={classes.wrap}>
       <div className={classes.preview}>
-        <div className={classes.previewChar}>プレビュー</div>
+        {isEdit&&<div className={classes.previewChar}>プレビュー</div>}
         <ReactMarkdown
           className={classes.padding}
           source={text}
