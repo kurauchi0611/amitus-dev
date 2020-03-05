@@ -19,11 +19,12 @@ import Grid from "@material-ui/core/Grid";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     margin: {
+      overflow:"hidden",
       marginTop: theme.spacing(10),
       paddingBottom: theme.spacing(5),
       height: `calc(100vh - ${theme.spacing(10)}px)`
     },
-    title: { background: "#fff", marginBottom: theme.spacing(1) },
+    title: { background: "#fff", marginBottom: theme.spacing(2) },
     error: {
       background: theme.palette.buttonCancel.main
     },
@@ -35,14 +36,30 @@ const useStyles = makeStyles((theme: Theme) =>
       height: "100%"
     },
     height: {
+      height: "85%"
+      // paddingRight: theme.spacing(10),
+      // paddingLeft: theme.spacing(10),
+    },
+    height2: {
       height: "100%"
+      // paddingRight: theme.spacing(10),
+      // paddingLeft: theme.spacing(10),
     },
-    rightWrap:{
-      display:"flex",
-      flexFlow:"column",
+    rightWrap: {
+      display: "flex",
+      flexFlow: "column"
     },
-    setFlex:{
-      flex:"1 1 100%"
+    setFlex: {
+      flex: "1 1 100%"
+    },
+    wrapBox:{
+      height:"105%",
+      background:"#fff",
+      paddingTop:theme.spacing(3),
+      paddingRight:theme.spacing(3),
+      paddingLeft:theme.spacing(3),
+      marginLeft:theme.spacing(5),
+      marginRight:theme.spacing(5),
     }
   })
 );
@@ -147,47 +164,50 @@ const Index = ({ props }) => {
     <React.Fragment>
       <CssBaseline />
       <Container maxWidth="xl" className={classes.margin}>
-        <Grid
-          container
-          direction="row"
-          justify="center"
-          alignContent="stretch"
-          className={classes.height}
-        >
-          <Grid item xs={6} className={classes.rightWrap}>
-            <TextField
-              className={classes.title}
-              fullWidth={true}
-              onChange={handleChange("title")}
-              label="タイトル"
-              variant="outlined"
-              value={state.title}
-            />
-            <Tags handleChange={handleChange("tags")} tags={state.tags} />
-            <Box mt={1} className={classes.setFlex}>
-              <MarkDownEditor
-                handleChange={handleChange("text")}
-                text={state.text}
+        <Box className={classes.wrapBox}>
+          <Grid
+            container
+            direction="row"
+            // alignContent="stretch"
+            className={classes.height}
+          >
+            <Grid item xs={6} className={classes.rightWrap}>
+              <TextField
+                className={classes.title}
+                fullWidth={true}
+                onChange={handleChange("title")}
+                label="タイトル"
+                variant="outlined"
+                value={state.title}
               />
-            </Box>
-            <Box m={3} >
-              {typeof state.userData !== "undefined" &&
-                state.userData !== null && (
-                  <SendButton
-                    handleChange={handleChange("index")}
-                    selectedIndex={state.index}
-                    onClick={sendQuestion}
-                    label={"質問"}
-                  />
-                )}
-            </Box>
+              <Tags handleChange={handleChange("tags")} tags={state.tags} />
+              <Box mt={2} className={classes.setFlex}>
+                <MarkDownEditor
+                  handleChange={handleChange("text")}
+                  text={state.text}
+                />
+              </Box>
+            </Grid>
+            <Grid item xs={6} className={classes.height2}>
+              <Box className={classes.border}>
+                <MarkDownViewer text={state.text} />
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box m={3}>
+                {typeof state.userData !== "undefined" &&
+                  state.userData !== null && (
+                    <SendButton
+                      handleChange={handleChange("index")}
+                      selectedIndex={state.index}
+                      onClick={sendQuestion}
+                      label={"質問"}
+                    />
+                  )}
+              </Box>
+            </Grid>
           </Grid>
-          <Grid item xs={6} className={classes.height}>
-            <Box className={classes.border}>
-              <MarkDownViewer text={state.text} />
-            </Box>
-          </Grid>
-        </Grid>
+        </Box>
       </Container>
       <Snackbar autoHideDuration={2000} open={open} onClose={handleClose}>
         {error}
