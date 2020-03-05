@@ -3,11 +3,48 @@ import { Editor } from "../Editor";
 import { useRouter } from "next/router";
 import Peer from "skyway-js";
 import { skywayKey } from "../../../config";
-
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Head from "next/head";
 import { Live2dHost } from "../../live2d/live2dHost";
 import { Live2dGuest } from "../../live2d/live2dGuest";
+import { Container, Box, Grid } from "@material-ui/core";
+const useStyles = makeStyles(theme =>
+  createStyles({
+    margin: {
+      // marginRight: theme.spacing(5),
+      // marginLeft: theme.spacing(5),
+      background: "#fff",
+      // padding: "0",
+      paddingTop: theme.spacing(2),
+      // paddingBottom: theme.spacing(10),
+      display: "flex",
+      flexFlow: "column"
+      // justifyContent:"center"
+    },
+    live2dCanvas: {
+      zIndex: "1",
+      position: "fixed",
+      bottom: -4,
+      left: 0
+    },
+    gridContainer: {
+      height:"100%",
+      background: "#fff",
+      marginRight: theme.spacing(18),
+      marginLeft: theme.spacing(18),
+      paddingRight: theme.spacing(18),
+      paddingLeft: theme.spacing(18),
+    },
+    gridItem: {
+      position: "relative",
+      zIndex: "2",
+      height:"100%"
+    }
+  })
+);
+
 export const App = ({ props }) => {
+  const classes = useStyles();
   const router = useRouter();
   const roomId = router.query.id;
   const [peer, setPeer] = React.useState("");
@@ -25,7 +62,7 @@ export const App = ({ props }) => {
     if (typeof props !== "undefined") {
       setPeer(
         new Peer(props.uid, {
-          key: skywayKey,
+          // key: skywayKey,
           debug: 3
         })
       );
@@ -146,17 +183,34 @@ export const App = ({ props }) => {
       <Head>
         <script src="https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js"></script>
       </Head>
-      <Editor
-        onChange={handleEditorOnChange.bind(this)}
-        onChangeMode={onChangeMode.bind(this)}
-        value={value}
-        mode={mode}
-      />
-      <Live2dHost  peer={peer} handlePosOnChange={handlePosOnChange} handleModelOnChange={handleModelOnChange}/>
-      <div style={{visibility:"hidden",transform:"scale(0)",position:"absolute"}}>
+      <Grid container className={classes.gridContainer}>
+        <Grid item xs={9} className={classes.gridItem}>
+          <Editor
+            onChange={handleEditorOnChange.bind(this)}
+            onChangeMode={onChangeMode.bind(this)}
+            value={value}
+            mode={mode}
+          />
+        </Grid>
+        <Grid item xs={3} className={classes.gridItem}></Grid>
+      </Grid>
+        <Box className={classes.live2dCanvas}>
+          <Live2dHost
+            peer={peer}
+            handlePosOnChange={handlePosOnChange}
+            handleModelOnChange={handleModelOnChange}
+          />
+        </Box>
+      <div
+        style={{
+          visibility: "hidden",
+          transform: "scale(0)",
+          position: "absolute"
+        }}
+      >
         <div id="remote"></div>
         <Live2dGuest pos={param} guestModel={guestModel} />
-        <video id="voice" autoPlay ></video>
+        <video id="voice" autoPlay></video>
       </div>
     </React.Fragment>
   );

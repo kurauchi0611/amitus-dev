@@ -222,19 +222,20 @@ export const main = async selectedModel => {
   /**
    * Live2Dモデルのサイズ調整
    */
-
   const projectionMatrix = new cubismmatrix44.CubismMatrix44();
   const resizeModel = () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight * 0.53;
+
     // NOTE: HTMLキャンバスのclientWidth、clientHeightが変わってもwidthとheightは変わらないので、自分で更新する
     // NOTE: スマートフォン向けにdevicePixelRatioを考慮しないとモデルがぼやける
-    canvas.width = canvas.clientWidth * devicePixelRatio;
-    canvas.height = canvas.clientHeight * devicePixelRatio;
+    // canvas.width = canvas.clientWidth * devicePixelRatio;
+    // canvas.height = canvas.clientHeight * devicePixelRatio;
     // NOTE: modelMatrixは、モデルのユニット単位での幅と高さが1×1に収まるように縮めようとしている？
     const modelMatrix = model.getModelMatrix();
     projectionMatrix.loadIdentity();
     // ここスケール
-    const scale = modelScale;
-    // NOTE:
+    const scale = (modelScale * window.innerWidth) / canvas.width;
     // 1×1にしたモデルを、キャンバスの縦横比になるように引き延ばそうとする
     // 高さを調整してモデルを正しく表示するには、高さを canvas.width/canvas.height 倍する
     // 幅を調整してモデルを正しく表示するには、幅を canvas.height / canvas.width 倍する
@@ -260,9 +261,18 @@ export const main = async selectedModel => {
   /**
    * Live2Dモデルの描画
    */
+  console.log(canvas.width);
+  console.log(canvas.height);
+  console.log(window.innerWidth);
+  console.log(window.innerHeight);
 
   // フレームバッファとビューポートを、フレームワーク設定
-  const viewport: number[] = [-156, 0, canvas.width, canvas.height];
+  const viewport: number[] = [
+    -(canvas.width / 2 - (180 * canvas.width) / window.innerWidth),
+    0,
+    canvas.width,
+    canvas.height
+  ];
 
   // 最後の更新時間
   let lastUpdateTime = 0;

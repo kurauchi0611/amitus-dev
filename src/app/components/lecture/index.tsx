@@ -15,13 +15,11 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     margin: {
       marginTop: theme.spacing(9),
-      background: "#fff",
-      // padding: "0",
       paddingTop:theme.spacing(2),
-      // paddingBottom: theme.spacing(10),
       display:"flex",
       flexFlow:"row",
-      // justifyContent:"center"
+      justifyContent:"center",
+      height:`calc(100vh - ${theme.spacing(10)}px)`
     },
   })
 )

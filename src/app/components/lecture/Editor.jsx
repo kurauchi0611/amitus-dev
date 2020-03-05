@@ -25,6 +25,18 @@ import "brace/keybinding/vim";
 import "brace/ext/language_tools";
 import PropTypes from "prop-types";
 import "ayu-ace/mirage";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import { Box, Checkbox, Typography } from "@material-ui/core";
+const useStyles = makeStyles(theme =>
+  createStyles({
+    selectBox: {
+      padding: "4px",
+      height: "max-content",
+      margin: theme.spacing(1)
+    }
+  })
+);
+
 const modes = {
   ruby: "Ruby",
   javascript: "JavaScript",
@@ -50,6 +62,7 @@ const keybinds = [null, "vim", "emacs", "vscode"];
 const fontSizes = [14, 16, 18, 20, 22, 24, 28, 32];
 
 export const Editor = ({ value, onChange, onChangeMode, mode }) => {
+  const classes = useStyles();
   const [state, setState] = React.useState({
     fontSize: 14,
     autoComplete: true
@@ -77,39 +90,62 @@ export const Editor = ({ value, onChange, onChangeMode, mode }) => {
   };
 
   return (
-    <div>
-      <label htmlFor="syntax">syntax </label>
-      <select id="syntax" onChange={onChangeMode} value={mode}>
-        {Object.entries(modes).map(([k, v], i) => (
-          <option key={i} value={k}>
-            {v}
-          </option>
-        ))}
-      </select>
-      <label htmlFor="keybind">keybind </label>
-      <select id="keybind" onChange={onChangeKeybind.bind(this)}>
-        {keybinds.map((kb, i) => (
-          <option key={i} value={kb}>
-            {kb}
-          </option>
-        ))}
-      </select>
-      <label htmlFor="fontsize">fontsize </label>
-      <select id="fontsize" onChange={onChangeFontsize.bind(this)}>
-        {fontSizes.map((size, i) => (
-          <option key={i} value={size}>
-            {size}
-          </option>
-        ))}
-      </select>
-      <label htmlFor="autocomplete">
-        autocomplete
-        <input
-          type="checkbox"
-          checked={state.autoComplete}
-          onChange={toggleAutoComplete.bind(this)}
-        />
-      </label>
+    <React.Fragment>
+      <Box display="flex" flexDirection="row" alignItems="center" pl={1}>
+        <Typography variant={"h6"} component={"label"} color={"primary"}>
+          syntax
+        </Typography>
+        <select
+          id="syntax"
+          onChange={onChangeMode}
+          value={mode}
+          className={classes.selectBox}
+        >
+          {Object.entries(modes).map(([k, v], i) => (
+            <option key={i} value={k}>
+              {v}
+            </option>
+          ))}
+        </select>
+        <Typography variant={"h6"} component={"label"} color={"primary"}>
+          keybind
+        </Typography>
+        <select
+          id="keybind"
+          onChange={onChangeKeybind.bind(this)}
+          className={classes.selectBox}
+        >
+          {keybinds.map((kb, i) => (
+            <option key={i} value={kb}>
+              {kb}
+            </option>
+          ))}
+        </select>
+        <Typography variant={"h6"} component={"label"} color={"primary"}>
+          fontsize
+        </Typography>
+        <select
+          id="fontsize"
+          onChange={onChangeFontsize.bind(this)}
+          className={classes.selectBox}
+        >
+          {fontSizes.map((size, i) => (
+            <option key={i} value={size}>
+              {size}
+            </option>
+          ))}
+        </select>
+        <Typography variant={"h6"} component={"label"} color={"primary"}>
+          autocomplete
+          <Checkbox
+            checked={state.autoComplete}
+            onChange={toggleAutoComplete.bind(this)}
+            value="secondary"
+            color="primary"
+            inputProps={{ "aria-label": "primary checkbox" }}
+          />
+        </Typography>
+      </Box>
 
       <Ace
         mode={mode}
@@ -118,10 +154,16 @@ export const Editor = ({ value, onChange, onChangeMode, mode }) => {
         onChange={newValue => onChange(newValue)}
         editorProps={{ $blockScrolling: true }}
         value={value}
-        style={{ width: "800px" }}
+        // className={classes.ace}
+        width={"100%"}
+        height={"90%"}
         keyboardHandler={state.keybind}
         enableLiveAutocompletion={state.autoComplete}
+        showPrintMargin={false}
+        tabSize={2}
+        style={{ borderRadius: "10px" }}
+        wrapEnabled={true}
       />
-    </div>
+    </React.Fragment>
   );
 };

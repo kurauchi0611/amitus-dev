@@ -109,7 +109,7 @@ export const Live2dHost = ({ peer, handlePosOnChange,handleModelOnChange }) => {
           <p id="log"></p>
         </Grid>
         <Grid item>
-          <canvas id="live2d" width="700" height="512"></canvas>
+          <canvas id="live2d" width="1920" height="512"></canvas>
         </Grid>
       </Grid>
       <div id="inner" style={{ transform: "scale(0)" }}>
