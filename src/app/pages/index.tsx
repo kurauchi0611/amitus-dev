@@ -12,6 +12,10 @@ import Pagination from '@material-ui/lab/Pagination';
 //import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
+import { Card, Avatar, IconButton, CardContent, CardActions, Collapse } from '@material-ui/core';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import MailIcon from '@material-ui/icons/Mail';
+import clsx from 'clsx';
 
 const useStyles = makeStyles((theme: Theme) => 
   createStyles({
@@ -20,9 +24,53 @@ const useStyles = makeStyles((theme: Theme) =>
       flexFlow: "row",
       justifyContent: "space-around",
       // alignItems: "center",
-      textAlign: "center",
+      // textAlign: "center",
       marginTop: theme.spacing(10),
       background:theme.palette.background.paper,
+    },
+
+    root: {
+      marginBottom: theme.spacing(2),
+    },
+
+    expand: {
+      transform: 'rotate(0deg)',
+      marginLeft: 'auto',
+      transition: theme.transitions.create('transform', {
+        duration: theme.transitions.duration.shortest,
+      }),
+    },
+
+    expandOpen: {
+      transform: 'rotate(180deg)',
+    },
+
+    avatar: {
+      display: "flex",
+      '& > *': {
+        margin: theme.spacing(1),
+      },
+      backgroundColor: theme.palette.text.secondary,
+      marginRight: theme.spacing(2),
+      width: theme.spacing(7),
+      height: theme.spacing(7),
+    },
+
+    cardHeader: {
+      display: "flex",
+      flexFlow: "row",
+      alignItems: "center",
+      paddingTop: theme.spacing(2),
+      marginLeft: theme.spacing(2),
+    },
+
+    cardContent: {
+      borderLeft: "solid 3px",
+      marginTop: theme.spacing(2),
+      marginBottom: theme.spacing(2),
+      padding: "0",
+      paddingLeft: theme.spacing(2),
+      borderColor: "#16A196",
     },
 
     left: {
@@ -34,14 +82,20 @@ const useStyles = makeStyles((theme: Theme) =>
     right: {
       marginRight: theme.spacing(2),
       backgroundColor: theme.palette.background.paper,
-      paddingTop: theme.spacing(2)
+      paddingTop: theme.spacing(2),
     },
 
     paper: {
       marginBottom: theme.spacing(2),
-      padding: theme.spacing(2),
-      textAlign: 'center',
+      paddingTop: theme.spacing(2),
+      paddingBottom: theme.spacing(2),
+      paddingRight: theme.spacing(2),
+      textAlign: 'left',
       color: theme.palette.text.secondary,
+    },
+
+    icon: {
+      padding: "0 0 0 5px",
     },
 
     center: {
@@ -55,6 +109,14 @@ const useStyles = makeStyles((theme: Theme) =>
     margin: {
       marginTop: theme.spacing(3),
     },
+
+    title: {
+      fontSize: "1.2rem",
+      color: theme.palette.text.primary,
+      borderLeft: "solid 3px",
+      paddingLeft: theme.spacing(2),
+      borderColor: "#16A196",
+    }
   }));
 
 interface TabPanelProps {
@@ -88,7 +150,7 @@ function a11yProps(index: any) {
   };
 }
 
-export default function FullWidthTabs() {
+export default function TopPage() {
   const classes = useStyles();
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
@@ -100,6 +162,12 @@ export default function FullWidthTabs() {
 
   const handleChangeIndex = (index: number) => {
     setValue(index);
+  };
+
+  const [expanded, setExpanded] = React.useState(false);
+
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
   };
 
   return (
@@ -126,61 +194,130 @@ export default function FullWidthTabs() {
           onChangeIndex={handleChangeIndex}
         >
           <TabPanel value={value} index={0} dir={theme.direction}>
-            <Paper className={classes.paper}>
-              Content<br></br>Content<br></br>Content
-            </Paper>
-            <Paper className={classes.paper}>
-              Content<br></br>Content<br></br>Content
-            </Paper>
-            <Paper className={classes.paper}>
-              Content<br></br>Content<br></br>Content
-            </Paper>
-            <Paper className={classes.paper}>
-              Content<br></br>Content<br></br>Content
-            </Paper>
-            <Paper className={classes.paper}>
-              Content<br></br>Content<br></br>Content
-            </Paper>
+            <Card className={classes.root}>
+              <Box className={classes.cardHeader}>
+                <Box>
+                  <Avatar className={classes.avatar}></Avatar>
+                </Box>
+                <Box>
+                  ユーザー名
+                  <IconButton aria-label="pm" color="primary" className={classes.icon}><MailIcon /></IconButton>
+                  <Typography variant="body2" color="textSecondary" component="p">hh:mm:ss yyyy-mm-dd</Typography>
+                </Box>
+              </Box>
             
+              <CardContent className={classes.cardContent}>
+                <Box>
+                <Typography variant="h5">質問/チケットのタイトルだよ～</Typography>
+                </Box>
+              </CardContent>
+
+              <CardActions disableSpacing>
+                <Button variant="outlined">タグ</Button>
+
+                <IconButton
+                  className={clsx(classes.expand, {
+                    [classes.expandOpen]: expanded,
+                  })}
+                  onClick={handleExpandClick}
+                  aria-expanded={expanded}
+                  aria-label="show more"
+                >
+                  <ExpandMoreIcon />
+                </IconButton>
+              </CardActions>
+              <Collapse in={expanded} timeout="auto" unmountOnExit>
+                <CardContent>
+                  <Typography paragraph>質問/チケットの内容(先頭50文字？)<br></br><br></br><br></br><br></br><br></br>三('ω')三( ε: )三(.ω.)三( :3 )三('ω')三( ε: ) ｡･*･:≡(    ε:)</Typography>
+                </CardContent>
+              </Collapse>
+            </Card>
+              
             <Pagination className={classes.center} count={10} color="primary" />
           </TabPanel>
 
           <TabPanel value={value} index={1} dir={theme.direction}>
-            <Paper className={classes.paper}>
-              Content<br></br>Content<br></br>Content
-            </Paper>
-            <Paper className={classes.paper}>
-              Content<br></br>Content<br></br>Content
-            </Paper>
-            <Paper className={classes.paper}>
-              Content<br></br>Content<br></br>Content
-            </Paper>
-            <Paper className={classes.paper}>
-              Content<br></br>Content<br></br>Content
-            </Paper>
-            <Paper className={classes.paper}>
-              Content<br></br>Content<br></br>Content
-            </Paper>
+           <Card className={classes.root}>
+              <Box className={classes.cardHeader}>
+                <Box>
+                  <Avatar className={classes.avatar}></Avatar>
+                </Box>
+                <Box>
+                  ユーザー名
+                  <IconButton aria-label="pm" color="primary" className={classes.icon}><MailIcon /></IconButton>
+                  <Typography variant="body2" color="textSecondary" component="p">hh:mm:ss yyyy-mm-dd</Typography>
+                </Box>
+              </Box>
+            
+              <CardContent className={classes.cardContent}>
+                <Box>
+                <Typography variant="h5">質問/チケットのタイトルだよ～</Typography>
+                </Box>
+              </CardContent>
+
+              <CardActions disableSpacing>
+                <Button variant="outlined">タグ</Button>
+
+                <IconButton
+                  className={clsx(classes.expand, {
+                    [classes.expandOpen]: expanded,
+                  })}
+                  onClick={handleExpandClick}
+                  aria-expanded={expanded}
+                  aria-label="show more"
+                >
+                  <ExpandMoreIcon />
+                </IconButton>
+              </CardActions>
+              <Collapse in={expanded} timeout="auto" unmountOnExit>
+                <CardContent>
+                  <Typography paragraph>質問/チケットの内容(先頭50文字？)<br></br><br></br><br></br><br></br><br></br>三('ω')三( ε: )三(.ω.)三( :3 )三('ω')三( ε: ) ｡･*･:≡(    ε:)</Typography>
+                </CardContent>
+              </Collapse>
+            </Card>
             
             <Pagination className={classes.center} count={10} color="primary" />
           </TabPanel>
 
           <TabPanel value={value} index={2} dir={theme.direction}>
-            <Paper className={classes.paper}>
-              Content<br></br>Content<br></br>Content
-            </Paper>
-            <Paper className={classes.paper}>
-              Content<br></br>Content<br></br>Content
-            </Paper>
-            <Paper className={classes.paper}>
-              Content<br></br>Content<br></br>Content
-            </Paper>
-            <Paper className={classes.paper}>
-              Content<br></br>Content<br></br>Content
-            </Paper>
-            <Paper className={classes.paper}>
-              Content<br></br>Content<br></br>Content
-            </Paper>
+            <Card className={classes.root}>
+              <Box className={classes.cardHeader}>
+                <Box>
+                  <Avatar className={classes.avatar}></Avatar>
+                </Box>
+                <Box>
+                  ユーザー名
+                  <IconButton aria-label="pm" color="primary" className={classes.icon}><MailIcon /></IconButton>
+                  <Typography variant="body2" color="textSecondary" component="p">hh:mm:ss yyyy-mm-dd</Typography>
+                </Box>
+              </Box>
+            
+              <CardContent className={classes.cardContent}>
+                <Box>
+                <Typography variant="h5">質問/チケットのタイトルだよ～</Typography>
+                </Box>
+              </CardContent>
+
+              <CardActions disableSpacing>
+                <Button variant="outlined">タグ</Button>
+
+                <IconButton
+                  className={clsx(classes.expand, {
+                    [classes.expandOpen]: expanded,
+                  })}
+                  onClick={handleExpandClick}
+                  aria-expanded={expanded}
+                  aria-label="show more"
+                >
+                  <ExpandMoreIcon />
+                </IconButton>
+              </CardActions>
+              <Collapse in={expanded} timeout="auto" unmountOnExit>
+                <CardContent>
+                  <Typography paragraph>質問/チケットの内容(先頭50文字？)<br></br><br></br><br></br><br></br><br></br>三('ω')三( ε: )三(.ω.)三( :3 )三('ω')三( ε: ) ｡･*･:≡(    ε:)</Typography>
+                </CardContent>
+              </Collapse>
+            </Card>
             
             <Pagination className={classes.center} count={10} color="primary" />
           </TabPanel>
@@ -189,27 +326,19 @@ export default function FullWidthTabs() {
       
       <Grid className={classes.right} xs={5}>
         <Paper className={classes.paper}>
-          <Box textAlign="left" fontSize="h6.fontSize">本日のスケジュール</Box>
-          <Box m={5}>更新中・・・</Box>
+          <Box fontSize="h6.fontSize" ml={2}>本日のスケジュール</Box>
+          <Box textAlign="center" m={5}>更新中・・・</Box>
           <Box textAlign="right"><Button variant="outlined">一覧</Button></Box>
         </Paper>
 
-        <Box className={classes.margin} fontSize="h5.fontSize" m={1} textAlign="left">新着通知</Box>
+        <Box className={classes.margin} m={1}><Typography variant="h5" color="primary">新着通知</Typography></Box>
+
         <Paper className={classes.paper}>
-          <Box textAlign="left" fontSize="h6.fontSize">通知1タイトル</Box>
-          <Box m={3}>通知1の内容だよ・・</Box>
-          <Box textAlign="right">hh:mm:ss yyyy-mm-dd</Box>
+          <Box className={classes.title}>通知1タイトル</Box>
+          <Box textAlign="left" ml={2}>hh:mm:ss yyyy-mm-dd</Box>
+          <Box m={3}>通知1の内容だよ・・</Box>          
         </Paper>
-        <Paper className={classes.paper}>
-          <Box textAlign="left" fontSize="h6.fontSize">通知2タイトル</Box>
-          <Box m={3}>通知2の内容だよ・・</Box>
-          <Box textAlign="right">hh:mm:ss yyyy-mm-dd</Box>
-        </Paper>
-        <Paper className={classes.paper}>
-          <Box textAlign="left" fontSize="h6.fontSize">通知3タイトル</Box>
-          <Box m={3}>通知3の内容だよ・・</Box>
-          <Box textAlign="right">hh:mm:ss yyyy-mm-dd</Box>
-        </Paper>
+        
       </Grid>
     </Container>
   );
