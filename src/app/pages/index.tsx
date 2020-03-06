@@ -13,9 +13,12 @@ import Pagination from '@material-ui/lab/Pagination';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
 import { Card, Avatar, IconButton, CardContent, CardActions, Collapse } from '@material-ui/core';
+import CardMedia from '@material-ui/core/CardMedia';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MailIcon from '@material-ui/icons/Mail';
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import clsx from 'clsx';
+import { yellow } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme: Theme) => 
   createStyles({
@@ -61,7 +64,21 @@ const useStyles = makeStyles((theme: Theme) =>
       flexFlow: "row",
       alignItems: "center",
       paddingTop: theme.spacing(2),
+      paddingBottom: theme.spacing(1),
       marginLeft: theme.spacing(2),
+    },
+
+    info1: {
+      display: "flex",
+      alignItems: "center",
+    },
+
+    info2: {
+      display: "flex",
+      alignItems: "center",
+      position: "absolute",
+      right: "0",
+      marginRight: theme.spacing(5),
     },
 
     cardContent: {
@@ -116,7 +133,20 @@ const useStyles = makeStyles((theme: Theme) =>
       borderLeft: "solid 3px",
       paddingLeft: theme.spacing(2),
       borderColor: "#16A196",
-    }
+    },
+
+    price: {
+      color: "#fdd835",
+      fontWeight: "bold",
+      textShadow: "1px 1px 1px black",
+      fontSize: "18px",
+    },
+
+    media: {
+      height: 0,
+      paddingTop: '31.25%',
+      // paddingTop: '56.25%', // 16:9
+    },
   }));
 
 interface TabPanelProps {
@@ -196,19 +226,30 @@ export default function TopPage() {
           <TabPanel value={value} index={0} dir={theme.direction}>
             <Card className={classes.root}>
               <Box className={classes.cardHeader}>
-                <Box>
-                  <Avatar className={classes.avatar}></Avatar>
-                </Box>
-                <Box>
-                  ユーザー名
-                  <IconButton aria-label="pm" color="primary" className={classes.icon}><MailIcon /></IconButton>
-                  <Typography variant="body2" color="textSecondary" component="p">hh:mm:ss yyyy-mm-dd</Typography>
-                </Box>
+                <Grid xs={8} className={classes.info1}>
+                  <Box>
+                    <Avatar className={classes.avatar}></Avatar>
+                  </Box>
+                  <Box>
+                    ユーザー名
+                    <IconButton aria-label="pm" color="primary" className={classes.icon}><MailIcon /></IconButton>
+                    <Typography variant="body2" color="textSecondary" component="p">hh:mm:ss yyyy-mm-dd</Typography>
+                  </Box>
+                </Grid>
+                <Grid xs={3} className={classes.info2}>
+                  <MonetizationOnIcon fontSize="large" style={{ color: yellow[600] }}/><Typography className={classes.price}>10000円/h</Typography>
+                </Grid>
               </Box>
+
+              <CardMedia
+                className={classes.media}
+                image="/images/card_banner_code.png"
+                title="image"
+              />
             
               <CardContent className={classes.cardContent}>
                 <Box>
-                <Typography variant="h5">質問/チケットのタイトルだよ～</Typography>
+                <Typography variant="h5">チケットのタイトルだよ～</Typography>
                 </Box>
               </CardContent>
 
@@ -228,7 +269,7 @@ export default function TopPage() {
               </CardActions>
               <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <CardContent>
-                  <Typography paragraph>質問/チケットの内容(先頭50文字？)<br></br><br></br><br></br><br></br><br></br>三('ω')三( ε: )三(.ω.)三( :3 )三('ω')三( ε: ) ｡･*･:≡(    ε:)</Typography>
+                  <Typography paragraph>チケットの内容(先頭50文字？)<br></br><br></br><br></br><br></br><br></br>三('ω')三( ε: )三(.ω.)三( :3 )三('ω')三( ε: ) ｡･*･:≡(    ε:)</Typography>
                 </CardContent>
               </Collapse>
             </Card>
@@ -251,7 +292,7 @@ export default function TopPage() {
             
               <CardContent className={classes.cardContent}>
                 <Box>
-                <Typography variant="h5">質問/チケットのタイトルだよ～</Typography>
+                <Typography variant="h5">質問のタイトルだよ～</Typography>
                 </Box>
               </CardContent>
 
@@ -271,7 +312,7 @@ export default function TopPage() {
               </CardActions>
               <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <CardContent>
-                  <Typography paragraph>質問/チケットの内容(先頭50文字？)<br></br><br></br><br></br><br></br><br></br>三('ω')三( ε: )三(.ω.)三( :3 )三('ω')三( ε: ) ｡･*･:≡(    ε:)</Typography>
+                  <Typography paragraph>質問の内容(先頭50文字？)<br></br><br></br><br></br><br></br><br></br>三('ω')三( ε: )三(.ω.)三( :3 )三('ω')三( ε: ) ｡･*･:≡(    ε:)</Typography>
                 </CardContent>
               </Collapse>
             </Card>
@@ -291,10 +332,16 @@ export default function TopPage() {
                   <Typography variant="body2" color="textSecondary" component="p">hh:mm:ss yyyy-mm-dd</Typography>
                 </Box>
               </Box>
+
+              <CardMedia
+                className={classes.media}
+                image="/images/card_banner_code.png"
+                title="image"
+              />
             
               <CardContent className={classes.cardContent}>
                 <Box>
-                <Typography variant="h5">質問/チケットのタイトルだよ～</Typography>
+                <Typography variant="h5">質問のタイトルだよ～</Typography>
                 </Box>
               </CardContent>
 
@@ -314,7 +361,7 @@ export default function TopPage() {
               </CardActions>
               <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <CardContent>
-                  <Typography paragraph>質問/チケットの内容(先頭50文字？)<br></br><br></br><br></br><br></br><br></br>三('ω')三( ε: )三(.ω.)三( :3 )三('ω')三( ε: ) ｡･*･:≡(    ε:)</Typography>
+                  <Typography paragraph>質問の内容(先頭50文字？)<br></br><br></br><br></br><br></br><br></br>三('ω')三( ε: )三(.ω.)三( :3 )三('ω')三( ε: ) ｡･*･:≡(    ε:)</Typography>
                 </CardContent>
               </Collapse>
             </Card>
