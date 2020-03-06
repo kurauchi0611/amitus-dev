@@ -24,11 +24,11 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export default ({props}) => {
+export default ({props,query}) => {
   const classes=useStyles();
   return (
     <Container className={classes.margin} maxWidth="xl">
-        <App props={props} />
+        <App props={props} query={query} />
     </Container>
   );
 };

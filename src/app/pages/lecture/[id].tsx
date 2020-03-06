@@ -1,12 +1,13 @@
 import dynamic from "next/dynamic";
+import Router from "next/router";
 const DynamicComponentWithNoSSR = dynamic(
   () => import("../../components/lecture/index"),
-  { ssr: false },
+  { ssr: false }
 );
 function Lecture({ props }) {
   return (
     <div>
-      <DynamicComponentWithNoSSR props={props} />
+      <DynamicComponentWithNoSSR props={props} query={Router.query} />
     </div>
   );
 }

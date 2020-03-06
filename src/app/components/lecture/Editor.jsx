@@ -32,7 +32,29 @@ const useStyles = makeStyles(theme =>
     selectBox: {
       padding: "4px",
       height: "max-content",
-      margin: theme.spacing(1)
+    },
+    ace: {
+      paddingRight: theme.spacing(2),
+      "& .ace_gutter": {
+        marginTop: theme.spacing(2),
+        marginBottom: theme.spacing(2)
+      },
+      "& .ace_scroller": {
+        marginTop: theme.spacing(2),
+        marginBottom: theme.spacing(2)
+      },
+      "& .ace_scrollbar": {
+        color: "#ff8600"
+      },
+      "& .ace_scrollbar::-webkit-scrollbar": {
+        width: "15px"
+      },
+      "& .ace_scrollbar::-webkit-scrollbar-track": {
+        background: "rgba(255,255,255,.1)"
+      },
+      "& .ace_scrollbar::-webkit-scrollbar-thumb": {
+        background: "rgba(255,255,255,.2)"
+      }
     }
   })
 );
@@ -91,7 +113,7 @@ export const Editor = ({ value, onChange, onChangeMode, mode }) => {
 
   return (
     <React.Fragment>
-      <Box display="flex" flexDirection="row" alignItems="center" pl={1}>
+      <Box display="flex" flexDirection="row" alignItems="center" pl={1} minHeight={48}>
         <Typography variant={"h6"} component={"label"} color={"primary"}>
           syntax
         </Typography>
@@ -154,14 +176,14 @@ export const Editor = ({ value, onChange, onChangeMode, mode }) => {
         onChange={newValue => onChange(newValue)}
         editorProps={{ $blockScrolling: true }}
         value={value}
-        // className={classes.ace}
+        className={classes.ace}
         width={"100%"}
         height={"90%"}
         keyboardHandler={state.keybind}
         enableLiveAutocompletion={state.autoComplete}
         showPrintMargin={false}
         tabSize={2}
-        style={{ borderRadius: "10px" }}
+        style={{ borderRadius: "10px", flex: "1" }}
         wrapEnabled={true}
       />
     </React.Fragment>

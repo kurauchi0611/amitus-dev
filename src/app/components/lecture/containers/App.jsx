@@ -7,7 +7,8 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Head from "next/head";
 import { Live2dHost } from "../../live2d/live2dHost";
 import { Live2dGuest } from "../../live2d/live2dGuest";
-import { Container, Box, Grid } from "@material-ui/core";
+import { AppBar, Box, Grid, Toolbar, Typography } from "@material-ui/core";
+import { ChatRoom } from "../../chat/chatRoom";
 const useStyles = makeStyles(theme =>
   createStyles({
     margin: {
@@ -28,22 +29,42 @@ const useStyles = makeStyles(theme =>
       left: 0
     },
     gridContainer: {
-      height:"100%",
+      height: "100%",
       background: "#fff",
       marginRight: theme.spacing(18),
       marginLeft: theme.spacing(18),
-      paddingRight: theme.spacing(18),
-      paddingLeft: theme.spacing(18),
+      paddingRight: theme.spacing(20),
+      paddingLeft: theme.spacing(20),
+      paddingBottom: theme.spacing(4)
     },
     gridItem: {
       position: "relative",
       zIndex: "2",
-      height:"100%"
+      height: "100%",
+      display: "flex",
+      flexFlow: "column",
+      justifyContent: "stretch",
+      paddingTop: "0 !important",
+      paddingBottom: "0 !important"
+    },
+    chatBar: {
+      position: "absolute",
+      background: theme.palette.buttonMain.main,
+      // margin: theme.spacing(1),
+      top:theme.spacing(6),
+      left: theme.spacing(1),
+      width: `calc(100% - ${theme.spacing(2)}px)`
+    },
+    chatBox:{
+      height:"100%",
+      overflow:"hidden"
     }
   })
 );
 
-export const App = ({ props }) => {
+export const App = ({ props, query }) => {
+  console.log(query);
+
   const classes = useStyles();
   const router = useRouter();
   const roomId = router.query.id;
@@ -54,16 +75,21 @@ export const App = ({ props }) => {
   const [param, setParam] = React.useState("");
   const [myModel, setMyModel] = React.useState(0);
   const [guestModel, setGuestModel] = React.useState(0);
+  // const [guestId, setGuestId] = React.useState("VzrhgY9HaAD5YWNpJUc5");
+  // const [guestData, setGuestData] = React.useState("");
+  const [myData, setMyData] = React.useState();
   const voice = document.querySelector("#voice");
   const remote = document.querySelector("#remote");
   // live2dの描画
+
   React.useEffect(() => {
     // 自分のデータが来たらpeerを作る。
     if (typeof props !== "undefined") {
+      setMyData(props);
       setPeer(
         new Peer(props.uid, {
-          // key: skywayKey,
-          debug: 3
+          // key: skywayKey
+          // debug: 3
         })
       );
     }
@@ -96,11 +122,20 @@ export const App = ({ props }) => {
           console.log("roomIn");
           meshRoom.on("peerJoin", peerId => {
             console.log("join:", peerId);
+
+            const myData = {
+              displayName: props.displayName,
+              photoUrl: props.photoURL
+            };
+            // setGuestId(peerId);
+            // meshRoom.send({ type: "guestData", myData });
+            // meshRoom.send({ type: "live2dModel", myModel });
+            // meshRoom.send({ type: "changeMode", mode });
           });
           // 相手からデータが送られてきたらeditならvalueに、changeModeならmodeにデータ入れる。
           // 常に監視入る
           meshRoom.on("data", ({ src, data }) => {
-            // console.log(src);
+            // if (data.type === "guestData") setGuestData(data.myData);
             if (data.type === "live2dParam") setParam(data.pos);
             if (data.type === "live2dModel") setGuestModel(data.myModel);
             if (data.type === "edit") setValue(data.text);
@@ -183,7 +218,7 @@ export const App = ({ props }) => {
       <Head>
         <script src="https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js"></script>
       </Head>
-      <Grid container className={classes.gridContainer}>
+      <Grid container spacing={2} className={classes.gridContainer}>
         <Grid item xs={9} className={classes.gridItem}>
           <Editor
             onChange={handleEditorOnChange.bind(this)}
@@ -192,15 +227,30 @@ export const App = ({ props }) => {
             mode={mode}
           />
         </Grid>
-        <Grid item xs={3} className={classes.gridItem}></Grid>
+        <Grid item xs={3} className={classes.gridItem}>
+          {typeof myData !== "undefined" && (
+            <Box mt={6} className={classes.chatBox}>
+              <AppBar className={classes.chatBar}>
+                <Toolbar>
+                  <Typography variant="h6">Scroll to see button</Typography>
+                </Toolbar>
+              </AppBar>
+              <ChatRoom
+                roomId={query.id}
+                myUid={myData.uid}
+                userData={JSON.parse(query.getUser)}
+              />
+            </Box>
+          )}
+        </Grid>
       </Grid>
-        <Box className={classes.live2dCanvas}>
-          <Live2dHost
-            peer={peer}
-            handlePosOnChange={handlePosOnChange}
-            handleModelOnChange={handleModelOnChange}
-          />
-        </Box>
+      <Box className={classes.live2dCanvas}>
+        <Live2dHost
+          peer={peer}
+          handlePosOnChange={handlePosOnChange}
+          handleModelOnChange={handleModelOnChange}
+        />
+      </Box>
       <div
         style={{
           visibility: "hidden",
