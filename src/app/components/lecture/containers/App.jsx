@@ -10,6 +10,7 @@ import { Live2dGuest } from "../../live2d/live2dGuest";
 import { AppBar, Box, Grid, Toolbar, Typography } from "@material-ui/core";
 import { ChatRoom } from "../../chat/chatRoom";
 import { EndLectureButton } from "../endLectureButton";
+import Router from "next/router";
 const useStyles = makeStyles(theme =>
   createStyles({
     margin: {
@@ -63,8 +64,7 @@ const useStyles = makeStyles(theme =>
   })
 );
 
-export const App = ({ props, query }) => {
-  console.log(query);
+export const App = ({ props}) => {
 
   const classes = useStyles();
   const router = useRouter();
@@ -253,9 +253,9 @@ export const App = ({ props, query }) => {
                 </Toolbar>
               </AppBar>
               <ChatRoom
-                roomId={query.id}
+                roomId={roomId}
                 myUid={myData.uid}
-                userData={JSON.parse(query.getUser)}
+                userData={JSON.parse(Router.query.getUser)}
               />
             </Box>
           )}
@@ -267,7 +267,7 @@ export const App = ({ props, query }) => {
           handlePosOnChange={handlePosOnChange}
           handleModelOnChange={handleModelOnChange}
           displayName={props.displayName}
-          guest={JSON.parse(query.getUser)}
+          guest={JSON.parse(Router.query.getUser)}
         />
       </Box>
       <div
