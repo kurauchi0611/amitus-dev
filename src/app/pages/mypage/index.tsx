@@ -9,7 +9,11 @@ import { db } from "../../firebase/firebase";
 // import Alert from "@material-ui/lab/Alert";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    margin: { marginTop: theme.spacing(10) },
+    margin: {
+      marginTop: theme.spacing(11),
+      paddingRight: theme.spacing(10),
+      paddingLeft: theme.spacing(10),
+    },
     title: { background: "#fff", marginBottom: theme.spacing(1) },
     error: {
       background: theme.palette.buttonCancel.main
@@ -51,6 +55,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     contentPadding: {
       padding: theme.spacing(4)
+    },
+    gridWrap: {
+      background: "#fff",
     }
   })
 );
@@ -107,7 +114,7 @@ const Index = ({ props }) => {
     <React.Fragment>
       <CssBaseline />
       <Container maxWidth="xl" className={classes.margin}>
-        <Grid container spacing={3}>
+        <Grid container  className={classes.gridWrap}>
           <MyStatus props={userState} />
           <UserContent props={userState} />
         </Grid>
