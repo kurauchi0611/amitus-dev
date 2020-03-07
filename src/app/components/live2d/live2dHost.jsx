@@ -7,7 +7,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import { main, model, deltaTimeSecond } from "./main";
 import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
+import { Box, Grid, Typography } from "@material-ui/core";
 const useStyles = makeStyles(theme => ({
   formControl: {
     margin: theme.spacing(1),
@@ -16,13 +16,27 @@ const useStyles = makeStyles(theme => ({
   selectEmpty: {
     marginTop: theme.spacing(2)
   },
-  column:{
-    display:"flex",
-    flexFlow:"row",
-    alignItems:"center"
+  column: {
+    display: "flex",
+    flexFlow: "row",
+    alignItems: "center",
+    width:"344px",
+    justifyContent:"center"
+  },
+  nameSpace: {
+    display: "flex",
+    flexFlow: "row",
+    alignItems: "center",
+    justifyContent:"space-between"
   }
 }));
-export const Live2dHost = ({ peer, handlePosOnChange,handleModelOnChange }) => {
+export const Live2dHost = ({
+  peer,
+  handlePosOnChange,
+  handleModelOnChange,
+  displayName,
+  guest
+}) => {
   const player = document.getElementById("player");
   const classes = useStyles();
   const inputLabel = React.useRef(null);
@@ -56,7 +70,9 @@ export const Live2dHost = ({ peer, handlePosOnChange,handleModelOnChange }) => {
       console.log(player);
       console.log(peer);
       if (player !== null) {
-        peer.destroy();
+        if (peer != null) {
+          peer.destroy();
+        }
         player.srcObject.getTracks().forEach(track => track.stop());
         player.srcObject = null;
         player.remove();
@@ -78,8 +94,24 @@ export const Live2dHost = ({ peer, handlePosOnChange,handleModelOnChange }) => {
         <script src="/clmtrackr.js"></script>
         <script src="https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js"></script>
       </Head>
-      <Grid container>
-        <Grid item xs={12} className={classes.column}>
+      <Grid container className={classes.nameSpace}>
+        <Grid item  className={classes.column}>
+          <Box
+            py={1}
+            minWidth="40%"
+            maxWidth="max-content"
+            // height="56px"
+            border={2}
+            borderRadius={10}
+            borderColor="primary.main"
+            color="primary.main"
+            display="flex"
+            flexDirection="row"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Typography variant="h4">{displayName}</Typography>
+          </Box>
           <FormControl variant="outlined" className={classes.formControl}>
             <InputLabel ref={inputLabel} id="demo-simple-select-outlined-label">
               モデル
@@ -106,12 +138,28 @@ export const Live2dHost = ({ peer, handlePosOnChange,handleModelOnChange }) => {
               <MenuItem value={12}>無口少女</MenuItem>
             </Select>
           </FormControl>
-          <p id="log"></p>
+          {/* <p id="log"></p> */}
         </Grid>
-        <Grid item>
-          <canvas id="live2d" width="1920" height="512"></canvas>
+        <Grid item  className={classes.column}>
+          <Box
+            py={1}
+            minWidth="40%"
+            maxWidth="max-content"
+            // height="56px"
+            border={2}
+            borderRadius={10}
+            borderColor="primary.main"
+            color="primary.main"
+            display="flex"
+            flexDirection="row"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Typography variant="h4">{guest.displayName}</Typography>
+          </Box>
         </Grid>
       </Grid>
+          <canvas id="live2d" width="1920" height="512"></canvas>
       <div id="inner" style={{ transform: "scale(0)" }}>
         <video
           id="player"
@@ -135,6 +183,7 @@ export const Live2dHost = ({ peer, handlePosOnChange,handleModelOnChange }) => {
 
 const skyWay = (video, handlePosOnChange) => {
   var inner = document.getElementById("inner");
+  console.log(video);
 
   // 顔のワイヤーフレームが表示されるcanvas
   // var wireframe = document.getElementById("wireframe");
@@ -162,10 +211,11 @@ const skyWay = (video, handlePosOnChange) => {
    * 処理開始
    */
   function start() {
-    drowLog("Webカメラ読込中...");
+    // drowLog("Webカメラ読込中...");
 
     // clmtrackrをインスタンス化
     ctrack = new clm.tracker();
+    console.log("インスタンス");
 
     // MediaStream APIでWebカメラへアクセス
 
@@ -188,7 +238,7 @@ const skyWay = (video, handlePosOnChange) => {
       // 繰り返し処理開始
       loop();
 
-      drowLog("顔検出中...");
+      // drowLog("顔検出中...");
 
       // 顔を検出できたときのEvent
       document.addEventListener(
@@ -198,7 +248,7 @@ const skyWay = (video, handlePosOnChange) => {
       console.log("hoge");
 
       // 顔を検出できなかったときのEvent
-      document.addEventListener("clmtrackrLost", clmtrackrLostHandler);
+      // document.addEventListener("clmtrackrLost", clmtrackrLostHandler);
       // 顔のモデルデータを設定
       ctrack.init(pModel);
       // 顔の検出を開始
@@ -240,18 +290,18 @@ const skyWay = (video, handlePosOnChange) => {
   function clmtrackrLostHandler() {
     console.log("hogehoge");
     // Remove Event
-    document.removeEventListener("clmtrackrLost", clmtrackrLostHandler);
-    document.removeEventListener(
-      "clmtrackrConverged",
-      clmtrackrConvergedHandler
-    );
+    // document.removeEventListener("clmtrackrLost", clmtrackrLostHandler);
+    // document.removeEventListener(
+    //   "clmtrackrConverged",
+    //   clmtrackrConvergedHandler
+    // );
 
     drowLog("顔検出失敗");
 
     // 繰り返し処理停止
-    cancelAnimationFrame(drawRequest);
+    // cancelAnimationFrame(drawRequest);
     // 顔検出処理停止
-    ctrack.stop();
+    // ctrack.stop();
   }
 
   /**
@@ -266,7 +316,7 @@ const skyWay = (video, handlePosOnChange) => {
       clmtrackrConvergedHandler
     );
 
-    drowLog("顔検出成功");
+    // drowLog("顔検出成功");
   }
 
   /**

@@ -9,6 +9,7 @@ import { Live2dHost } from "../../live2d/live2dHost";
 import { Live2dGuest } from "../../live2d/live2dGuest";
 import { AppBar, Box, Grid, Toolbar, Typography } from "@material-ui/core";
 import { ChatRoom } from "../../chat/chatRoom";
+import { EndLectureButton } from "../endLectureButton";
 const useStyles = makeStyles(theme =>
   createStyles({
     margin: {
@@ -51,13 +52,13 @@ const useStyles = makeStyles(theme =>
       position: "absolute",
       background: theme.palette.buttonMain.main,
       // margin: theme.spacing(1),
-      top:theme.spacing(6),
+      top: theme.spacing(6),
       left: theme.spacing(1),
       width: `calc(100% - ${theme.spacing(2)}px)`
     },
-    chatBox:{
-      height:"100%",
-      overflow:"hidden"
+    chatBox: {
+      height: "100%",
+      overflow: "hidden"
     }
   })
 );
@@ -88,7 +89,7 @@ export const App = ({ props, query }) => {
       setMyData(props);
       setPeer(
         new Peer(props.uid, {
-          // key: skywayKey
+          key: skywayKey
           // debug: 3
         })
       );
@@ -166,20 +167,36 @@ export const App = ({ props, query }) => {
         });
       });
     }
+    return () => {
+      console.log(voice);
+      console.log(room);
+
+      console.log(typeof room);
+      if (voice !== null) {
+        // room.close();
+        // peer.destroy();
+        voice.srcObject.getTracks().forEach(track => track.stop());
+        voice.srcObject = null;
+        voice.remove();
+      }
+    };
   }, [peer]);
   // ページ移動でカメラ破棄
   // React.useEffect(() => {
   //   return () => {
+  //     console.log(voice);
+  //     console.log(room);
+
+  //     voice.srcObject.getTracks().forEach(track => track.stop());
+  //     voice.srcObject = null;
+  //     voice.remove();
   //     console.log(typeof room);
   //     if (room !== "") {
   //       room.close();
   //       peer.destroy();
-  //       // voice.srcObject.getTracks().forEach(track => track.stop());
-  //       // voice.srcObject = null;
-  //       // voice.remove();
   //     }
   //   };
-  // });
+  // }, []);
   // peer作る→部屋に参加する
 
   // ルーターから文字列取る。nullならskywayのid生成して、それをdocIdにしていれる。
@@ -232,7 +249,7 @@ export const App = ({ props, query }) => {
             <Box mt={6} className={classes.chatBox}>
               <AppBar className={classes.chatBar}>
                 <Toolbar>
-                  <Typography variant="h6">Scroll to see button</Typography>
+                  <Typography variant="h6"></Typography>
                 </Toolbar>
               </AppBar>
               <ChatRoom
@@ -249,6 +266,8 @@ export const App = ({ props, query }) => {
           peer={peer}
           handlePosOnChange={handlePosOnChange}
           handleModelOnChange={handleModelOnChange}
+          displayName={props.displayName}
+          guest={JSON.parse(query.getUser)}
         />
       </Box>
       <div
@@ -262,6 +281,9 @@ export const App = ({ props, query }) => {
         <Live2dGuest pos={param} guestModel={guestModel} />
         <video id="voice" autoPlay></video>
       </div>
+      <Box position="fixed" right="0">
+        <EndLectureButton />
+      </Box>
     </React.Fragment>
   );
 };
