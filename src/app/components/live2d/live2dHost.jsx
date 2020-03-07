@@ -16,18 +16,25 @@ const useStyles = makeStyles(theme => ({
   selectEmpty: {
     marginTop: theme.spacing(2)
   },
-  column: {
+  row: {
     display: "flex",
     flexFlow: "row",
     alignItems: "center",
-    width:"344px",
-    justifyContent:"center"
+    width: "344px",
+    justifyContent: "center"
   },
   nameSpace: {
     display: "flex",
     flexFlow: "row",
     alignItems: "center",
-    justifyContent:"space-between"
+    justifyContent: "space-between"
+  },
+  column: {
+    display: "flex",
+    flexFlow: "column",
+    alignItems: "center",
+    width: "344px",
+    justifyContent: "center"
   }
 }));
 export const Live2dHost = ({
@@ -35,12 +42,14 @@ export const Live2dHost = ({
   handlePosOnChange,
   handleModelOnChange,
   displayName,
-  guest
+  guest,
+  isWating
 }) => {
   const player = document.getElementById("player");
   const classes = useStyles();
   const inputLabel = React.useRef(null);
   const [labelWidth, setLabelWidth] = React.useState(0);
+  const [isGuest, setIsGuest] = React.useState("error");
   React.useEffect(() => {
     setLabelWidth(inputLabel.current.offsetWidth);
   }, []);
@@ -81,8 +90,10 @@ export const Live2dHost = ({
   }, [player]);
   // ページ移動でカメラ破棄
   React.useEffect(() => {
-    console.log(peer);
-  }, [peer]);
+    console.log(isWating);
+    if(isWating)setIsGuest('error')
+    else setIsGuest('primary')
+  }, [isWating]);
 
   const handleModelChange = event => {
     main(event.target.value);
@@ -95,7 +106,7 @@ export const Live2dHost = ({
         <script src="https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js"></script>
       </Head>
       <Grid container className={classes.nameSpace}>
-        <Grid item  className={classes.column}>
+        <Grid item className={classes.row}>
           <Box
             py={1}
             minWidth="40%"
@@ -140,7 +151,8 @@ export const Live2dHost = ({
           </FormControl>
           {/* <p id="log"></p> */}
         </Grid>
-        <Grid item  className={classes.column}>
+        <Grid item className={classes.column}>
+          {isWating&&<Typography variant={"subtitle1"}>waiting...</Typography>}
           <Box
             py={1}
             minWidth="40%"
@@ -148,8 +160,8 @@ export const Live2dHost = ({
             // height="56px"
             border={2}
             borderRadius={10}
-            borderColor="primary.main"
-            color="primary.main"
+            borderColor={`${isGuest}.main`}
+            color={`${isGuest}.main`}
             display="flex"
             flexDirection="row"
             justifyContent="center"
@@ -159,7 +171,7 @@ export const Live2dHost = ({
           </Box>
         </Grid>
       </Grid>
-          <canvas id="live2d" width="1920" height="512"></canvas>
+      <canvas id="live2d" width="1920" height="512"></canvas>
       <div id="inner" style={{ transform: "scale(0)" }}>
         <video
           id="player"

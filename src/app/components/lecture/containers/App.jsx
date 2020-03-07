@@ -7,10 +7,18 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Head from "next/head";
 import { Live2dHost } from "../../live2d/live2dHost";
 import { Live2dGuest } from "../../live2d/live2dGuest";
-import { AppBar, Box, Grid, Toolbar, Typography } from "@material-ui/core";
+import {
+  AppBar,
+  Box,
+  Grid,
+  Snackbar,
+  Toolbar,
+  Typography
+} from "@material-ui/core";
 import { ChatRoom } from "../../chat/chatRoom";
 import { EndLectureButton } from "../endLectureButton";
 import Router from "next/router";
+import Alert from "@material-ui/lab/Alert";
 const useStyles = makeStyles(theme =>
   createStyles({
     margin: {
@@ -60,12 +68,17 @@ const useStyles = makeStyles(theme =>
     chatBox: {
       height: "100%",
       overflow: "hidden"
+    },
+    error: {
+      background: "linear-gradient(45deg, #fe5196 30%, #f77062 90%)"
+    },
+    success: {
+      background: "linear-gradient(45deg, #16A196 30%, #32A2D3 90%)"
     }
   })
 );
 
-export const App = ({ props}) => {
-
+export const App = ({ props }) => {
   const classes = useStyles();
   const router = useRouter();
   const roomId = router.query.id;
@@ -79,10 +92,13 @@ export const App = ({ props}) => {
   // const [guestId, setGuestId] = React.useState("VzrhgY9HaAD5YWNpJUc5");
   // const [guestData, setGuestData] = React.useState("");
   const [myData, setMyData] = React.useState();
+  const [isWating, setIsWating] = React.useState(true);
   const voice = document.querySelector("#voice");
   const remote = document.querySelector("#remote");
+  const [success, setSuccess] = React.useState();
+  const [successOpen, setSuccessOpen] = React.useState(false);
   // live2dの描画
-
+  const guestUserData = JSON.parse(Router.query.getUser);
   React.useEffect(() => {
     // 自分のデータが来たらpeerを作る。
     if (typeof props !== "undefined") {
@@ -123,15 +139,9 @@ export const App = ({ props}) => {
           console.log("roomIn");
           meshRoom.on("peerJoin", peerId => {
             console.log("join:", peerId);
-
-            const myData = {
-              displayName: props.displayName,
-              photoUrl: props.photoURL
-            };
-            // setGuestId(peerId);
-            // meshRoom.send({ type: "guestData", myData });
-            // meshRoom.send({ type: "live2dModel", myModel });
-            // meshRoom.send({ type: "changeMode", mode });
+            setIsWating(false);
+            setSuccess(changeMessage(guestUserData.displayName, true));
+            setSuccessOpen(true);
           });
           // 相手からデータが送られてきたらeditならvalueに、changeModeならmodeにデータ入れる。
           // 常に監視入る
@@ -145,6 +155,17 @@ export const App = ({ props}) => {
           // 相手から映像、音声が送られてきたらここが走る。
           meshRoom.on("stream", async stream => {
             console.log("recieve Stream");
+            setTimeout(() => {
+              console.log(meshRoom);
+              console.log(peer);
+              console.log(isWating);
+              console.log(successOpen);
+              if (isWating && !successOpen) {
+                setIsWating(false);
+                setSuccess(enterRoom());
+                setSuccessOpen(true);
+              }
+            }, 500);
             const newVideo = document.createElement("video");
             newVideo.srcObject = stream;
             newVideo.playsInline = true;
@@ -155,6 +176,9 @@ export const App = ({ props}) => {
           });
           // 人がいなくなったらこれ走る
           meshRoom.on("peerLeave", peerId => {
+            setIsWating(true);
+            setSuccess(changeMessage(guestUserData.displayName, false));
+            setSuccessOpen(true);
             const remoteVideo = remote.querySelector(
               `[data-peer-id=${peerId}]`
             );
@@ -168,13 +192,7 @@ export const App = ({ props}) => {
       });
     }
     return () => {
-      console.log(voice);
-      console.log(room);
-
-      console.log(typeof room);
       if (voice !== null) {
-        // room.close();
-        // peer.destroy();
         voice.srcObject.getTracks().forEach(track => track.stop());
         voice.srcObject = null;
         voice.remove();
@@ -230,6 +248,33 @@ export const App = ({ props}) => {
     setMode(changeMode);
     sendData({ type: "changeMode", changeMode });
   };
+
+  const changeMessage = (prop, isSuccess) => {
+    if (isSuccess) {
+      return (
+        <Alert severity="info" className={classes.success} variant="filled">
+          {prop}さんが入出しました。
+        </Alert>
+      );
+    } else {
+      return (
+        <Alert severity="info" className={classes.error} variant="filled">
+          {prop}さんが退出しました。
+        </Alert>
+      );
+    }
+  };
+  const enterRoom = () => {
+    return (
+      <Alert severity="info" className={classes.success} variant="filled">
+        レクチャールームに入室しました。
+      </Alert>
+    );
+  };
+  const successHandleClose = () => {
+    setSuccessOpen(false);
+  };
+
   return (
     <React.Fragment>
       <Head>
@@ -255,7 +300,7 @@ export const App = ({ props}) => {
               <ChatRoom
                 roomId={roomId}
                 myUid={myData.uid}
-                userData={JSON.parse(Router.query.getUser)}
+                userData={guestUserData}
               />
             </Box>
           )}
@@ -267,7 +312,8 @@ export const App = ({ props}) => {
           handlePosOnChange={handlePosOnChange}
           handleModelOnChange={handleModelOnChange}
           displayName={props.displayName}
-          guest={JSON.parse(Router.query.getUser)}
+          guest={guestUserData}
+          isWating={isWating}
         />
       </Box>
       <div
@@ -284,6 +330,17 @@ export const App = ({ props}) => {
       <Box position="fixed" right="0">
         <EndLectureButton />
       </Box>
+      <Snackbar
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "center"
+        }}
+        autoHideDuration={2000}
+        open={successOpen}
+        onClose={successHandleClose}
+      >
+        {success}
+      </Snackbar>
     </React.Fragment>
   );
 };

@@ -175,25 +175,27 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
         .collection("talk")
         .orderBy("createdAt", "desc")
         .onSnapshot(snapshot => {
-          var source = snapshot.metadata.hasPendingWrites ? "Local" : "Server";
-          if (snapshot.metadata.hasPendingWrites === false) {
-            console.log(source);
-            const talkArray: any = [];
-            const dateArray: any = [];
-            Promise.all(
-              snapshot.docs.map((doc, index) => {
-                talkArray[index] = doc.data();
+          // var source = snapshot.metadata.hasPendingWrites ? "Local" : "Server";
+          // console.log(source);
+          const talkArray: any = [];
+          const dateArray: any = [];
+          Promise.all(
+            snapshot.docs.map((doc, index) => {
+              console.log(doc.data());
+
+              talkArray[index] = doc.data();
+              if (snapshot.metadata.hasPendingWrites === false) {
                 dateArray[index] = format(
                   new Date(doc.data().createdAt.seconds * 1000),
                   "MM/dd"
                 );
-              })
-            ).then(() => {
-              setTalkData(talkArray);
-              setPostedDate(dateArray);
-              scrollBottom();
-            });
-          }
+              }
+            })
+          ).then(() => {
+            setTalkData(talkArray);
+            setPostedDate(dateArray);
+            scrollBottom();
+          });
         });
     }
   }, [roomId]);
@@ -211,10 +213,10 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
       chatDB
         .postMessage(roomId, myUid, message)
         .then(() => {
-          console.log("success");
+          // console.log("success");
         })
         .catch(err => {
-          console.log("error");
+          // console.log("error");
           console.log(err);
         });
       setMessage("");
@@ -279,10 +281,12 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
             </Paper>
           )}
           {doc.type === "ogp" && <MediaCard message={message} />}
-          <Typography variant="caption">{`${format(
-            new Date(doc.createdAt.seconds * 1000),
-            "HH:mm"
-          )}`}</Typography>
+          {doc.createdAt !== null && (
+            <Typography variant="caption">{`${format(
+              new Date(doc.createdAt.seconds * 1000),
+              "HH:mm"
+            )}`}</Typography>
+          )}
         </Box>
       </Box>
     );
@@ -300,7 +304,7 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
     const createObjectURL = (window.URL || window.webkitURL).createObjectURL;
     const target = e.target;
     const file = target.files.item(0);
-    console.log(file);
+    // console.log(file);
 
     const upimg = createObjectURL(file);
     setFileData(upimg);
@@ -311,8 +315,8 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
 
   const updateImage = () => {
     // const image = fileData.result({ type: "blob" });
-    console.log(fileData);
-    console.log(file);
+    // console.log(fileData);
+    // console.log(file);
     chatDB
       .postImage(roomId, myUid, file)
       .then(() => {

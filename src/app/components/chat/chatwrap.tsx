@@ -131,7 +131,7 @@ export const DMWindow = ({ dm, member, userPage }) => {
       .where("member", "array-contains", `${dm.user.uid}`)
       .orderBy("updatedAt", "desc")
       .onSnapshot(snapshot => {
-        console.log(snapshot);
+        // console.log(snapshot);
         setTalkList(snapshot.docs);
         const talkArray: any = [];
         let isExistsRoom = false;
@@ -154,7 +154,7 @@ export const DMWindow = ({ dm, member, userPage }) => {
           })
         ).then(() => {
           setTalkList(talkArray);
-          console.log(isExistsRoom);
+          // console.log(isExistsRoom);
           if (
             userPage &&
             (snapshot.docs.length === 0 || isExistsRoom === false)
