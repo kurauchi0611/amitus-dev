@@ -113,8 +113,8 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(1),
       fontSize: "1rem",
-      background: theme.palette.info.main,
-      boxShadow: `0 3px 5px 2px ${theme.palette.info.dark}`,
+      background: theme.palette.buttonCancel.main,
+      boxShadow: `0 3px 5px 2px ${theme.palette.buttonCancel.dark}`,
       borderRadius: 3,
       border: 0,
       color: "white",
@@ -386,7 +386,7 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
             <img src={fileData} className={classes.postImage} />
             <div className={classes.flexRow}>
               <RegularButton label={"送信する"} onClick={updateImage} />
-              <Button className={classes.buttonMain} onClick={handleCloseImage}>
+              <Button className={classes.buttonMain} onClick={handleCloseImage} variant="contained">
                 キャンセル
               </Button>
             </div>
