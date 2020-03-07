@@ -1,4 +1,4 @@
-import { Grid, Paper, Typography, Divider } from "@material-ui/core";
+import { Box, Grid, Paper, Typography, Divider } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import React from "react";
 import { ViewCard } from "../viewCard/viewCard";
@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       flexFlow: "wrap",
       justifyContent: "space-around",
-      paddingRight: theme.spacing(6),
+      paddingRight: theme.spacing(6)
       // paddingLeft: 0
     },
     contentPadding: {
@@ -84,7 +84,9 @@ export const UserContent = ({ props }) => {
             {/* todo:5件以上ある時は「もっと見る」無い時は何も表示しないように */}
             {typeof myQuestions !== "undefined" &&
               myQuestions.docs.length == 5 && (
-                <RegularButton label={"もっと見る"} />
+                <Box mt={4}>
+                  <RegularButton label={"もっと見る"} />
+                </Box>
               )}
           </Paper>
         </Grid>
@@ -102,7 +104,9 @@ export const UserContent = ({ props }) => {
             />
             {/* todo:5件以上ある時は「もっと見る」無い時は何も表示しないように */}
             {typeof myTickets !== "undefined" && myTickets.docs.length == 5 && (
-              <RegularButton label={"もっと見る"} />
+              <Box mt={4}>
+                <RegularButton label={"もっと見る"} />
+              </Box>
             )}
           </Paper>
         </Grid>

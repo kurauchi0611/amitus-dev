@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
     margin: {
       paddingTop: theme.spacing(8),
       paddingLeft: theme.spacing(10),
-      paddingRight: theme.spacing(2),
+      paddingRight: theme.spacing(3),
       paddingBottom: theme.spacing(10),
     },
     title: { background: "#fff", marginBottom: theme.spacing(1) },
