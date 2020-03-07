@@ -13,6 +13,11 @@ export const chatDB = {
     });
   },
   postMessage: async (roomId, uid, message) => {
+    console.log(roomId);
+    console.log(uid);
+    console.log(message);
+    
+    
     let type = "string";
     if (isUrl(message)) type = "link";
     if (message.match(/\.(jpg|png|gif)$/)) {

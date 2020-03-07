@@ -168,7 +168,7 @@ const Index = ({ props }) => {
         <div className={classes.paddingLR}>
           <Chips labels={state.tags} />
         </div>
-        <MarkDownViewer text={state.text} />
+        <MarkDownViewer text={state.text} isEdit={false}/>
       </Container>
       <Container maxWidth="lg" className={classes.commentWrap}>
         <Typography className={classes.paddingSmall} variant="h4">
@@ -194,7 +194,7 @@ const Index = ({ props }) => {
                       )}`}
                     </Typography>
                   </div>
-                  <MarkDownViewer text={`${element.data().text}`} />
+                  <MarkDownViewer text={`${element.data().text}`} isEdit={false}/>
                 </Paper>
               </Grid>
             );

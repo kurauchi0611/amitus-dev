@@ -154,7 +154,7 @@ const Index = ({ props }) => {
         <div className={classes.paddingLR}>
           <Chips labels={state.tags} />
         </div>
-        <MarkDownViewer text={state.text} />
+        <MarkDownViewer text={state.text} isEdit={false} />
         <Box className={classes.amountBox}>
           <Typography variant="h6" component="p">{state.amount}円/30分</Typography>
           <Charge label={"購入"} amount={state.amount} userData={props}/>

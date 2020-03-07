@@ -8,10 +8,10 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     margin: {
-      width:"100%",
+      width: "100%",
       marginTop: theme.spacing(5),
       marginBottom: theme.spacing(5),
-      fontSize:"20px"
+      fontSize: "20px"
     }
   })
 );
@@ -21,7 +21,6 @@ export const RegistCard = ({ props }) => {
   React.useEffect(() => {
     setState(stripeKey);
   }, []);
-  console.log(state);
   return (
     <div className={classes.margin}>
       {state !== null && (

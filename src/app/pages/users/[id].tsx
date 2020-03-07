@@ -8,7 +8,11 @@ import { accountDB } from "../../firebase/account";
 // import Alert from "@material-ui/lab/Alert";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    margin: { marginTop: theme.spacing(10) },
+    margin: {
+      marginTop: theme.spacing(11),
+      paddingRight: theme.spacing(10),
+      paddingLeft: theme.spacing(10),
+    },
     title: { background: "#fff", marginBottom: theme.spacing(1) },
     error: {
       background: theme.palette.buttonCancel.main
@@ -46,16 +50,20 @@ const useStyles = makeStyles((theme: Theme) =>
     content: {
       display: "flex",
       flexFlow: "wrap",
-      justifyContent: "space-around"
+      justifyContent: "space-around",
+      paddingRight: theme.spacing(5)
     },
     contentPadding: {
       padding: theme.spacing(4)
+    },
+    gridWrap: {
+      background: "#fff",
     }
   })
 );
 
-const Index = ({ props,dm }) => {
-  if(false)console.log(props);
+const Index = ({ props, dm }) => {
+  if (false) console.log(props);
   const classes = useStyles();
   const router = useRouter();
   const [userState, setUserState] = React.useState<{
@@ -68,7 +76,7 @@ const Index = ({ props,dm }) => {
     rating: number;
     follow: number;
     follower: number;
-    uid:any;
+    uid: any;
   }>({
     createdAt: null,
     email: "",
@@ -79,7 +87,7 @@ const Index = ({ props,dm }) => {
     rating: 1,
     follow: 0,
     follower: 0,
-    uid:""
+    uid: ""
   });
   React.useEffect(() => {
     if (typeof router.query.id !== "undefined") {
@@ -98,7 +106,7 @@ const Index = ({ props,dm }) => {
             rating: userData.rating,
             follow: userData.follow,
             follower: userData.follower,
-            uid:router.query.id
+            uid: router.query.id
           });
         }
       };
@@ -109,8 +117,8 @@ const Index = ({ props,dm }) => {
     <React.Fragment>
       <CssBaseline />
       <Container maxWidth="xl" className={classes.margin}>
-        <Grid container spacing={3}>
-          <UserStatus props={userState} dm={dm}/>
+        <Grid container className={classes.gridWrap}>
+          <UserStatus props={userState} dm={dm} />
           <UserContent props={userState} />
         </Grid>
       </Container>

@@ -19,9 +19,11 @@ export const accountDB = {
     const createUser = functions.httpsCallable("createUser");
     await createUser(account)
       .then(res => {
-        console.log("compoleteRegist");
-        console.log(res);
-        result = true;
+        if (res.data) {
+          console.log("compoleteRegist");
+          console.log(res);
+          result = true;
+        }
       })
       .catch(error => {
         console.log("failedRegist");
@@ -79,22 +81,32 @@ export const accountDB = {
         email,
         password
       );
-      await userinfo.reauthenticateWithCredential(credential).then(async () => {
-        // User re-authenticated.
-        await userinfo.updateEmail(newEmail).then(async () => {
-          // Update successful.
-          const updateEmail = await user.doc(userinfo.uid).set(
-            {
-              email: newEmail,
-              updatedAt: FieldValue.serverTimestamp()
-            },
-            { merge: true }
-          );
-          return updateEmail;
+      await userinfo
+        .reauthenticateWithCredential(credential)
+        .then(async () => {
+          // User re-authenticated.
+          await userinfo
+            .updateEmail(newEmail)
+            .then(async () => {
+              // Update successful.
+              const updateEmail = await user.doc(userinfo.uid).set(
+                {
+                  email: newEmail,
+                  updatedAt: FieldValue.serverTimestamp()
+                },
+                { merge: true }
+              );
+              return updateEmail;
+            })
+            .catch(error => {
+              throw error;
+            });
+        })
+        .catch(error => {
+          throw error;
         });
-      });
     }
-    return false;
+    throw false;
   },
   updatePassword: async (oldPassword, newPassword) => {
     // const authentication = assoc('updatedAt', Firestore.serverTimestamp(), { password: password });
@@ -117,10 +129,10 @@ export const accountDB = {
         })
         .catch(error => {
           // An error happened.
-          console.log(error);
+          throw error;
         });
     }
-    return false;
+    throw false;
   },
   updateIntroduction: async text => {
     const userinfo = auth.currentUser;
@@ -134,7 +146,7 @@ export const accountDB = {
       );
       return updateIntroduction;
     }
-    return false;
+    throw false;
   },
   updateLanguage: async lang => {
     const userinfo = auth.currentUser;
@@ -148,7 +160,7 @@ export const accountDB = {
       );
       return updateLanguage;
     }
-    return false;
+    throw false;
   },
   updateImage: async image => {
     const userinfo = auth.currentUser;
@@ -159,5 +171,6 @@ export const accountDB = {
         .put(await image);
       return userBacket;
     }
+    throw false;
   }
 };

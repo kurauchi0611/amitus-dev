@@ -26,6 +26,9 @@ import Draggable from "react-draggable";
 import { db } from "../../firebase/firebase";
 import { UserInfo } from "../account/userInfo";
 import { ChatRoom } from "./chatRoom";
+import { Box } from "@material-ui/core";
+import CallIcon from "@material-ui/icons/Call";
+import Router from "next/router";
 const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,7 +37,8 @@ const useStyles = makeStyles((theme: Theme) =>
       bottom: 0,
       right: 0,
       width: 400,
-      height: 600
+      height: 600,
+      zIndex: 1200
     },
     bullet: {
       display: "inline-block",
@@ -110,6 +114,9 @@ const useStyles = makeStyles((theme: Theme) =>
         duration: theme.transitions.duration.enteringScreen
       }),
       marginLeft: 0
+    },
+    iconWhite: {
+      color: "#fff"
     }
   })
 );
@@ -124,7 +131,7 @@ export const DMWindow = ({ dm, member, userPage }) => {
       .where("member", "array-contains", `${dm.user.uid}`)
       .orderBy("updatedAt", "desc")
       .onSnapshot(snapshot => {
-        console.log(snapshot);
+        // console.log(snapshot);
         setTalkList(snapshot.docs);
         const talkArray: any = [];
         let isExistsRoom = false;
@@ -138,7 +145,7 @@ export const DMWindow = ({ dm, member, userPage }) => {
             }
             if (userPage && member === getUser.id) {
               setTalkId(doc.id);
-              setDMUserName(getUser.data().displayName)
+              setDMUserName(getUser.data().displayName);
               isExistsRoom = true;
             }
             talkArray[index] = Object.assign(getUser.data(), {
@@ -147,7 +154,7 @@ export const DMWindow = ({ dm, member, userPage }) => {
           })
         ).then(() => {
           setTalkList(talkArray);
-          console.log(isExistsRoom);
+          // console.log(isExistsRoom);
           if (
             userPage &&
             (snapshot.docs.length === 0 || isExistsRoom === false)
@@ -175,11 +182,18 @@ export const DMWindow = ({ dm, member, userPage }) => {
     setTalkId(data.roomId);
     setDMUserName(data.displayName);
     setDMUserData(data);
-    console.log(data.roomId);
-    console.log(talkId);
     handleDrawerClose();
   };
-
+  const linkLecture = () => {
+    Router.push(
+      {
+        pathname: "/lecture/[id]",
+        query: { getUser: JSON.stringify(dMUserData) }
+      },
+      `/lecture/${talkId}`
+    );
+    dm.handleDMClose();
+  };
   return (
     <div className={classes.drag}>
       <Draggable
@@ -201,9 +215,16 @@ export const DMWindow = ({ dm, member, userPage }) => {
                 <MenuIcon />
               </IconButton>
               <Typography variant="h6">{dMUserName}</Typography>
-              <IconButton aria-label="close" onClick={dm.handleDMClose}>
-                <CloseIcon />
-              </IconButton>
+              <Box>
+                {talkId !== null && (
+                  <IconButton aria-label="close" onClick={linkLecture}>
+                    <CallIcon className={classes.iconWhite} />
+                  </IconButton>
+                )}
+                <IconButton aria-label="close" onClick={dm.handleDMClose}>
+                  <CloseIcon className={classes.iconWhite} />
+                </IconButton>
+              </Box>
             </Toolbar>
           </AppBar>
           <Drawer
@@ -259,3 +280,6 @@ export const DMWindow = ({ dm, member, userPage }) => {
 DMWindow.defaultProps = {
   member: null
 };
+
+// 通話クリックでレクチャーページ。
+// トークidとトークのユーザデータが欲しい！

@@ -3,10 +3,7 @@ import { CardElement, injectStripe } from "react-stripe-elements";
 import { db } from "../../firebase/firebase";
 import { RegularButton } from "../regularButton";
 import { Typography } from "@material-ui/core";
-const CheckoutForm = ({ userData, stripe, elements }) => {
-  console.log(userData);
-  console.log(stripe);
-  console.log(elements);
+const CheckoutForm = ({ userData, stripe }) => {
   const [errMessage, setErrMessage] = React.useState<string>();
   const handleSubmit = async () => {
     let { token, error } = await stripe.createToken();

@@ -1,17 +1,18 @@
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import React from "react";
-import ReactMarkdown from "react-markdown";
+// import ReactMarkdown from "react-markdown";
+// import { CodeBlock } from "./codeBlock";
 import ReactMde, { commands } from "react-mde";
-import { CodeBlock } from "./codeBlock";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     wrap: {
       display: "flex",
-      justifyContent: "space-between"
+      justifyContent: "space-between",
+      height:"100%"
     },
     inner: {
-      width: "50%",
+      width: "100%",
       "& .mde-textarea-wrapper": {
         border: "1px solid #fff",
         outlineColor: theme.palette.primary.main,
@@ -27,11 +28,20 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingRight: theme.spacing(1)
     },
     editer: {
+      height:"100%",
+      display:"flex",
+      flexFlow:"column",
       "& .mde-tabs": {
         display: "none"
       },
       "& .grip": {
         display: "none"
+      },
+      "& .mde-textarea-wrapper":{
+        flex:"1 1 100%",
+        "& .mde-text":{
+          height:"100% !important"
+        }
       }
     },
     preview: {
@@ -40,7 +50,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: "50%",
       maxHeight: "727px",
       overflowY: "auto",
-      wordBreak: "break-all"
+      wordBreak: "break-all",
     },
     previewChar: {
       background: "#f9f9f9",
@@ -64,17 +74,7 @@ export const MarkDownEditor = ({ handleChange, text }) => {
           className={classes.editer}
           value={text}
           commands={listCommands}
-          minEditorHeight={678}
           onChange={handleChange}
-        />
-      </div>
-      <div className={classes.preview}>
-        <div className={classes.previewChar}>プレビュー</div>
-        <ReactMarkdown
-          className={classes.padding}
-          source={text}
-          escapeHtml={false}
-          renderers={{ code: CodeBlock }}
         />
       </div>
     </div>

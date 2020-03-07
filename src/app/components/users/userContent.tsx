@@ -1,4 +1,4 @@
-import { Grid, Paper, Typography, Divider } from "@material-ui/core";
+import { Box, Grid, Paper, Typography, Divider } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import React from "react";
 import { ViewCard } from "../viewCard/viewCard";
@@ -21,10 +21,12 @@ const useStyles = makeStyles((theme: Theme) =>
     content: {
       display: "flex",
       flexFlow: "wrap",
-      justifyContent: "space-around"
+      justifyContent: "space-around",
+      paddingRight: theme.spacing(6)
+      // paddingLeft: 0
     },
     contentPadding: {
-      padding: theme.spacing(4)
+      padding: theme.spacing(3)
     }
   })
 );
@@ -37,8 +39,8 @@ export const UserContent = ({ props }) => {
   }>({
     userData: props
   });
-  const [myQuestions, setMyQuestions] = React.useState<any|null>();
-  const [myTickets, setMyTickets] = React.useState<any|null>();
+  const [myQuestions, setMyQuestions] = React.useState<any | null>();
+  const [myTickets, setMyTickets] = React.useState<any | null>();
   React.useEffect(() => {
     setState({ ...state, userData: props });
     if (typeof props !== "undefined" && props.uid !== "") {
@@ -54,9 +56,9 @@ export const UserContent = ({ props }) => {
     }
   }, [props]);
   return (
-    <Grid item xs={10}>
-      <Paper className={classes.paper + " " + classes.content} elevation={6}>
-        <Grid item xs={12} className={classes.contentPadding}>
+    <Grid item xs={9}>
+      <Paper className={classes.paper + " " + classes.content} elevation={0}>
+        {/* <Grid item xs={12} className={classes.contentPadding}>
           <Paper className={classes.paper} elevation={2}>
             <Typography variant="h5" component="h2">
               スケジュール
@@ -66,9 +68,9 @@ export const UserContent = ({ props }) => {
               ここにschedule的なの
             </div>
           </Paper>
-        </Grid>
+        </Grid> */}
         <Grid item xs={6} className={classes.contentPadding}>
-          <Paper className={classes.paper} elevation={2}>
+          <Paper className={classes.paper} elevation={0}>
             <Typography variant="h5" component="h2">
               {typeof state.userData !== "undefined" && state.userData.name}
               の質問
@@ -76,17 +78,20 @@ export const UserContent = ({ props }) => {
             <Divider className={classes.divider} component="div" />
             {/* userのmyTicketsを取ってくる */}
             <ViewCard
-            label={"questions"}
+              label={"questions"}
               views={typeof myQuestions !== "undefined" && myQuestions.docs}
             />
             {/* todo:5件以上ある時は「もっと見る」無い時は何も表示しないように */}
-            {typeof myQuestions !== "undefined" &&myQuestions.docs.length==5&&
-            <RegularButton label={"もっと見る"} />
-            }
+            {typeof myQuestions !== "undefined" &&
+              myQuestions.docs.length == 5 && (
+                <Box mt={4}>
+                  <RegularButton label={"もっと見る"} />
+                </Box>
+              )}
           </Paper>
         </Grid>
         <Grid item xs={6} className={classes.contentPadding}>
-          <Paper className={classes.paper} elevation={2}>
+          <Paper className={classes.paper} elevation={0}>
             <Typography variant="h5" component="h2">
               {typeof state.userData !== "undefined" && state.userData.name}
               のチケット
@@ -94,13 +99,15 @@ export const UserContent = ({ props }) => {
             <Divider className={classes.divider} component="div" />
             {/* userのmyTicketsを取ってくる */}
             <ViewCard
-            label={"tickets"}
-              views={typeof myTickets !== "undefined" &&myTickets.docs}
+              label={"tickets"}
+              views={typeof myTickets !== "undefined" && myTickets.docs}
             />
             {/* todo:5件以上ある時は「もっと見る」無い時は何も表示しないように */}
-            {typeof myTickets !== "undefined" &&myTickets.docs.length==5&&
-            <RegularButton label={"もっと見る"} />
-            }
+            {typeof myTickets !== "undefined" && myTickets.docs.length == 5 && (
+              <Box mt={4}>
+                <RegularButton label={"もっと見る"} />
+              </Box>
+            )}
           </Paper>
         </Grid>
       </Paper>

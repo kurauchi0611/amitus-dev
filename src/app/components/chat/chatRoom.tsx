@@ -27,7 +27,21 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       padding: theme.spacing(0),
       paddingTop: theme.spacing(8),
-      paddingBottom: theme.spacing(8)
+      paddingBottom: theme.spacing(8),
+      height: "100%",
+      overflow: "auto",
+      "&::-webkit-scrollbar": {
+        width: "5px"
+      },
+      "&::-webkit-scrollbar-track": {
+        borderRadius: "10px",
+        background: "rgba(90,90,90,.5)"
+      },
+      "&::-webkit-scrollbar-thumb": {
+        borderRadius: "10px",
+        opacity: "0.6",
+        background: theme.palette.buttonMain.main
+      }
       // minHeight: 600
     },
     roots: {
@@ -36,7 +50,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       alignItems: "center",
       width: "100%",
-      position: "fixed",
+      position: "absolute",
       bottom: 0,
       left: 0
     },
@@ -71,8 +85,8 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(0.75),
       borderRadius: "15px",
       maxWidth: "250px",
-      wordBreak:"break-all",
-      textAlign:"left"
+      wordBreak: "break-all",
+      textAlign: "left"
     },
     myChatBox: {
       flexFlow: "row-reverse"
@@ -131,7 +145,7 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: "1px 0",
       height: "auto",
       color: "#fff",
-      background: theme.palette.success.main
+      background: theme.palette.buttonMain.main
     },
     chatBoxWrap: {
       textAlign: "center"
@@ -145,36 +159,45 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
   const [postedDate, setPostedDate] = React.useState<any | null>(null);
 
   const scrollBottom = () => {
-    const elm: any | null = document.getElementById("height");
+    const elm: any | null = document.getElementById("scroll");
     const winHeight = elm.scrollHeight - elm.clientHeight;
     elm.scroll(0, winHeight);
+    const elm2: any | null = document.getElementById("height");
+    if (elm2 !== null) {
+      const winHeight2 = elm2.scrollHeight - elm2.clientHeight;
+      elm2.scroll(0, winHeight2);
+    }
   };
   React.useEffect(() => {
-    db.collection("talks")
-      .doc(roomId)
-      .collection("talk")
-      .orderBy("createdAt", "desc")
-      .onSnapshot(snapshot => {
-        var source = snapshot.metadata.hasPendingWrites ? "Local" : "Server";
-        if (snapshot.metadata.hasPendingWrites === false) {
-          console.log(source);
+    if (roomId !== "") {
+      db.collection("talks")
+        .doc(roomId)
+        .collection("talk")
+        .orderBy("createdAt", "desc")
+        .onSnapshot(snapshot => {
+          // var source = snapshot.metadata.hasPendingWrites ? "Local" : "Server";
+          // console.log(source);
           const talkArray: any = [];
           const dateArray: any = [];
           Promise.all(
             snapshot.docs.map((doc, index) => {
+              console.log(doc.data());
+
               talkArray[index] = doc.data();
-              dateArray[index] = format(
-                new Date(doc.data().createdAt.seconds * 1000),
-                "MM/dd"
-              );
+              if (snapshot.metadata.hasPendingWrites === false) {
+                dateArray[index] = format(
+                  new Date(doc.data().createdAt.seconds * 1000),
+                  "MM/dd"
+                );
+              }
             })
           ).then(() => {
             setTalkData(talkArray);
             setPostedDate(dateArray);
             scrollBottom();
           });
-        }
-      });
+        });
+    }
   }, [roomId]);
 
   const classes = useStyles();
@@ -190,10 +213,10 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
       chatDB
         .postMessage(roomId, myUid, message)
         .then(() => {
-          console.log("success");
+          // console.log("success");
         })
         .catch(err => {
-          console.log("error");
+          // console.log("error");
           console.log(err);
         });
       setMessage("");
@@ -258,10 +281,12 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
             </Paper>
           )}
           {doc.type === "ogp" && <MediaCard message={message} />}
-          <Typography variant="caption">{`${format(
-            new Date(doc.createdAt.seconds * 1000),
-            "HH:mm"
-          )}`}</Typography>
+          {doc.createdAt !== null && (
+            <Typography variant="caption">{`${format(
+              new Date(doc.createdAt.seconds * 1000),
+              "HH:mm"
+            )}`}</Typography>
+          )}
         </Box>
       </Box>
     );
@@ -279,7 +304,7 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
     const createObjectURL = (window.URL || window.webkitURL).createObjectURL;
     const target = e.target;
     const file = target.files.item(0);
-    console.log(file);
+    // console.log(file);
 
     const upimg = createObjectURL(file);
     setFileData(upimg);
@@ -290,8 +315,8 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
 
   const updateImage = () => {
     // const image = fileData.result({ type: "blob" });
-    console.log(fileData);
-    console.log(file);
+    // console.log(fileData);
+    // console.log(file);
     chatDB
       .postImage(roomId, myUid, file)
       .then(() => {
@@ -305,7 +330,7 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
   return (
     <React.Fragment>
       <CssBaseline />
-      <Container maxWidth="xl" className={classes.root}>
+      <Container maxWidth="xl" className={classes.root} id="scroll">
         <Box className={classes.chatWrap}>
           {talkData !== null &&
             talkData.map((doc, index) => {
