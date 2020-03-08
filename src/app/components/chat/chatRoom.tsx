@@ -153,7 +153,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const ChatRoom = ({ roomId, myUid, userData }) => {
+export const ChatRoom = ({ roomId, myUid, userData, memberNum }) => {
   const [talkData, setTalkData] = React.useState<any | null>(null);
   const [message, setMessage] = React.useState<string>("");
   const [postedDate, setPostedDate] = React.useState<any | null>(null);
@@ -170,6 +170,7 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
   };
   React.useEffect(() => {
     if (roomId !== "") {
+      chatDB.isOnline(roomId, memberNum);
       db.collection("talks")
         .doc(roomId)
         .collection("talk")
@@ -181,8 +182,6 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
           const dateArray: any = [];
           Promise.all(
             snapshot.docs.map((doc, index) => {
-              console.log(doc.data());
-
               talkArray[index] = doc.data();
               if (snapshot.metadata.hasPendingWrites === false) {
                 dateArray[index] = format(
@@ -200,6 +199,12 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
     }
   }, [roomId]);
 
+  React.useEffect(() => {
+    const cleanup = () => {
+      chatDB.isOffline(roomId, memberNum);
+    };
+    return cleanup;
+  }, []);
   const classes = useStyles();
 
   const handleChange = event => {
@@ -386,7 +391,11 @@ export const ChatRoom = ({ roomId, myUid, userData }) => {
             <img src={fileData} className={classes.postImage} />
             <div className={classes.flexRow}>
               <RegularButton label={"送信する"} onClick={updateImage} />
-              <Button className={classes.buttonMain} onClick={handleCloseImage} variant="contained">
+              <Button
+                className={classes.buttonMain}
+                onClick={handleCloseImage}
+                variant="contained"
+              >
                 キャンセル
               </Button>
             </div>

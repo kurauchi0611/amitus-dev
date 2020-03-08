@@ -6,6 +6,7 @@ const user = db.collection("users");
 export const chatDB = {
   createRoom: (uid1, uid2) => {
     return talks.add({
+      isLecture:false,
       member: [uid1, uid2],
       member1: user.doc(uid1),
       member2: user.doc(uid2),
@@ -13,11 +14,9 @@ export const chatDB = {
     });
   },
   postMessage: async (roomId, uid, message) => {
-    console.log(roomId);
-    console.log(uid);
-    console.log(message);
-    
-    
+    // console.log(roomId);
+    // console.log(uid);
+    // console.log(message);
     let type = "string";
     if (isUrl(message)) type = "link";
     if (message.match(/\.(jpg|png|gif)$/)) {
@@ -39,20 +38,20 @@ export const chatDB = {
       });
   },
   postImage: async (roomId, uid, file) => {
-    console.log(roomId);
-    console.log(uid);
-    console.log(file);
+    // console.log(roomId);
+    // console.log(uid);
+    // console.log(file);
     const type = file.name.split(".");
     const uploadName = `${roomId}-${uid}-${generateUuid()}.${
       type[type.length - 1]
     }`;
-    console.log(uploadName);
+    // console.log(uploadName);
     talkStorage
       .ref()
       .child(`talkImages/${uploadName}`)
       .put(file)
       .then(snapshot => {
-        console.log(snapshot);
+        if(false)console.log(snapshot);
         talkStorage
           .ref()
           .child(`talkImages/${uploadName}`)
@@ -72,6 +71,18 @@ export const chatDB = {
               });
           });
       });
+  },
+  isOnline:(roomId,memberNum)=>{
+    let setData={};
+    if(memberNum===0)setData={member1Online:true};
+    else setData={member2Online:true};
+    return talks.doc(roomId).set(setData,{merge:true});
+  },
+  isOffline:(roomId,memberNum)=>{
+    let setData={};
+    if(memberNum===0)setData={member1Online:false};
+    else setData={member2Online:false};
+    return talks.doc(roomId).set(setData,{merge:true});
   }
 };
 
@@ -108,3 +119,10 @@ const generateUuid = () => {
     .replace(/x/g, () => Math.floor(Math.random() * 16).toString(16))
     .replace(/y/g, () => (Math.floor(Math.random() * 4) + 8).toString(16));
 };
+// usersのサブコレクションにnotificationsを追加
+// トークルームにisOnline [bool,bool]を追加する。 ok
+// そのルームに入ったときにそのルームの自分の方のisOnlineをtrueにする ok
+// ルームに入ったときにnotifications内の該当ルームidを削除
+// 投稿時に、自分じゃないほうのisOnlineがfalseの場合userのnotificationsにルームのuidのドキュメントを作成
+// dm閉じたらルームのisOnlineをfalseにする。 ok
+

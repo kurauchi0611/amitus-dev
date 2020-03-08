@@ -124,6 +124,8 @@ const useStyles = makeStyles((theme: Theme) =>
 export const DMWindow = ({ dm, member, userPage }) => {
   const [talkList, setTalkList] = React.useState<any | null>(null);
   const [talkId, setTalkId] = React.useState<string | null>(null);
+  const [memberNum, setMemberNum] = React.useState<number[] | null>(null);
+  const [num, setNum] = React.useState<number | null>(null);
   const [dMUserName, setDMUserName] = React.useState<string | null>(null);
   const [dMUserData, setDMUserData] = React.useState<string | null>(null);
   React.useEffect(() => {
@@ -134,19 +136,23 @@ export const DMWindow = ({ dm, member, userPage }) => {
         // console.log(snapshot);
         setTalkList(snapshot.docs);
         const talkArray: any = [];
+        const memberNumArray: number[] = [];
         let isExistsRoom = false;
         Promise.all(
           snapshot.docs.map(async (doc, index) => {
             let getUser;
             if (doc.data().member1.id === dm.user.uid) {
               getUser = await doc.data().member2.get();
+              memberNumArray[index] = 0;
             } else {
               getUser = await doc.data().member1.get();
+              memberNumArray[index] = 1;
             }
             if (userPage && member === getUser.id) {
               setTalkId(doc.id);
               setDMUserName(getUser.data().displayName);
               setDMUserData(getUser.data());
+              setNum(memberNumArray[index]);
               isExistsRoom = true;
             }
             talkArray[index] = Object.assign(getUser.data(), {
@@ -155,6 +161,7 @@ export const DMWindow = ({ dm, member, userPage }) => {
           })
         ).then(() => {
           setTalkList(talkArray);
+          setMemberNum(memberNumArray);
           // console.log(isExistsRoom);
           if (
             userPage &&
@@ -179,11 +186,15 @@ export const DMWindow = ({ dm, member, userPage }) => {
     setOpen(false);
   };
 
-  const getTalks = data => {
+  const getTalks = (data, index) => {
+    if (talkId !== null && num !== null) chatDB.isOffline(talkId, num);
     setTalkId(data.roomId);
     setDMUserName(data.displayName);
     setDMUserData(data);
     handleDrawerClose();
+    if (memberNum !== null) {
+      setNum(memberNum[index]);
+    }
   };
   const linkLecture = () => {
     Router.push(
@@ -251,7 +262,7 @@ export const DMWindow = ({ dm, member, userPage }) => {
               {talkList !== null &&
                 talkList.map((data, index) => (
                   <div key={index}>
-                    <ListItem button onClick={() => getTalks(data)}>
+                    <ListItem button onClick={() => getTalks(data, index)}>
                       <UserInfo userInfo={data} />
                     </ListItem>
                     <Divider />
@@ -269,6 +280,7 @@ export const DMWindow = ({ dm, member, userPage }) => {
                 roomId={talkId}
                 myUid={dm.user.uid}
                 userData={dMUserData}
+                memberNum={num}
               />
             )}
           </CardContent>
