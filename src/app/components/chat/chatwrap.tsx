@@ -1,4 +1,5 @@
 import AppBar from "@material-ui/core/AppBar";
+import Badge from "@material-ui/core/Badge";
 import Card from "@material-ui/core/Card";
 // import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
@@ -8,6 +9,7 @@ import IconButton from "@material-ui/core/IconButton";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import {
+  withStyles,
   createStyles,
   makeStyles,
   Theme,
@@ -121,7 +123,17 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const DMWindow = ({ dm, member, userPage }) => {
+const StyledBadge = withStyles((theme: Theme) =>
+  createStyles({
+    badge: {
+      left: 15,
+      border: `2px solid ${theme.palette.background.paper}`,
+      padding: "0 4px"
+    }
+  })
+)(Badge);
+
+export const DMWindow = ({ dm, member, userPage, dMNotificationsList }) => {
   const [talkList, setTalkList] = React.useState<any | null>(null);
   const [talkId, setTalkId] = React.useState<string | null>(null);
   const [memberNum, setMemberNum] = React.useState<number[] | null>(null);
@@ -157,7 +169,7 @@ export const DMWindow = ({ dm, member, userPage }) => {
             }
             talkArray[index] = Object.assign(getUser.data(), {
               roomId: doc.id,
-              uid:getUser.id
+              uid: getUser.id
             });
           })
         ).then(() => {
@@ -207,6 +219,23 @@ export const DMWindow = ({ dm, member, userPage }) => {
     );
     dm.handleDMClose();
   };
+  const isNotifications = data => {
+    if (dMNotificationsList.some(item => item === data.roomId)) {
+      return (
+        <StyledBadge
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "left"
+          }}
+          badgeContent="未読あり"
+          color="primary"
+        >
+          <UserInfo userInfo={data} />
+        </StyledBadge>
+      );
+    } else return <UserInfo userInfo={data} />;
+  };
+
   return (
     <div className={classes.drag}>
       <Draggable
@@ -264,7 +293,7 @@ export const DMWindow = ({ dm, member, userPage }) => {
                 talkList.map((data, index) => (
                   <div key={index}>
                     <ListItem button onClick={() => getTalks(data, index)}>
-                      <UserInfo userInfo={data} />
+                      {isNotifications(data)}
                     </ListItem>
                     <Divider />
                   </div>

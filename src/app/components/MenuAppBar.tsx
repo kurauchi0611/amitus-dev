@@ -34,6 +34,7 @@ import { RegistForm } from "./account/registForm";
 import { LoginForm } from "./account/loginForm";
 import { UserInfo } from "./account/userInfo";
 import { accountDB } from "../firebase/account";
+import Tooltip from "@material-ui/core/Tooltip";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -171,8 +172,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const MenuAppBar = ({ user, dm }) => {
-
+export const MenuAppBar = ({ user, dm, dMNotifications }) => {
   const [state, setState] = React.useState<{
     searchType: string;
     searchValue: string;
@@ -407,33 +407,35 @@ export const MenuAppBar = ({ user, dm }) => {
           <div className={classes.sectionDesktop}>
             {typeof user !== "undefined" && user !== null && (
               <div>
-                <IconButton
-                  aria-label="show 4 new mails"
-                  color="inherit"
-                  onClick={toggleDM()}
-                >
-                  <Badge badgeContent={100} color="primary">
-                    <MailIcon />
-                  </Badge>
-                </IconButton>
-                <IconButton
-                  aria-label="show 17 new notifications"
-                  color="inherit"
-                >
-                  <Badge badgeContent={17} color="primary">
-                    <NotificationsIcon />
-                  </Badge>
-                </IconButton>
-                <IconButton
-                  edge="end"
-                  aria-label="account of current user"
-                  aria-controls={menuId}
-                  aria-haspopup="true"
-                  onClick={handleProfileMenuOpen}
-                  color="inherit"
-                >
-                  <AccountCircle />
-                </IconButton>
+                <Tooltip title="DM">
+                  <IconButton color="inherit" onClick={toggleDM()}>
+                    <Badge badgeContent={dMNotifications} color="primary">
+                      <MailIcon />
+                    </Badge>
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="通知">
+                  <IconButton
+                    aria-label="show 17 new notifications"
+                    color="inherit"
+                  >
+                    <Badge badgeContent={17} color="primary">
+                      <NotificationsIcon />
+                    </Badge>
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="メニュー">
+                  <IconButton
+                    edge="end"
+                    aria-label="account of current user"
+                    aria-controls={menuId}
+                    aria-haspopup="true"
+                    onClick={handleProfileMenuOpen}
+                    color="inherit"
+                  >
+                    <AccountCircle />
+                  </IconButton>
+                </Tooltip>
               </div>
             )}
             {typeof user !== "undefined" && user === null && (

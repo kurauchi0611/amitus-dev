@@ -137,6 +137,8 @@ export const App = ({ props }) => {
         // onしなきゃ始まらない
         meshRoom.on("open", () => {
           console.log("roomIn");
+          setSuccess(enterRoom());
+          setSuccessOpen(true);
           meshRoom.on("peerJoin", peerId => {
             console.log("join:", peerId);
             setIsWating(false);
@@ -155,17 +157,7 @@ export const App = ({ props }) => {
           // 相手から映像、音声が送られてきたらここが走る。
           meshRoom.on("stream", async stream => {
             console.log("recieve Stream");
-            setTimeout(() => {
-              console.log(meshRoom);
-              console.log(peer);
-              console.log(isWating);
-              console.log(successOpen);
-              if (isWating && !successOpen) {
-                setIsWating(false);
-                setSuccess(enterRoom());
-                setSuccessOpen(true);
-              }
-            }, 500);
+            setIsWating(false);
             const newVideo = document.createElement("video");
             newVideo.srcObject = stream;
             newVideo.playsInline = true;

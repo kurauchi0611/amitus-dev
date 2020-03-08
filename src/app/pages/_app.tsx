@@ -31,6 +31,8 @@ const MyApp = ({ Component }) => {
   const [dMopen, setDMopen] = React.useState(false);
   const [isUserPage, setIsUserPage] = React.useState(false);
   const [dMMember, setDMMember] = React.useState<string | null>(null);
+  const [dMNotifications, setDMNotifications] = React.useState<number>(0);
+  const [dMNotificationsList, setDMNotificationsList] = React.useState<string[]>([]);
   React.useEffect(() => {
     return auth.onAuthStateChanged(async (user: any | null) => {
       if (user) {
@@ -44,6 +46,17 @@ const MyApp = ({ Component }) => {
           );
           setSuccessOpen(true);
         }
+        db.collection("users")
+          .doc(user.uid)
+          .collection("notifications")
+          .onSnapshot(snapshot => {
+            const notificationList:string[]=[];
+            setDMNotifications(snapshot.size);
+            snapshot.docs.map((data,index)=>{
+              notificationList[index]=data.id;
+            })
+            setDMNotificationsList(notificationList);
+          });
       } else if (!user) {
         // No user is signed in.
         console.log("logout");
@@ -78,18 +91,14 @@ const MyApp = ({ Component }) => {
     cleanup();
   }, []);
   const handleDMOpen = () => {
-    console.log('hogege');
-    
     setDMopen(true);
   };
   const handleDMOpenUserPage = () => {
-    console.log('hirake');
-    
     setDMopen(true);
     setIsUserPage(true);
   };
   const handleDMClose = () => {
-    console.log('hogeeeee')
+    console.log("hogeeeee");
     setDMopen(false);
     setIsUserPage(false);
   };
@@ -97,8 +106,6 @@ const MyApp = ({ Component }) => {
     setSuccessOpen(false);
   };
   const handleDMMember = member => {
-    console.log(member);
-    
     setDMMember(member);
   };
   return (
@@ -116,6 +123,7 @@ const MyApp = ({ Component }) => {
             dMopen: dMopen,
             handleDMMember: handleDMMember
           }}
+          dMNotifications={dMNotifications}
         />
         <Component
           props={isUser}
@@ -136,6 +144,7 @@ const MyApp = ({ Component }) => {
             }}
             member={dMMember}
             userPage={isUserPage}
+            dMNotificationsList={dMNotificationsList}
           />
         )}
       </ThemeProvider>

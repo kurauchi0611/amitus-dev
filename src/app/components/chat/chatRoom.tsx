@@ -340,6 +340,9 @@ export const ChatRoom = ({ roomId, myUid, userData, memberNum }) => {
     chatDB
       .postImage(roomId, myUid, file)
       .then(() => {
+        if (!guestOnline) {
+          chatDB.setNotifications(userData.uid, roomId);
+        }
         setOpenImage(false);
       })
       .catch(err => {
