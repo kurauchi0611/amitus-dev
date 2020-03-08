@@ -66,5 +66,9 @@ export const ticketDB = {
       .limit(5)
       .get();
     return getMyTickets;
+  },
+  getFavoriteTickets:async()=>{
+    const favoriteTickets=await tickets.orderBy("pageView","desc").limit(5).get();
+    return favoriteTickets;
   }
 };

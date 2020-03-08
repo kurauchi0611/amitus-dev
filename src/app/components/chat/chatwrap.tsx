@@ -146,6 +146,7 @@ export const DMWindow = ({ dm, member, userPage }) => {
             if (userPage && member === getUser.id) {
               setTalkId(doc.id);
               setDMUserName(getUser.data().displayName);
+              setDMUserData(getUser.data());
               isExistsRoom = true;
             }
             talkArray[index] = Object.assign(getUser.data(), {
