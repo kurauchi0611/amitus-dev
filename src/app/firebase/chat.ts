@@ -6,7 +6,7 @@ const user = db.collection("users");
 export const chatDB = {
   createRoom: (uid1, uid2) => {
     return talks.add({
-      isLecture:false,
+      isLecture: false,
       member: [uid1, uid2],
       member1: user.doc(uid1),
       member2: user.doc(uid2),
@@ -20,8 +20,8 @@ export const chatDB = {
     let type = "string";
     if (isUrl(message)) type = "link";
     if (message.match(/\.(jpg|png|gif)$/)) {
-      type="image";
-      message=[message,message]
+      type = "image";
+      message = [message, message];
     }
     // urlの識別追加する。
     updateTime(roomId);
@@ -51,7 +51,7 @@ export const chatDB = {
       .child(`talkImages/${uploadName}`)
       .put(file)
       .then(snapshot => {
-        if(false)console.log(snapshot);
+        if (false) console.log(snapshot);
         talkStorage
           .ref()
           .child(`talkImages/${uploadName}`)
@@ -72,17 +72,32 @@ export const chatDB = {
           });
       });
   },
-  isOnline:(roomId,memberNum)=>{
-    let setData={};
-    if(memberNum===0)setData={member1Online:true};
-    else setData={member2Online:true};
-    return talks.doc(roomId).set(setData,{merge:true});
+  isOnline: (roomId, memberNum) => {
+    let setData = {};
+    if (memberNum === 0) setData = { member1Online: true };
+    else setData = { member2Online: true };
+    return talks.doc(roomId).set(setData, { merge: true });
   },
-  isOffline:(roomId,memberNum)=>{
-    let setData={};
-    if(memberNum===0)setData={member1Online:false};
-    else setData={member2Online:false};
-    return talks.doc(roomId).set(setData,{merge:true});
+  isOffline: (roomId, memberNum) => {
+    let setData = {};
+    if (memberNum === 0) setData = { member1Online: false };
+    else setData = { member2Online: false };
+    return talks.doc(roomId).set(setData, { merge: true });
+  },
+
+  setNotifications: (uid, roomId) => {
+    user
+      .doc(uid)
+      .collection("notifications")
+      .doc(roomId)
+      .set({});
+  },
+  deleteNotifications: (uid, roomId) => {
+    user
+      .doc(uid)
+      .collection("notifications")
+      .doc(roomId)
+      .delete();
   }
 };
 
@@ -119,10 +134,10 @@ const generateUuid = () => {
     .replace(/x/g, () => Math.floor(Math.random() * 16).toString(16))
     .replace(/y/g, () => (Math.floor(Math.random() * 4) + 8).toString(16));
 };
+
 // usersのサブコレクションにnotificationsを追加
 // トークルームにisOnline [bool,bool]を追加する。 ok
 // そのルームに入ったときにそのルームの自分の方のisOnlineをtrueにする ok
 // ルームに入ったときにnotifications内の該当ルームidを削除
 // 投稿時に、自分じゃないほうのisOnlineがfalseの場合userのnotificationsにルームのuidのドキュメントを作成
 // dm閉じたらルームのisOnlineをfalseにする。 ok
-

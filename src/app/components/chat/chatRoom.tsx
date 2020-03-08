@@ -157,7 +157,7 @@ export const ChatRoom = ({ roomId, myUid, userData, memberNum }) => {
   const [talkData, setTalkData] = React.useState<any | null>(null);
   const [message, setMessage] = React.useState<string>("");
   const [postedDate, setPostedDate] = React.useState<any | null>(null);
-
+  const [guestOnline, setGuestOnline] = React.useState<any | null>(null);
   const scrollBottom = () => {
     const elm: any | null = document.getElementById("scroll");
     const winHeight = elm.scrollHeight - elm.clientHeight;
@@ -171,6 +171,7 @@ export const ChatRoom = ({ roomId, myUid, userData, memberNum }) => {
   React.useEffect(() => {
     if (roomId !== "") {
       chatDB.isOnline(roomId, memberNum);
+      chatDB.deleteNotifications(myUid, roomId);
       db.collection("talks")
         .doc(roomId)
         .collection("talk")
@@ -198,13 +199,24 @@ export const ChatRoom = ({ roomId, myUid, userData, memberNum }) => {
         });
     }
   }, [roomId]);
-
+  // チャット消すときにオフライン処理
   React.useEffect(() => {
     const cleanup = () => {
       chatDB.isOffline(roomId, memberNum);
     };
     return cleanup;
   }, []);
+  // 相手がオンラインかオフラインかの監視
+  React.useEffect(() => {
+    db.collection("talks")
+      .doc(roomId)
+      .onSnapshot(snapshot => {
+        const isOnline: any = snapshot.data();
+        if (memberNum === 1) setGuestOnline(isOnline.member1Online);
+        else setGuestOnline(isOnline.member2Online);
+      });
+  }, []);
+
   const classes = useStyles();
 
   const handleChange = event => {
@@ -219,6 +231,9 @@ export const ChatRoom = ({ roomId, myUid, userData, memberNum }) => {
         .postMessage(roomId, myUid, message)
         .then(() => {
           // console.log("success");
+          if (!guestOnline) {
+            chatDB.setNotifications(userData.uid, roomId);
+          }
         })
         .catch(err => {
           // console.log("error");
