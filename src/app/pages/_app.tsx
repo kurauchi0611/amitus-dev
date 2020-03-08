@@ -78,13 +78,18 @@ const MyApp = ({ Component }) => {
     cleanup();
   }, []);
   const handleDMOpen = () => {
+    console.log('hogege');
+    
     setDMopen(true);
   };
   const handleDMOpenUserPage = () => {
+    console.log('hirake');
+    
     setDMopen(true);
     setIsUserPage(true);
   };
   const handleDMClose = () => {
+    console.log('hogeeeee')
     setDMopen(false);
     setIsUserPage(false);
   };
@@ -92,6 +97,8 @@ const MyApp = ({ Component }) => {
     setSuccessOpen(false);
   };
   const handleDMMember = member => {
+    console.log(member);
+    
     setDMMember(member);
   };
   return (

@@ -1,5 +1,6 @@
 import {
   Button,
+  CardActionArea,
   Grid,
   Paper,
   Typography,
@@ -16,7 +17,7 @@ import { questionDB } from "../../firebase/questions";
 import { useRouter } from "next/router";
 import format from "date-fns/format";
 import { MarkDownEditor } from "../../components/mdEditor/MarkDownEditor";
-
+import Link from "next/link";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     margin: {
@@ -27,12 +28,16 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     padding: {
       paddingTop: theme.spacing(5),
-      paddingLeft: theme.spacing(5),
-      paddingRight: theme.spacing(5)
+      paddingLeft: theme.spacing(3),
+      paddingRight: theme.spacing(3)
     },
     title: { background: "#fff", marginBottom: theme.spacing(1) },
     userInfo: { width: "100%", display: "flex", alignItems: "center" },
-    timestamp: { fontSize: ".8rem", width: "500px",marginLeft:theme.spacing(2) },
+    timestamp: {
+      fontSize: ".8rem",
+      width: "max-content",
+      marginLeft: theme.spacing(2)
+    },
     commentWrap: {
       background: "#fff",
       marginTop: theme.spacing(3),
@@ -68,11 +73,40 @@ const useStyles = makeStyles((theme: Theme) =>
       boxShadow: `0 3px 5px 2px ${theme.palette.buttonMain.dark}`
     },
     flex: {
+      paddingTop: theme.spacing(4),
       display: "flex",
       flexFlow: "column",
       alignItems: "flex-end"
     },
-    paddingLR: { paddingLeft: theme.spacing(5), paddingRight: theme.spacing(5) }
+    paddingLR: {
+      paddingLeft: theme.spacing(4),
+      paddingRight: theme.spacing(4)
+    },
+    editWrap: {
+      height: "300px"
+    },
+    linkButton: {
+      padding: theme.spacing(2),
+      display: "flex",
+      justifyContent: "flex-start",
+      "& a": {
+        alignItems: "center",
+        width: "100%",
+        display: "flex",
+        textDecoration: "none",
+        "& h3": {
+          marginTop: theme.spacing(2),
+          borderLeft: `solid 4px ${theme.palette.primary.main}`,
+          paddingLeft: theme.spacing(2)
+        }
+      },
+      "& a:link": {
+        color: "#757575"
+      },
+      "& a:visited": {
+        color: "#757575"
+      }
+    }
   })
 );
 
@@ -99,7 +133,7 @@ const Index = ({ props }) => {
     createdAt: null,
     isResolve: false
   });
-  const [commentState, setCommentState] = React.useState<any|null>();
+  const [commentState, setCommentState] = React.useState<any | null>();
   const [myData, setmyData] = React.useState();
   React.useEffect(() => {
     setmyData(props);
@@ -110,6 +144,8 @@ const Index = ({ props }) => {
       const cleanup = async () => {
         const getQuestion = await questionDB.showQuestion(router.query.id);
         const questionData: any = getQuestion.question.data();
+        console.log(questionData);
+
         if (typeof questionData != "undefined") {
           setCommentState(getQuestion.comments);
           setState({
@@ -152,23 +188,35 @@ const Index = ({ props }) => {
         });
     }
   };
+  console.log(state);
+
   return (
     <React.Fragment>
       <CssBaseline />
       <Container maxWidth="lg" className={classes.margin}>
         <div className={classes.userInfo + " " + classes.padding}>
-          <UserInfo userInfo={state.userData} />
-          <Typography className={classes.timestamp}>
-            {state.createdAt}
-          </Typography>
+          <CardActionArea className={classes.linkButton}>
+            {state.userData !== null && (
+              <Link href="/users/[id]" as={`/users/${state.userData.uid}`}>
+                <a>
+                  <UserInfo userInfo={state.userData} />
+                  <Typography className={classes.timestamp}>
+                    {state.createdAt}
+                  </Typography>
+                </a>
+              </Link>
+            )}
+          </CardActionArea>
         </div>
-        <Typography className={classes.padding} variant="h3">
+        <Typography className={classes.paddingLR} variant="h3">
           {state.title}
         </Typography>
         <div className={classes.paddingLR}>
           <Chips labels={state.tags} />
         </div>
-        <MarkDownViewer text={state.text} isEdit={false}/>
+        <div className={classes.paddingLR}>
+          <MarkDownViewer text={state.text} isEdit={false} />
+        </div>
       </Container>
       <Container maxWidth="lg" className={classes.commentWrap}>
         <Typography className={classes.paddingSmall} variant="h4">
@@ -194,7 +242,10 @@ const Index = ({ props }) => {
                       )}`}
                     </Typography>
                   </div>
-                  <MarkDownViewer text={`${element.data().text}`} isEdit={false}/>
+                  <MarkDownViewer
+                    text={`${element.data().text}`}
+                    isEdit={false}
+                  />
                 </Paper>
               </Grid>
             );
@@ -204,7 +255,9 @@ const Index = ({ props }) => {
             {"コメントを投稿する"}
           </Typography>
           <Divider className={classes.divider} component="div" />
-          <MarkDownEditor handleChange={handleChange()} text={comment} />
+          <div className={classes.editWrap}>
+            <MarkDownEditor handleChange={handleChange()} text={comment} />
+          </div>
           <div className={classes.flex}>
             <Button
               variant="contained"

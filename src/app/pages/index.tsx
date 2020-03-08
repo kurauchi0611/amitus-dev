@@ -146,18 +146,19 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingLeft: theme.spacing(2),
       borderColor: "#16A196"
     },
-
     price: {
       color: "#fdd835",
       fontWeight: "bold",
       textShadow: "1px 1px 1px black",
       fontSize: "18px"
     },
-
     media: {
       height: 0,
       paddingTop: "31.25%"
       // paddingTop: '56.25%', // 16:9
+    },
+    menuColor: {
+      background: "#fff"
     }
   })
 );
@@ -193,18 +194,20 @@ function a11yProps(index: any) {
   };
 }
 
-export default function TopPage() {
+export default function TopPage({ dm }) {
   const classes = useStyles();
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
   const [questions, setQuestinos] = React.useState<any | null>(null);
- const [tickets,setTickets] = React.useState<any | null>(null);
+  const [tickets, setTickets] = React.useState<any | null>(null);
   React.useEffect(() => {
     questionDB.getFavoriteQuestions().then(snapshot => {
       const questions: any[] = [];
       Promise.all(
         snapshot.docs.map((question, index) => {
-          questions[index] = Object.assign(question.data(),{id:question.id});
+          questions[index] = Object.assign(question.data(), {
+            id: question.id
+          });
         })
       ).then(() => {
         setQuestinos(questions);
@@ -214,7 +217,7 @@ export default function TopPage() {
       const tickets: any[] = [];
       Promise.all(
         snapshot.docs.map((ticket, index) => {
-          tickets[index] = Object.assign(ticket.data(),{id:ticket.id});
+          tickets[index] = Object.assign(ticket.data(), { id: ticket.id });
         })
       ).then(() => {
         setTickets(tickets);
@@ -240,7 +243,7 @@ export default function TopPage() {
   return (
     <Container className={classes.wrap}>
       <Grid className={classes.left} xs={6}>
-        <AppBar position="static" color="default">
+        <AppBar position="static" color="default" className={classes.menuColor}>
           <Tabs
             value={value}
             onChange={handleChange}
@@ -263,7 +266,14 @@ export default function TopPage() {
           <TabPanel value={value} index={0} dir={theme.direction}>
             {questions !== null &&
               questions.map((question, index) => {
-                return <TopPageCard props={question} label={"questions"} key={index} />;
+                return (
+                  <TopPageCard
+                    props={question}
+                    label={"questions"}
+                    key={index}
+                    dm={dm}
+                  />
+                );
               })}
             <Pagination className={classes.center} count={10} color="primary" />
           </TabPanel>
@@ -331,9 +341,16 @@ export default function TopPage() {
           </TabPanel>
 
           <TabPanel value={value} index={2} dir={theme.direction}>
-          {tickets !== null &&
+            {tickets !== null &&
               tickets.map((ticket, index) => {
-                return <TopPageCard props={ticket} label={"tickets"} key={index} />;
+                return (
+                  <TopPageCard
+                    props={ticket}
+                    label={"tickets"}
+                    key={index}
+                    dm={dm}
+                  />
+                );
               })}
 
             <Pagination className={classes.center} count={10} color="primary" />

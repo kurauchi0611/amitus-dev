@@ -1,5 +1,7 @@
 import {
   Box,
+  
+  CardActionArea,
   //   Button,
   //   Grid,
   //   Paper,
@@ -17,6 +19,7 @@ import { ticketDB } from "../../firebase/timeTickets";
 import { useRouter } from "next/router";
 import format from "date-fns/format";
 import {Charge} from "../../components/stripe/charge"
+import Link from "next/link";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,8 +31,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     padding: {
       paddingTop: theme.spacing(5),
-      paddingLeft: theme.spacing(5),
-      paddingRight: theme.spacing(5)
+      paddingLeft: theme.spacing(3),
+      paddingRight: theme.spacing(3)
     },
     title: { background: "#fff", marginBottom: theme.spacing(1) },
     userInfo: { width: "100%", display: "flex", alignItems: "center" },
@@ -73,14 +76,37 @@ const useStyles = makeStyles((theme: Theme) =>
       boxShadow: `0 3px 5px 2px ${theme.palette.buttonMain.dark}`
     },
     flex: {
+      paddingTop: theme.spacing(4),
       display: "flex",
       flexFlow: "column",
       alignItems: "flex-end"
     },
-    paddingLR: { paddingLeft: theme.spacing(5), paddingRight: theme.spacing(5) },
+    paddingLR: { paddingLeft: theme.spacing(4), paddingRight: theme.spacing(4) },
     amountBox:{
       marginTop:theme.spacing(5),
       textAlign:"center"
+    },
+    linkButton: {
+      padding: theme.spacing(2),
+      display: "flex",
+      justifyContent: "flex-start",
+      "& a": {
+        alignItems: "center",
+        width: "100%",
+        display: "flex",
+        textDecoration: "none",
+        "& h3": {
+          marginTop: theme.spacing(2),
+          borderLeft: `solid 4px ${theme.palette.primary.main}`,
+          paddingLeft: theme.spacing(2)
+        }
+      },
+      "& a:link": {
+        color: "#757575"
+      },
+      "& a:visited": {
+        color: "#757575"
+      }
     }
   })
 );
@@ -143,12 +169,20 @@ const Index = ({ props }) => {
       <CssBaseline />
       <Container maxWidth="lg" className={classes.margin}>
         <div className={classes.userInfo + " " + classes.padding}>
-          <UserInfo userInfo={state.userData} />
-          <Typography className={classes.timestamp}>
-            {state.createdAt}
-          </Typography>
+        <CardActionArea className={classes.linkButton}>
+            {state.userData !== null && (
+              <Link href="/users/[id]" as={`/users/${state.userData.uid}`}>
+                <a>
+                  <UserInfo userInfo={state.userData} />
+                  <Typography className={classes.timestamp}>
+                    {state.createdAt}
+                  </Typography>
+                </a>
+              </Link>
+            )}
+          </CardActionArea>
         </div>
-        <Typography className={classes.padding} variant="h3">
+        <Typography className={classes.paddingLR} variant="h3">
           {state.title}
         </Typography>
         <div className={classes.paddingLR}>

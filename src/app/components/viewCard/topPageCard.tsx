@@ -19,7 +19,8 @@ import {
   IconButton,
   CardContent,
   CardActions,
-  Collapse
+  Collapse,
+  Paper
 } from "@material-ui/core";
 import CardMedia from "@material-ui/core/CardMedia";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
@@ -30,6 +31,7 @@ import { yellow } from "@material-ui/core/colors";
 import Link from "next/link";
 import format from "date-fns/format";
 import { Chips } from "../mdEditor/chips";
+import { MarkDownViewer } from "../mdEditor/MarkDownViewer";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -64,7 +66,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexFlow: "row",
       alignItems: "center",
       paddingTop: theme.spacing(2),
-      paddingBottom: theme.spacing(1),
+      // paddingBottom: theme.spacing(1),
       marginLeft: theme.spacing(2)
     },
 
@@ -157,98 +159,137 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const TopPageCard = ({ props, label }) => {
+export const TopPageCard = ({ props, label, dm }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+
+  const toggleDM = () => {
+    if (!dm.dMopen) {
+      dm.handleDMMember(props.user.uid);
+      return dm.handleDMOpen();
+    } else return dm.handleDMClose();
+  };
+
+  const splitText = text => {
+    if (text.length < 200) return text;
+    else {
+      return text.substr(0, 200);
+    }
+  };
   return (
     <React.Fragment>
       {typeof props !== "undefined" && (
-        <Card className={classes.root}>
-          <Box className={classes.cardHeader}>
-            <Grid xs={8} className={classes.info1}>
-              <Box>
-                <Avatar className={classes.avatar}></Avatar>
-              </Box>
-              <Box>
-                {props.user.displayName}
-                <IconButton
-                  aria-label="pm"
-                  color="primary"
-                  className={classes.icon}
-                >
-                  <MailIcon />
-                </IconButton>
-                <Typography variant="body2" color="textSecondary" component="p">
-                  {format(
-                    new Date(props.createdAt.seconds * 1000),
-                    "yyyy年MM月dd日HH時mm分投稿"
-                  )}
-                </Typography>
-              </Box>
-            </Grid>
-            {label === "tickets" && (
-              <Grid xs={4} className={classes.info2}>
-                <MonetizationOnIcon
-                  fontSize="large"
-                  style={{ color: yellow[600] }}
-                />
-                <Typography className={classes.price}>{props.amount}円/30分</Typography>
+        <Paper elevation={6}>
+          <Card className={classes.root}>
+            <Box className={classes.cardHeader}>
+              <Grid xs={8} className={classes.info1}>
+                <Box>
+                  <CardActionArea className={classes.buttonPosition}>
+                    <Link href="/users/[id]" as={`/users/${props.user.uid}`}>
+                      <a>
+                        {props.user.photoURL && (
+                          <Avatar
+                            className={classes.avatar}
+                            alt={props.user.displayName}
+                            src={props.user.photoURL}
+                          />
+                        )}
+                        {props.user.photoURL === null && (
+                          <Avatar className={classes.avatar}>NO</Avatar>
+                        )}
+                      </a>
+                    </Link>
+                  </CardActionArea>
+                </Box>
+                <Box>
+                  {props.user.displayName}
+                  <IconButton
+                    aria-label="pm"
+                    color="primary"
+                    className={classes.icon}
+                    onClick={toggleDM}
+                  >
+                    <MailIcon />
+                  </IconButton>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    component="p"
+                  >
+                    {format(
+                      new Date(props.createdAt.seconds * 1000),
+                      "yyyy年MM月dd日HH時mm分投稿"
+                    )}
+                  </Typography>
+                </Box>
               </Grid>
-            )}
-          </Box>
-          <CardActionArea className={classes.buttonPosition}>
-            {label === "questions" && (
-              <Link href="/questions/[id]" as={`/questions/${props.id}`}>
-                <a>
-                  <CardMedia
-                    className={classes.media}
-                    image="/images/card_banner_code.png"
-                    title={props.title}
+              {label === "tickets" && (
+                <Grid xs={4} className={classes.info2}>
+                  <MonetizationOnIcon
+                    fontSize="large"
+                    style={{ color: yellow[600] }}
                   />
-                  <Typography variant="h4" component="h3">
-                    {props.title}
+                  <Typography className={classes.price}>
+                    {props.amount}円/30分
                   </Typography>
-                </a>
-              </Link>
-            )}
-            {label === "tickets" && (
-              <Link href="/timeTickets/[id]" as={`/timeTickets/${props.id}`}>
-                <a>
-                  <CardMedia
-                    className={classes.media}
-                    image="/images/card_banner_project.png"
-                    title={props.title}
-                  />
-                  <Typography variant="h4" component="h3">
-                    {props.title}
-                  </Typography>
-                </a>
-              </Link>
-            )}
-          </CardActionArea>
-          <CardActions disableSpacing>
-            <Chips labels={props.tags} />
+                </Grid>
+              )}
+            </Box>
+            <CardActionArea className={classes.buttonPosition}>
+              {label === "questions" && (
+                <Link href="/questions/[id]" as={`/questions/${props.id}`}>
+                  <a>
+                    <CardMedia
+                      className={classes.media}
+                      image="/images/card_banner_code.png"
+                      title={props.title}
+                    />
+                    <Typography variant="h4" component="h3">
+                      {props.title}
+                    </Typography>
+                  </a>
+                </Link>
+              )}
+              {label === "tickets" && (
+                <Link href="/timeTickets/[id]" as={`/timeTickets/${props.id}`}>
+                  <a>
+                    <CardMedia
+                      className={classes.media}
+                      image="/images/card_banner_project.png"
+                      title={props.title}
+                    />
+                    <Typography variant="h4" component="h3">
+                      {props.title}
+                    </Typography>
+                  </a>
+                </Link>
+              )}
+            </CardActionArea>
+            <CardActions disableSpacing>
+              <Chips labels={props.tags} />
 
-            <IconButton
-              className={clsx(classes.expand, {
-                [classes.expandOpen]: expanded
-              })}
-              onClick={handleExpandClick}
-              aria-expanded={expanded}
-              aria-label="show more"
-            >
-              <ExpandMoreIcon />
-            </IconButton>
-          </CardActions>
-          <Collapse in={expanded} timeout="auto" unmountOnExit>
-            <CardContent>
-              <Typography paragraph>{props.text}</Typography>
-            </CardContent>
-          </Collapse>
-        </Card>
+              <IconButton
+                className={clsx(classes.expand, {
+                  [classes.expandOpen]: expanded
+                })}
+                onClick={handleExpandClick}
+                aria-expanded={expanded}
+                aria-label="show more"
+              >
+                <ExpandMoreIcon />
+              </IconButton>
+            </CardActions>
+            <Collapse in={expanded} timeout="auto" unmountOnExit>
+              <CardContent>
+                <MarkDownViewer text={splitText(props.text)} isEdit={false} />
+                {/* <Typography paragraph>{props.text}</Typography> */}
+              </CardContent>
+            </Collapse>
+          </Card>
+        </Paper>
       )}
     </React.Fragment>
   );

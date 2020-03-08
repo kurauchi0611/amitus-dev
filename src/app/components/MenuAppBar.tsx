@@ -350,7 +350,7 @@ export const MenuAppBar = ({ user, dm }) => {
           >
             <LinkWrap href="/">
               <Link>
-                <img src="/images/logo_a_NoEng.svg" />
+                <img src="/images/amitus_jp.svg" />
               </Link>
             </LinkWrap>
           </Typography>
