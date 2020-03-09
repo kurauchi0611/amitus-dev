@@ -111,7 +111,7 @@ const MyApp = ({ Component }) => {
   return (
     <div>
       <Head>
-        <title>Amitus</title>{" "}
+        <title>アミタス</title>{" "}
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />

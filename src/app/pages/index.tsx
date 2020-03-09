@@ -31,6 +31,7 @@ import clsx from "clsx";
 import { TopPageCard } from "../components/viewCard/topPageCard";
 import { questionDB } from "../firebase/questions";
 import { ticketDB } from "../firebase/timeTickets";
+import { OGPHeader } from "../components/ogpHeader";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -242,6 +243,7 @@ export default function TopPage({ dm }) {
 
   return (
     <Container className={classes.wrap}>
+      <OGPHeader />
       <Grid container justify="space-between">
         <Grid item className={classes.left} xs={6}>
           <AppBar
