@@ -164,7 +164,12 @@ export const DMWindow = ({ dm, member, userPage, dMNotificationsList }) => {
               setNum(memberNumArray[index]);
               setTalkId(doc.id);
               setDMUserName(getUser.data().displayName);
-              setDMUserData(getUser.data());
+              setDMUserData(
+                Object.assign(getUser.data(), {
+                  roomId: doc.id,
+                  uid: getUser.id
+                })
+              );
               isExistsRoom = true;
             }
             talkArray[index] = Object.assign(getUser.data(), {
