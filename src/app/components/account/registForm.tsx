@@ -91,6 +91,12 @@ export const RegistForm = ({ label }) => {
     });
     setOpen(false);
   };
+
+  const keyPress = e => {
+    console.log('hoge');
+    if (e.which == 13) createUser();
+  };
+
   const emailValidation = email => {
     if (!email) return "メールアドレスを入力してください";
     const moji = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -212,24 +218,28 @@ export const RegistForm = ({ label }) => {
               handlechange={handleChange("userName")}
               name={state.userName}
               autoFocus={true}
+              keyPress={keyPress}
             />
             <MailForm
               label="メールアドレス"
               handlechange={handleChange("email")}
               autoFocus={false}
               email={state.email}
+              keyPress={keyPress}
             />
             <div className={classes.error}>{state.emailFaild}</div>
             <PasswordForm
               label="パスワード"
               handlechange={handleChange("password")}
               password={state.password}
+              keyPress={keyPress}
             ></PasswordForm>
             <div className={classes.error}>{state.passwordFaild}</div>
             <PasswordForm
               label="パスワードをもう一度入力してください"
               handlechange={handleChange("checkPassword")}
               password={state.checkPassword}
+              keyPress={keyPress}
             ></PasswordForm>
             <div className={classes.error}>{state.checkPasswordFaild}</div>
             <div className={classes.error}>{state.faild}</div>

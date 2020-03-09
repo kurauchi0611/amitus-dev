@@ -147,7 +147,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const UserNameForm = ({ label, handlechange, name, autoFocus }) => {
+export const UserNameForm = ({ label, handlechange, name, autoFocus,keyPress }) => {
   const classes = useStyles();
   return (
     <FormControl className={classes.margin} fullWidth variant="filled">
@@ -165,6 +165,7 @@ export const UserNameForm = ({ label, handlechange, name, autoFocus }) => {
             <AccountCircleIcon color={"primary"} />
           </InputAdornment>
         }
+        onKeyDown={keyPress}
       />
     </FormControl>
   );
@@ -174,5 +175,6 @@ UserNameForm.defaultProps = {
   label: "",
   handlechange: null,
   name: "",
-  autoFocus: false
+  autoFocus: false,
+  keyPress:null,
 };
