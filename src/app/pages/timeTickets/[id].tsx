@@ -1,10 +1,10 @@
 import {
   Box,
-  
   CardActionArea,
   //   Button,
   //   Grid,
   //   Paper,
+  IconButton,
   Typography,
   Container,
   CssBaseline
@@ -18,8 +18,9 @@ import React from "react";
 import { ticketDB } from "../../firebase/timeTickets";
 import { useRouter } from "next/router";
 import format from "date-fns/format";
-import {Charge} from "../../components/stripe/charge"
+import { Charge } from "../../components/stripe/charge";
 import Link from "next/link";
+import MailIcon from "@material-ui/icons/Mail";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -39,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
     timestamp: {
       fontSize: ".8rem",
       width: "500px",
-      marginLeft: theme.spacing(2)
+      // marginLeft: theme.spacing(2)
     },
     commentWrap: {
       background: "#fff",
@@ -81,10 +82,13 @@ const useStyles = makeStyles((theme: Theme) =>
       flexFlow: "column",
       alignItems: "flex-end"
     },
-    paddingLR: { paddingLeft: theme.spacing(4), paddingRight: theme.spacing(4) },
-    amountBox:{
-      marginTop:theme.spacing(5),
-      textAlign:"center"
+    paddingLR: {
+      paddingLeft: theme.spacing(4),
+      paddingRight: theme.spacing(4)
+    },
+    amountBox: {
+      marginTop: theme.spacing(5),
+      textAlign: "center"
     },
     linkButton: {
       padding: theme.spacing(2),
@@ -111,7 +115,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Index = ({ props }) => {
+const Index = ({ props ,dm}) => {
   const router = useRouter();
   const classes = useStyles();
   const [state, setState] = React.useState<{
@@ -164,16 +168,31 @@ const Index = ({ props }) => {
     }
   }, [router.query.id]);
 
+  const toggleDM = e => {
+    e.preventDefault();
+    if (!dm.dMopen) {
+      dm.handleDMMember(state.userData.uid);
+      return dm.handleDMOpen();
+    } else return dm.handleDMClose();
+  };
   return (
     <React.Fragment>
       <CssBaseline />
       <Container maxWidth="lg" className={classes.margin}>
         <div className={classes.userInfo + " " + classes.padding}>
-        <CardActionArea className={classes.linkButton}>
+          <CardActionArea className={classes.linkButton}>
             {state.userData !== null && (
               <Link href="/users/[id]" as={`/users/${state.userData.uid}`}>
                 <a>
                   <UserInfo userInfo={state.userData} />
+                  <IconButton
+                    aria-label="pm"
+                    color="primary"
+                    // className={classes.icon}
+                    onClick={toggleDM}
+                  >
+                    <MailIcon />
+                  </IconButton>
                   <Typography className={classes.timestamp}>
                     {state.createdAt}
                   </Typography>
@@ -190,8 +209,10 @@ const Index = ({ props }) => {
         </div>
         <MarkDownViewer text={state.text} isEdit={false} />
         <Box className={classes.amountBox}>
-          <Typography variant="h6" component="p">{state.amount}円/30分</Typography>
-          <Charge label={"購入"} amount={state.amount} userData={props}/>
+          <Typography variant="h6" component="p">
+            {state.amount}円/30分
+          </Typography>
+          <Charge label={"購入"} amount={state.amount} userData={props} />
         </Box>
       </Container>
     </React.Fragment>

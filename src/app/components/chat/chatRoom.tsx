@@ -152,7 +152,6 @@ const useStyles = makeStyles((theme: Theme) =>
     }
   })
 );
-
 export const ChatRoom = ({ roomId, myUid, userData, memberNum }) => {
   const [talkData, setTalkData] = React.useState<any | null>(null);
   const [message, setMessage] = React.useState<string>("");

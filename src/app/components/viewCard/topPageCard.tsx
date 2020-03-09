@@ -72,7 +72,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
     info1: {
       display: "flex",
-      alignItems: "center"
+      alignItems: "center",
+      fontSize: "16px"
     },
 
     info2: {
@@ -101,7 +102,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
 
     icon: {
-      padding: "0 0 0 5px"
+      padding: "8px"
     },
 
     center: {
@@ -166,7 +167,8 @@ export const TopPageCard = ({ props, label, dm }) => {
     setExpanded(!expanded);
   };
 
-  const toggleDM = () => {
+  const toggleDM = e => {
+    e.preventDefault();
     if (!dm.dMopen) {
       dm.handleDMMember(props.user.uid);
       return dm.handleDMOpen();
@@ -184,12 +186,12 @@ export const TopPageCard = ({ props, label, dm }) => {
       {typeof props !== "undefined" && (
         <Paper elevation={6}>
           <Card className={classes.root}>
-            <Box className={classes.cardHeader}>
-              <Grid xs={8} className={classes.info1}>
-                <Box>
-                  <CardActionArea className={classes.buttonPosition}>
-                    <Link href="/users/[id]" as={`/users/${props.user.uid}`}>
-                      <a>
+            <CardActionArea className={classes.buttonPosition}>
+              <Link href="/users/[id]" as={`/users/${props.user.uid}`}>
+                <a>
+                  <Box className={classes.cardHeader}>
+                    <Grid item xs={8} className={classes.info1}>
+                      <Box>
                         {props.user.photoURL && (
                           <Avatar
                             className={classes.avatar}
@@ -200,44 +202,44 @@ export const TopPageCard = ({ props, label, dm }) => {
                         {props.user.photoURL === null && (
                           <Avatar className={classes.avatar}>NO</Avatar>
                         )}
-                      </a>
-                    </Link>
-                  </CardActionArea>
-                </Box>
-                <Box>
-                  {props.user.displayName}
-                  <IconButton
-                    aria-label="pm"
-                    color="primary"
-                    className={classes.icon}
-                    onClick={toggleDM}
-                  >
-                    <MailIcon />
-                  </IconButton>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    component="p"
-                  >
-                    {format(
-                      new Date(props.createdAt.seconds * 1000),
-                      "yyyy年MM月dd日HH時mm分投稿"
+                      </Box>
+                      <Box>
+                        {props.user.displayName}
+                        <IconButton
+                          aria-label="pm"
+                          color="primary"
+                          className={classes.icon}
+                          onClick={toggleDM}
+                        >
+                          <MailIcon />
+                        </IconButton>
+                        <Typography
+                          variant="body2"
+                          color="textSecondary"
+                          component="p"
+                        >
+                          {format(
+                            new Date(props.createdAt.seconds * 1000),
+                            "yyyy年MM月dd日HH時mm分投稿"
+                          )}
+                        </Typography>
+                      </Box>
+                    </Grid>
+                    {label === "tickets" && (
+                      <Grid item xs={4} className={classes.info2}>
+                        <MonetizationOnIcon
+                          fontSize="large"
+                          style={{ color: yellow[600] }}
+                        />
+                        <Typography className={classes.price}>
+                          {props.amount}円/30分
+                        </Typography>
+                      </Grid>
                     )}
-                  </Typography>
-                </Box>
-              </Grid>
-              {label === "tickets" && (
-                <Grid xs={4} className={classes.info2}>
-                  <MonetizationOnIcon
-                    fontSize="large"
-                    style={{ color: yellow[600] }}
-                  />
-                  <Typography className={classes.price}>
-                    {props.amount}円/30分
-                  </Typography>
-                </Grid>
-              )}
-            </Box>
+                  </Box>
+                </a>
+              </Link>
+            </CardActionArea>
             <CardActionArea className={classes.buttonPosition}>
               {label === "questions" && (
                 <Link href="/questions/[id]" as={`/questions/${props.id}`}>
@@ -270,7 +272,6 @@ export const TopPageCard = ({ props, label, dm }) => {
             </CardActionArea>
             <CardActions disableSpacing>
               <Chips labels={props.tags} />
-
               <IconButton
                 className={clsx(classes.expand, {
                   [classes.expandOpen]: expanded

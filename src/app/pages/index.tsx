@@ -242,148 +242,180 @@ export default function TopPage({ dm }) {
 
   return (
     <Container className={classes.wrap}>
-      <Grid className={classes.left} xs={6}>
-        <AppBar position="static" color="default" className={classes.menuColor}>
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            indicatorColor="primary"
-            textColor="primary"
-            variant="fullWidth"
-            aria-label="tabs"
+      <Grid container justify="space-between">
+        <Grid item className={classes.left} xs={6}>
+          <AppBar
+            position="static"
+            color="default"
+            className={classes.menuColor}
           >
-            <Tab label="人気の質問" {...a11yProps(0)} />
-            <Tab label="マイスキルの質問" {...a11yProps(1)} />
-            <Tab label="人気のチケット" {...a11yProps(2)} />
-          </Tabs>
-        </AppBar>
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              indicatorColor="primary"
+              textColor="primary"
+              variant="fullWidth"
+              aria-label="tabs"
+            >
+              <Tab label="人気の質問" {...a11yProps(0)} />
+              <Tab label="マイスキルの質問" {...a11yProps(1)} />
+              <Tab label="人気のチケット" {...a11yProps(2)} />
+            </Tabs>
+          </AppBar>
 
-        <SwipeableViews
-          axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-          index={value}
-          onChangeIndex={handleChangeIndex}
-        >
-          <TabPanel value={value} index={0} dir={theme.direction}>
-            {questions !== null &&
-              questions.map((question, index) => {
-                return (
-                  <TopPageCard
-                    props={question}
-                    label={"questions"}
-                    key={index}
-                    dm={dm}
-                  />
-                );
-              })}
-            <Pagination className={classes.center} count={10} color="primary" />
-          </TabPanel>
+          <SwipeableViews
+            axis={theme.direction === "rtl" ? "x-reverse" : "x"}
+            index={value}
+            onChangeIndex={handleChangeIndex}
+          >
+            <TabPanel value={value} index={0} dir={theme.direction}>
+              {questions !== null &&
+                questions.map((question, index) => {
+                  return (
+                    <TopPageCard
+                      props={question}
+                      label={"questions"}
+                      key={index}
+                      dm={dm}
+                    />
+                  );
+                })}
+              <Pagination
+                className={classes.center}
+                count={10}
+                color="primary"
+              />
+            </TabPanel>
 
-          <TabPanel value={value} index={1} dir={theme.direction}>
-            <Card className={classes.root}>
-              <Box className={classes.cardHeader}>
-                <Box>
-                  <Avatar className={classes.avatar}></Avatar>
+            <TabPanel value={value} index={1} dir={theme.direction}>
+              <Card className={classes.root}>
+                <Box className={classes.cardHeader}>
+                  <Box>
+                    <Avatar className={classes.avatar}></Avatar>
+                  </Box>
+                  <Box>
+                    ユーザー名
+                    <IconButton
+                      aria-label="pm"
+                      color="primary"
+                      className={classes.icon}
+                    >
+                      <MailIcon />
+                    </IconButton>
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      component="p"
+                    >
+                      hh:mm:ss yyyy-mm-dd
+                    </Typography>
+                  </Box>
                 </Box>
-                <Box>
-                  ユーザー名
-                  <IconButton
-                    aria-label="pm"
-                    color="primary"
-                    className={classes.icon}
-                  >
-                    <MailIcon />
-                  </IconButton>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    component="p"
-                  >
-                    hh:mm:ss yyyy-mm-dd
-                  </Typography>
-                </Box>
-              </Box>
 
-              <CardContent className={classes.cardContent}>
-                <Box>
-                  <Typography variant="h5">質問のタイトルだよ～</Typography>
-                </Box>
-              </CardContent>
-
-              <CardActions disableSpacing>
-                <Button variant="outlined">タグ</Button>
-
-                <IconButton
-                  className={clsx(classes.expand, {
-                    [classes.expandOpen]: expanded
-                  })}
-                  onClick={handleExpandClick}
-                  aria-expanded={expanded}
-                  aria-label="show more"
-                >
-                  <ExpandMoreIcon />
-                </IconButton>
-              </CardActions>
-              <Collapse in={expanded} timeout="auto" unmountOnExit>
-                <CardContent>
-                  <Typography paragraph>
-                    質問の内容(先頭50文字？)<br></br>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <br></br>三('ω')三( ε: )三(.ω.)三( :3 )三('ω')三( ε: )
-                    ｡･*･:≡( ε:)
-                  </Typography>
+                <CardContent className={classes.cardContent}>
+                  <Box>
+                    <Typography variant="h5">質問のタイトルだよ～</Typography>
+                  </Box>
                 </CardContent>
-              </Collapse>
-            </Card>
 
-            <Pagination className={classes.center} count={10} color="primary" />
-          </TabPanel>
+                <CardActions disableSpacing>
+                  <Button variant="outlined">タグ</Button>
 
-          <TabPanel value={value} index={2} dir={theme.direction}>
-            {tickets !== null &&
-              tickets.map((ticket, index) => {
-                return (
-                  <TopPageCard
-                    props={ticket}
-                    label={"tickets"}
-                    key={index}
-                    dm={dm}
-                  />
-                );
-              })}
+                  <IconButton
+                    className={clsx(classes.expand, {
+                      [classes.expandOpen]: expanded
+                    })}
+                    onClick={handleExpandClick}
+                    aria-expanded={expanded}
+                    aria-label="show more"
+                  >
+                    <ExpandMoreIcon />
+                  </IconButton>
+                </CardActions>
+                <Collapse in={expanded} timeout="auto" unmountOnExit>
+                  <CardContent>
+                    <Typography paragraph>
+                      質問の内容(先頭50文字？)<br></br>
+                      <br></br>
+                      <br></br>
+                      <br></br>
+                      <br></br>三('ω')三( ε: )三(.ω.)三( :3 )三('ω')三( ε: )
+                      ｡･*･:≡( ε:)
+                    </Typography>
+                  </CardContent>
+                </Collapse>
+              </Card>
 
-            <Pagination className={classes.center} count={10} color="primary" />
-          </TabPanel>
-        </SwipeableViews>
-      </Grid>
+              <Pagination
+                className={classes.center}
+                count={10}
+                color="primary"
+              />
+            </TabPanel>
 
-      <Grid className={classes.right} xs={5}>
-        <Paper className={classes.paper}>
-          <Box fontSize="h6.fontSize" ml={2}>
-            本日のスケジュール
+            <TabPanel value={value} index={2} dir={theme.direction}>
+              {tickets !== null &&
+                tickets.map((ticket, index) => {
+                  return (
+                    <TopPageCard
+                      props={ticket}
+                      label={"tickets"}
+                      key={index}
+                      dm={dm}
+                    />
+                  );
+                })}
+
+              <Pagination
+                className={classes.center}
+                count={10}
+                color="primary"
+              />
+            </TabPanel>
+          </SwipeableViews>
+        </Grid>
+
+        <Grid item className={classes.right} xs={5}>
+          <Paper className={classes.paper} elevation={8}>
+            <Box fontSize="h6.fontSize" ml={2}>
+              本日のスケジュール
+            </Box>
+            <Box textAlign="center" m={5}>
+              更新中・・・
+            </Box>
+            <Box textAlign="right">
+              <Button variant="outlined">一覧</Button>
+            </Box>
+          </Paper>
+
+          <Box className={classes.margin} m={1}>
+            <Typography variant="h5" color="primary">
+              新着通知
+            </Typography>
           </Box>
-          <Box textAlign="center" m={5}>
-            更新中・・・
-          </Box>
-          <Box textAlign="right">
-            <Button variant="outlined">一覧</Button>
-          </Box>
-        </Paper>
 
-        <Box className={classes.margin} m={1}>
-          <Typography variant="h5" color="primary">
-            新着通知
-          </Typography>
-        </Box>
-
-        <Paper className={classes.paper}>
-          <Box className={classes.title}>通知1タイトル</Box>
-          <Box textAlign="left" ml={2}>
-            hh:mm:ss yyyy-mm-dd
-          </Box>
-          <Box m={3}>通知1の内容だよ・・</Box>
-        </Paper>
+          <Paper className={classes.paper} elevation={8}>
+            <Box className={classes.title}>通知1タイトル</Box>
+            <Box textAlign="left" ml={2}>
+              hh:mm:ss yyyy-mm-dd
+            </Box>
+            <Box m={3}>通知1の内容だよ・・</Box>
+          </Paper>
+          <Paper className={classes.paper} elevation={8}>
+            <Box className={classes.title}>通知1タイトル</Box>
+            <Box textAlign="left" ml={2}>
+              hh:mm:ss yyyy-mm-dd
+            </Box>
+            <Box m={3}>通知1の内容だよ・・</Box>
+          </Paper>
+          <Paper className={classes.paper} elevation={8}>
+            <Box className={classes.title}>通知1タイトル</Box>
+            <Box textAlign="left" ml={2}>
+              hh:mm:ss yyyy-mm-dd
+            </Box>
+            <Box m={3}>通知1の内容だよ・・</Box>
+          </Paper>
+        </Grid>
       </Grid>
     </Container>
   );

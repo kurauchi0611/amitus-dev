@@ -2,6 +2,7 @@ import {
   Button,
   CardActionArea,
   Grid,
+  IconButton,
   Paper,
   Typography,
   Container,
@@ -18,6 +19,8 @@ import { useRouter } from "next/router";
 import format from "date-fns/format";
 import { MarkDownEditor } from "../../components/mdEditor/MarkDownEditor";
 import Link from "next/link";
+import MailIcon from "@material-ui/icons/Mail";
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     margin: {
@@ -36,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) =>
     timestamp: {
       fontSize: ".8rem",
       width: "max-content",
-      marginLeft: theme.spacing(2)
+      // marginLeft: theme.spacing(2)
     },
     commentWrap: {
       background: "#fff",
@@ -60,7 +63,7 @@ const useStyles = makeStyles((theme: Theme) =>
     divider: {
       background: theme.palette.buttonMain.main,
       height: "2px",
-      marginBottom: theme.spacing(2)
+      // marginBottom: theme.spacing(2)
     },
     button: {
       fontSize: "18px",
@@ -110,7 +113,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Index = ({ props }) => {
+const Index = ({ props, dm }) => {
   const router = useRouter();
   const classes = useStyles();
   const [comment, setComment] = React.useState("");
@@ -188,7 +191,13 @@ const Index = ({ props }) => {
         });
     }
   };
-  console.log(state);
+  const toggleDM = e => {
+    e.preventDefault();
+    if (!dm.dMopen) {
+      dm.handleDMMember(state.userData.uid);
+      return dm.handleDMOpen();
+    } else return dm.handleDMClose();
+  };
 
   return (
     <React.Fragment>
@@ -200,6 +209,14 @@ const Index = ({ props }) => {
               <Link href="/users/[id]" as={`/users/${state.userData.uid}`}>
                 <a>
                   <UserInfo userInfo={state.userData} />
+                  <IconButton
+                    aria-label="pm"
+                    color="primary"
+                    // className={classes.icon}
+                    onClick={toggleDM}
+                  >
+                    <MailIcon />
+                  </IconButton>
                   <Typography className={classes.timestamp}>
                     {state.createdAt}
                   </Typography>

@@ -148,7 +148,7 @@ const Index = ({ props }) => {
     setOpen(false);
   };
   const sendTicket = async () => {
-    if (state.text !== "" && state.tags !== null && state.text !== "") {
+    if (state.title !== "" && state.tags !== null && state.text !== "") {
       if (state.index === 0) {
         const postTicket = await ticketDB.postTicket(state);
         if (postTicket !== null) {

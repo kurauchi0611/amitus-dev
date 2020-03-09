@@ -120,7 +120,7 @@ const Index = ({ props }) => {
     setOpen(false);
   };
   const sendQuestion = async () => {
-    if (state.text !== "" && state.tags !== null && state.text !== "") {
+    if (state.title !== "" && state.tags !== null && state.text !== "") {
       if (state.index === 0) {
         const postQuestion = await questionDB.postQuestion(state);
         if (postQuestion !== null) {
