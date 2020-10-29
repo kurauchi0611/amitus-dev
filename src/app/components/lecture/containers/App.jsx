@@ -43,8 +43,8 @@ const useStyles = makeStyles(theme =>
       background: "#fff",
       marginRight: theme.spacing(18),
       marginLeft: theme.spacing(18),
-      paddingRight: theme.spacing(20),
-      paddingLeft: theme.spacing(20),
+      paddingRight: theme.spacing(16),
+      paddingLeft: theme.spacing(16),
       paddingBottom: theme.spacing(4)
     },
     gridItem: {
@@ -273,7 +273,7 @@ export const App = ({ props }) => {
         <script src="https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js"></script>
       </Head>
       <Grid container spacing={2} className={classes.gridContainer}>
-        <Grid item xs={9} className={classes.gridItem}>
+        <Grid item xs={8} className={classes.gridItem}>
           <Editor
             onChange={handleEditorOnChange.bind(this)}
             onChangeMode={onChangeMode.bind(this)}
@@ -281,7 +281,7 @@ export const App = ({ props }) => {
             mode={mode}
           />
         </Grid>
-        <Grid item xs={3} className={classes.gridItem}>
+        <Grid item xs={4} className={classes.gridItem}>
           {typeof myData !== "undefined" && (
             <Box mt={6} className={classes.chatBox}>
               <AppBar className={classes.chatBar}>

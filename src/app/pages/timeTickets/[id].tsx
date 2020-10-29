@@ -21,6 +21,7 @@ import format from "date-fns/format";
 import { Charge } from "../../components/stripe/charge";
 import Link from "next/link";
 import MailIcon from "@material-ui/icons/Mail";
+import { OGPHeader } from "../../components/ogpHeader";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -39,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
     userInfo: { width: "100%", display: "flex", alignItems: "center" },
     timestamp: {
       fontSize: ".8rem",
-      width: "500px",
+      width: "500px"
       // marginLeft: theme.spacing(2)
     },
     commentWrap: {
@@ -115,7 +116,11 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Index = ({ props ,dm}) => {
+const Index = ({ isuser, dm, headData }) => {
+  let ogpData;
+  if (typeof headData !== "undefined") {
+    ogpData = JSON.parse(headData);
+  }
   const router = useRouter();
   const classes = useStyles();
   const [state, setState] = React.useState<{
@@ -139,9 +144,9 @@ const Index = ({ props ,dm}) => {
   });
   const [myData, setmyData] = React.useState();
   React.useEffect(() => {
-    setmyData(props);
-    console.log(myData);
-  }, [props]);
+    setmyData(isuser);
+    if (false) console.log(myData);
+  }, [isuser]);
 
   React.useEffect(() => {
     if (typeof router.query.id !== "undefined") {
@@ -177,6 +182,14 @@ const Index = ({ props ,dm}) => {
   };
   return (
     <React.Fragment>
+      {typeof headData !== "undefined" && (
+        <OGPHeader
+          title={ogpData.title}
+          description={ogpData.text.substr(0, 200)}
+          image={"/images/card_banner_1200_02.png"}
+          url={`timeTickets/${router.query.id}`}
+        />
+      )}
       <CssBaseline />
       <Container maxWidth="lg" className={classes.margin}>
         <div className={classes.userInfo + " " + classes.padding}>
@@ -207,12 +220,14 @@ const Index = ({ props ,dm}) => {
         <div className={classes.paddingLR}>
           <Chips labels={state.tags} />
         </div>
+        <div className={classes.paddingLR}>
         <MarkDownViewer text={state.text} isEdit={false} />
+        </div>
         <Box className={classes.amountBox}>
           <Typography variant="h6" component="p">
             {state.amount}円/30分
           </Typography>
-          <Charge label={"購入"} amount={state.amount} userData={props} />
+          <Charge label={"購入"} amount={state.amount} userData={isuser} />
         </Box>
       </Container>
     </React.Fragment>

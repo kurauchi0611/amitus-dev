@@ -62,8 +62,8 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Index = ({ props, dm }) => {
-  if (false) console.log(props);
+const Index = ({ isuser, dm }) => {
+  if (false) console.log(isuser);
   const classes = useStyles();
   const router = useRouter();
   const [userState, setUserState] = React.useState<{

@@ -20,6 +20,7 @@ import format from "date-fns/format";
 import { MarkDownEditor } from "../../components/mdEditor/MarkDownEditor";
 import Link from "next/link";
 import MailIcon from "@material-ui/icons/Mail";
+import { OGPHeader } from "../../components/ogpHeader";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -113,7 +114,11 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Index = ({ props, dm }) => {
+const Index = ({ isuser, dm , headData}) => {
+  let ogpData;
+  if (typeof headData !== "undefined") {
+    ogpData = JSON.parse(headData);
+  }
   const router = useRouter();
   const classes = useStyles();
   const [comment, setComment] = React.useState("");
@@ -139,8 +144,8 @@ const Index = ({ props, dm }) => {
   const [commentState, setCommentState] = React.useState<any | null>();
   const [myData, setmyData] = React.useState();
   React.useEffect(() => {
-    setmyData(props);
-  }, [props]);
+    setmyData(isuser);
+  }, [isuser]);
 
   React.useEffect(() => {
     if (typeof router.query.id !== "undefined") {
@@ -201,6 +206,14 @@ const Index = ({ props, dm }) => {
 
   return (
     <React.Fragment>
+      {typeof headData !== "undefined" && (
+        <OGPHeader
+          title={ogpData.title}
+          description={ogpData.text.substr(0, 200)}
+          image={"/images/card_banner_1200_01.png"}
+          url={`questions/${router.query.id}`}
+        />
+      )}
       <CssBaseline />
       <Container maxWidth="lg" className={classes.margin}>
         <div className={classes.userInfo + " " + classes.padding}>
