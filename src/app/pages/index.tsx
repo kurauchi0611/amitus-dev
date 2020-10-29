@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from "react";
 import SwipeableViews from "react-swipeable-views";
 import {
@@ -28,7 +29,7 @@ import {
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import MailIcon from "@material-ui/icons/Mail";
 import clsx from "clsx";
-import { TopPageCard } from "../components/viewCard/topPageCard";
+// import { TopPageCard } from "../components/viewCard/topPageCard";
 import { questionDB } from "../firebase/questions";
 import { ticketDB } from "../firebase/timeTickets";
 import { OGPHeader } from "../components/ogpHeader";
@@ -196,6 +197,7 @@ function a11yProps(index: any) {
 }
 
 export default function TopPage({ dm }) {
+  console.log(dm);
   const classes = useStyles();
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
@@ -273,14 +275,14 @@ export default function TopPage({ dm }) {
             <TabPanel value={value} index={0} dir={theme.direction}>
               {questions !== null &&
                 questions.map((question, index) => {
-                  return (
-                    <TopPageCard
-                      props={question}
-                      label={"questions"}
-                      key={index}
-                      dm={dm}
-                    />
-                  );
+                  // return (
+                  //   <TopPageCard
+                  //     props={question}
+                  //     label={"questions"}
+                  //     key={index}
+                  //     dm={dm}
+                  //   />
+                  // );
                 })}
               <Pagination
                 className={classes.center}
@@ -358,14 +360,14 @@ export default function TopPage({ dm }) {
             <TabPanel value={value} index={2} dir={theme.direction}>
               {tickets !== null &&
                 tickets.map((ticket, index) => {
-                  return (
-                    <TopPageCard
-                      props={ticket}
-                      label={"tickets"}
-                      key={index}
-                      dm={dm}
-                    />
-                  );
+                  // return (
+                  //   <TopPageCard
+                  //     props={ticket}
+                  //     label={"tickets"}
+                  //     key={index}
+                  //     dm={dm}
+                  //   />
+                  // );
                 })}
 
               <Pagination

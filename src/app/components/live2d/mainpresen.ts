@@ -29,7 +29,7 @@ export const main = async selectedModel => {
   // el0 3 0.15 "el0",
   // ,"yokubarisu", "Thinking_Face", "CN_Pikachu","Bronia"
   const modelList: any[] = [
-    { name: "model", scale: 1.5, trans: -0 },
+    { name: "model", scale: 0.7, trans: -0.1 },
     { name: "Haru", scale: 6, trans: -0.3 },
     { name: "Natori", scale: 6, trans: -0.3 },
     { name: "Mark", scale: 3.5, trans: -0.1 },
@@ -224,8 +224,8 @@ export const main = async selectedModel => {
    */
   const projectionMatrix = new cubismmatrix44.CubismMatrix44();
   const resizeModel = () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight * 0.53;
+    canvas.width = 640;
+    canvas.height = 500;
 
     // NOTE: HTMLキャンバスのclientWidth、clientHeightが変わってもwidthとheightは変わらないので、自分で更新する
     // NOTE: スマートフォン向けにdevicePixelRatioを考慮しないとモデルがぼやける
@@ -268,7 +268,7 @@ export const main = async selectedModel => {
 
   // フレームバッファとビューポートを、フレームワーク設定
   const viewport: number[] = [
-    -(canvas.width / 2 - (180 * canvas.width) / window.innerWidth),
+    0,
     0,
     canvas.width,
     canvas.height
