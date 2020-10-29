@@ -1,4 +1,5 @@
 import AppBar from "@material-ui/core/AppBar";
+import Badge from "@material-ui/core/Badge";
 import Card from "@material-ui/core/Card";
 // import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
@@ -8,6 +9,7 @@ import IconButton from "@material-ui/core/IconButton";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import {
+  withStyles,
   createStyles,
   makeStyles,
   Theme,
@@ -121,9 +123,21 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const DMWindow = ({ dm, member, userPage }) => {
+const StyledBadge = withStyles((theme: Theme) =>
+  createStyles({
+    badge: {
+      left: 15,
+      border: `2px solid ${theme.palette.background.paper}`,
+      padding: "0 4px"
+    }
+  })
+)(Badge);
+
+export const DMWindow = ({ dm, member, userPage, dMNotificationsList }) => {
   const [talkList, setTalkList] = React.useState<any | null>(null);
   const [talkId, setTalkId] = React.useState<string | null>(null);
+  const [memberNum, setMemberNum] = React.useState<number[] | null>(null);
+  const [num, setNum] = React.useState<number | null>(null);
   const [dMUserName, setDMUserName] = React.useState<string | null>(null);
   const [dMUserData, setDMUserData] = React.useState<string | null>(null);
   React.useEffect(() => {
@@ -134,26 +148,38 @@ export const DMWindow = ({ dm, member, userPage }) => {
         // console.log(snapshot);
         setTalkList(snapshot.docs);
         const talkArray: any = [];
+        const memberNumArray: number[] = [];
         let isExistsRoom = false;
         Promise.all(
           snapshot.docs.map(async (doc, index) => {
             let getUser;
             if (doc.data().member1.id === dm.user.uid) {
               getUser = await doc.data().member2.get();
+              memberNumArray[index] = 0;
             } else {
               getUser = await doc.data().member1.get();
+              memberNumArray[index] = 1;
             }
             if (userPage && member === getUser.id) {
+              setNum(memberNumArray[index]);
               setTalkId(doc.id);
               setDMUserName(getUser.data().displayName);
+              setDMUserData(
+                Object.assign(getUser.data(), {
+                  roomId: doc.id,
+                  uid: getUser.id
+                })
+              );
               isExistsRoom = true;
             }
             talkArray[index] = Object.assign(getUser.data(), {
-              roomId: doc.id
+              roomId: doc.id,
+              uid: getUser.id
             });
           })
         ).then(() => {
           setTalkList(talkArray);
+          setMemberNum(memberNumArray);
           // console.log(isExistsRoom);
           if (
             userPage &&
@@ -178,11 +204,15 @@ export const DMWindow = ({ dm, member, userPage }) => {
     setOpen(false);
   };
 
-  const getTalks = data => {
+  const getTalks = (data, index) => {
+    if (talkId !== null && num !== null) chatDB.isOffline(talkId, num);
     setTalkId(data.roomId);
     setDMUserName(data.displayName);
     setDMUserData(data);
     handleDrawerClose();
+    if (memberNum !== null) {
+      setNum(memberNum[index]);
+    }
   };
   const linkLecture = () => {
     Router.push(
@@ -194,6 +224,23 @@ export const DMWindow = ({ dm, member, userPage }) => {
     );
     dm.handleDMClose();
   };
+  const isNotifications = data => {
+    if (dMNotificationsList.some(item => item === data.roomId)) {
+      return (
+        <StyledBadge
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "left"
+          }}
+          badgeContent="未読あり"
+          color="primary"
+        >
+          <UserInfo userInfo={data} />
+        </StyledBadge>
+      );
+    } else return <UserInfo userInfo={data} />;
+  };
+
   return (
     <div className={classes.drag}>
       <Draggable
@@ -250,8 +297,8 @@ export const DMWindow = ({ dm, member, userPage }) => {
               {talkList !== null &&
                 talkList.map((data, index) => (
                   <div key={index}>
-                    <ListItem button onClick={() => getTalks(data)}>
-                      <UserInfo userInfo={data} />
+                    <ListItem button onClick={() => getTalks(data, index)}>
+                      {isNotifications(data)}
                     </ListItem>
                     <Divider />
                   </div>
@@ -268,6 +315,7 @@ export const DMWindow = ({ dm, member, userPage }) => {
                 roomId={talkId}
                 myUid={dm.user.uid}
                 userData={dMUserData}
+                memberNum={num}
               />
             )}
           </CardContent>

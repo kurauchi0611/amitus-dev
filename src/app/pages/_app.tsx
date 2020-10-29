@@ -10,6 +10,8 @@ import { createStyles, makeStyles } from "@material-ui/core/styles";
 import "../components/croppie/croppie.css";
 import { auth, db } from "../firebase/firebase";
 import { DMWindow } from "../components/chat/chatwrap";
+import {ticketDB} from "../firebase/timeTickets"
+import {questionDB} from "../firebase/questions"
 // function MyApp({ Component, pageProps }) {
 //   return <Component {...pageProps} />
 // }
@@ -23,7 +25,7 @@ const useStyles = makeStyles(() =>
     }
   })
 );
-const MyApp = ({ Component }) => {
+const MyApp = ({ Component,headData }) => {
   const classes = useStyles();
   const [isUser, setIsUser] = React.useState<any | null>();
   const [success, setSuccess] = React.useState<any | null>();
@@ -31,6 +33,10 @@ const MyApp = ({ Component }) => {
   const [dMopen, setDMopen] = React.useState(false);
   const [isUserPage, setIsUserPage] = React.useState(false);
   const [dMMember, setDMMember] = React.useState<string | null>(null);
+  const [dMNotifications, setDMNotifications] = React.useState<number>(0);
+  const [dMNotificationsList, setDMNotificationsList] = React.useState<
+    string[]
+  >([]);
   React.useEffect(() => {
     return auth.onAuthStateChanged(async (user: any | null) => {
       if (user) {
@@ -44,6 +50,17 @@ const MyApp = ({ Component }) => {
           );
           setSuccessOpen(true);
         }
+        db.collection("users")
+          .doc(user.uid)
+          .collection("notifications")
+          .onSnapshot(snapshot => {
+            const notificationList: string[] = [];
+            setDMNotifications(snapshot.size);
+            snapshot.docs.map((data, index) => {
+              notificationList[index] = data.id;
+            });
+            setDMNotificationsList(notificationList);
+          });
       } else if (!user) {
         // No user is signed in.
         console.log("logout");
@@ -85,6 +102,7 @@ const MyApp = ({ Component }) => {
     setIsUserPage(true);
   };
   const handleDMClose = () => {
+    console.log("hogeeeee");
     setDMopen(false);
     setIsUserPage(false);
   };
@@ -97,7 +115,7 @@ const MyApp = ({ Component }) => {
   return (
     <div>
       <Head>
-        <title>Amitus</title>{" "}
+        <title>アミタス</title>{" "}
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
@@ -109,15 +127,17 @@ const MyApp = ({ Component }) => {
             dMopen: dMopen,
             handleDMMember: handleDMMember
           }}
+          dMNotifications={dMNotifications}
         />
         <Component
-          props={isUser}
+          isuser={isUser}
           dm={{
             handleDMOpen: handleDMOpenUserPage,
             handleDMClose: handleDMClose,
             dMopen: dMopen,
             handleDMMember: handleDMMember
           }}
+          headData={headData}
         />
         {dMopen && (
           <DMWindow
@@ -129,6 +149,7 @@ const MyApp = ({ Component }) => {
             }}
             member={dMMember}
             userPage={isUserPage}
+            dMNotificationsList={dMNotificationsList}
           />
         )}
       </ThemeProvider>
@@ -158,4 +179,18 @@ const MyApp = ({ Component }) => {
 // });
 // return userData;
 
+MyApp.getInitialProps =async ({router}) => {
+
+  if (router.pathname === "/timeTickets/[id]") {
+    const getData = await ticketDB.showTickets(router.query.id);
+    return{headData:JSON.stringify(getData)}
+  }
+  else if (router.pathname === "/questions/[id]") {
+    const getData = await questionDB.showQuestion(router.query.id);
+    return{headData:JSON.stringify(getData.question.data())}
+  }
+  // const res = await fetch("https://api.github.com/repos/zeit/next.js");
+  // const json = await res.json();
+  return {};
+}
 export default MyApp;

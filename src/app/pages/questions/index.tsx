@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Index = ({ props }) => {
+const Index = ({ isuser }) => {
   const classes = useStyles();
   const router = useRouter();
   const sampleMoji =
@@ -82,11 +82,11 @@ const Index = ({ props }) => {
     tags: [],
     text: sampleMoji,
     index: 0,
-    userData: props
+    userData: isuser
   });
   React.useEffect(() => {
-    setState({ ...state, userData: props });
-  }, [props]);
+    setState({ ...state, userData: isuser });
+  }, [isuser]);
 
   const handleChange = name => event => {
     if (name === "text") {
@@ -120,7 +120,7 @@ const Index = ({ props }) => {
     setOpen(false);
   };
   const sendQuestion = async () => {
-    if (state.text !== "" && state.tags !== null && state.text !== "") {
+    if (state.title !== "" && state.tags !== null && state.text !== "") {
       if (state.index === 0) {
         const postQuestion = await questionDB.postQuestion(state);
         if (postQuestion !== null) {

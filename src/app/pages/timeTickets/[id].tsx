@@ -1,8 +1,10 @@
 import {
   Box,
+  CardActionArea,
   //   Button,
   //   Grid,
   //   Paper,
+  IconButton,
   Typography,
   Container,
   CssBaseline
@@ -16,7 +18,10 @@ import React from "react";
 import { ticketDB } from "../../firebase/timeTickets";
 import { useRouter } from "next/router";
 import format from "date-fns/format";
-import {Charge} from "../../components/stripe/charge"
+import { Charge } from "../../components/stripe/charge";
+import Link from "next/link";
+import MailIcon from "@material-ui/icons/Mail";
+import { OGPHeader } from "../../components/ogpHeader";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,15 +33,15 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     padding: {
       paddingTop: theme.spacing(5),
-      paddingLeft: theme.spacing(5),
-      paddingRight: theme.spacing(5)
+      paddingLeft: theme.spacing(3),
+      paddingRight: theme.spacing(3)
     },
     title: { background: "#fff", marginBottom: theme.spacing(1) },
     userInfo: { width: "100%", display: "flex", alignItems: "center" },
     timestamp: {
       fontSize: ".8rem",
-      width: "500px",
-      marginLeft: theme.spacing(2)
+      width: "500px"
+      // marginLeft: theme.spacing(2)
     },
     commentWrap: {
       background: "#fff",
@@ -73,19 +78,49 @@ const useStyles = makeStyles((theme: Theme) =>
       boxShadow: `0 3px 5px 2px ${theme.palette.buttonMain.dark}`
     },
     flex: {
+      paddingTop: theme.spacing(4),
       display: "flex",
       flexFlow: "column",
       alignItems: "flex-end"
     },
-    paddingLR: { paddingLeft: theme.spacing(5), paddingRight: theme.spacing(5) },
-    amountBox:{
-      marginTop:theme.spacing(5),
-      textAlign:"center"
+    paddingLR: {
+      paddingLeft: theme.spacing(4),
+      paddingRight: theme.spacing(4)
+    },
+    amountBox: {
+      marginTop: theme.spacing(5),
+      textAlign: "center"
+    },
+    linkButton: {
+      padding: theme.spacing(2),
+      display: "flex",
+      justifyContent: "flex-start",
+      "& a": {
+        alignItems: "center",
+        width: "100%",
+        display: "flex",
+        textDecoration: "none",
+        "& h3": {
+          marginTop: theme.spacing(2),
+          borderLeft: `solid 4px ${theme.palette.primary.main}`,
+          paddingLeft: theme.spacing(2)
+        }
+      },
+      "& a:link": {
+        color: "#757575"
+      },
+      "& a:visited": {
+        color: "#757575"
+      }
     }
   })
 );
 
-const Index = ({ props }) => {
+const Index = ({ isuser, dm, headData }) => {
+  let ogpData;
+  if (typeof headData !== "undefined") {
+    ogpData = JSON.parse(headData);
+  }
   const router = useRouter();
   const classes = useStyles();
   const [state, setState] = React.useState<{
@@ -109,9 +144,9 @@ const Index = ({ props }) => {
   });
   const [myData, setmyData] = React.useState();
   React.useEffect(() => {
-    setmyData(props);
-    console.log(myData);
-  }, [props]);
+    setmyData(isuser);
+    if (false) console.log(myData);
+  }, [isuser]);
 
   React.useEffect(() => {
     if (typeof router.query.id !== "undefined") {
@@ -138,26 +173,61 @@ const Index = ({ props }) => {
     }
   }, [router.query.id]);
 
+  const toggleDM = e => {
+    e.preventDefault();
+    if (!dm.dMopen) {
+      dm.handleDMMember(state.userData.uid);
+      return dm.handleDMOpen();
+    } else return dm.handleDMClose();
+  };
   return (
     <React.Fragment>
+      {typeof headData !== "undefined" && (
+        <OGPHeader
+          title={ogpData.title}
+          description={ogpData.text.substr(0, 200)}
+          image={"/images/card_banner_1200_02.png"}
+          url={`timeTickets/${router.query.id}`}
+        />
+      )}
       <CssBaseline />
       <Container maxWidth="lg" className={classes.margin}>
         <div className={classes.userInfo + " " + classes.padding}>
-          <UserInfo userInfo={state.userData} />
-          <Typography className={classes.timestamp}>
-            {state.createdAt}
-          </Typography>
+          <CardActionArea className={classes.linkButton}>
+            {state.userData !== null && (
+              <Link href="/users/[id]" as={`/users/${state.userData.uid}`}>
+                <a>
+                  <UserInfo userInfo={state.userData} />
+                  <IconButton
+                    aria-label="pm"
+                    color="primary"
+                    // className={classes.icon}
+                    onClick={toggleDM}
+                  >
+                    <MailIcon />
+                  </IconButton>
+                  <Typography className={classes.timestamp}>
+                    {state.createdAt}
+                  </Typography>
+                </a>
+              </Link>
+            )}
+          </CardActionArea>
         </div>
-        <Typography className={classes.padding} variant="h3">
+        <Typography className={classes.paddingLR} variant="h3">
           {state.title}
         </Typography>
         <div className={classes.paddingLR}>
           <Chips labels={state.tags} />
         </div>
+        <div className={classes.paddingLR}>
         <MarkDownViewer text={state.text} isEdit={false} />
+        </div>
         <Box className={classes.amountBox}>
-          <Typography variant="h6" component="p">{state.amount}円/30分</Typography>
-          <Charge label={"購入"} amount={state.amount} userData={props}/>
+          <Typography variant="h6" component="p">
+            {state.amount}円/30分
+          </Typography>
+          <Charge label={"購入"} amount={state.amount} userData={isuser} />
         </Box>
       </Container>
     </React.Fragment>

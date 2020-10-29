@@ -151,7 +151,8 @@ export const MailForm = ({
   label,
   handlechange,
   email,
-  autoFocus
+  autoFocus,
+  keyPress
 }) => {
 
 
@@ -171,6 +172,7 @@ export const MailForm = ({
               <MailIcon color={"primary"} />
             </InputAdornment>
           }
+          onKeyDown={keyPress}
         />
       </FormControl>
   );
@@ -180,5 +182,6 @@ MailForm.defaultProps={
   label:null,
   handlechange:null,
   email:null,
-  autoFocus:false
+  autoFocus:false,
+  keyPress:null
 }

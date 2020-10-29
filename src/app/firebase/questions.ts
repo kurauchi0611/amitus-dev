@@ -85,5 +85,9 @@ export const questionDB = {
         },
         createdAt: FieldValue.serverTimestamp()
       });
+  },
+  getFavoriteQuestions:async()=>{
+    const favoriteQuestions=await questions.orderBy("pageView","desc").limit(5).get();
+    return favoriteQuestions;
   }
 };

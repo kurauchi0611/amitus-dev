@@ -9,6 +9,8 @@ import { Chips } from "../mdEditor/chips";
 // import { RegularButton } from "../regularButton";
 import format from "date-fns/format";
 import Link from "next/link";
+import MonetizationOnIcon from "@material-ui/icons/MonetizationOn";
+import { yellow } from "@material-ui/core/colors";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -45,11 +47,11 @@ const useStyles = makeStyles((theme: Theme) =>
       },
       "& a:visited": {
         color: "#757575"
-      },
+      }
     },
     timestamp: {
-      //  fontSize: ".8rem" 
-      },
+      //  fontSize: ".8rem"
+    },
     media: {
       height: 0,
       paddingTop: "32%", // 16:9
@@ -57,6 +59,17 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     tagsWrap: {
       paddingTop: 0
+    },
+    price: {
+      color: "#fdd835",
+      fontWeight: "bold",
+      textShadow: "1px 1px 1px black",
+      fontSize: "18px"
+    },
+    contentFlex: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center"
     }
   })
 );
@@ -73,15 +86,26 @@ export const ViewCard = ({ views, label }) => {
         state.map((element, index) => {
           const viewData = element.data();
           return (
-            <Paper elevation={8}  key={index}>
+            <Paper elevation={8} key={index}>
               <Card className={classes.root} variant="outlined">
-                <CardContent>
+                <CardContent className={classes.contentFlex}>
                   <Typography className={classes.timestamp}>
                     {format(
                       new Date(viewData.createdAt.seconds * 1000),
                       "yyyy年MM月dd日HH時mm分投稿"
                     )}
                   </Typography>
+                  {label === "tickets" && (
+                    <div className={classes.contentFlex}>
+                      <MonetizationOnIcon
+                        fontSize="large"
+                        style={{ color: yellow[600] }}
+                      />
+                      <Typography className={classes.price}>
+                        {viewData.amount}円/30分
+                      </Typography>
+                    </div>
+                  )}
                 </CardContent>
                 <CardActionArea className={classes.buttonPosition}>
                   {/* <Button size="small">詳しく見る</Button> */}

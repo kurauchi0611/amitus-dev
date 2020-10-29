@@ -3,10 +3,10 @@ const DynamicComponentWithNoSSR = dynamic(
   () => import("../../components/lecture/index"),
   { ssr: false }
 );
-function Lecture({ props }) {
+function Lecture({ isuser }) {
   return (
     <div>
-      <DynamicComponentWithNoSSR props={props} />
+      <DynamicComponentWithNoSSR props={isuser} />
     </div>
   );
 }

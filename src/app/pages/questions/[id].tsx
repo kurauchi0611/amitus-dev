@@ -1,6 +1,8 @@
 import {
   Button,
+  CardActionArea,
   Grid,
+  IconButton,
   Paper,
   Typography,
   Container,
@@ -16,6 +18,9 @@ import { questionDB } from "../../firebase/questions";
 import { useRouter } from "next/router";
 import format from "date-fns/format";
 import { MarkDownEditor } from "../../components/mdEditor/MarkDownEditor";
+import Link from "next/link";
+import MailIcon from "@material-ui/icons/Mail";
+import { OGPHeader } from "../../components/ogpHeader";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,12 +32,16 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     padding: {
       paddingTop: theme.spacing(5),
-      paddingLeft: theme.spacing(5),
-      paddingRight: theme.spacing(5)
+      paddingLeft: theme.spacing(3),
+      paddingRight: theme.spacing(3)
     },
     title: { background: "#fff", marginBottom: theme.spacing(1) },
     userInfo: { width: "100%", display: "flex", alignItems: "center" },
-    timestamp: { fontSize: ".8rem", width: "500px",marginLeft:theme.spacing(2) },
+    timestamp: {
+      fontSize: ".8rem",
+      width: "max-content",
+      // marginLeft: theme.spacing(2)
+    },
     commentWrap: {
       background: "#fff",
       marginTop: theme.spacing(3),
@@ -55,7 +64,7 @@ const useStyles = makeStyles((theme: Theme) =>
     divider: {
       background: theme.palette.buttonMain.main,
       height: "2px",
-      marginBottom: theme.spacing(2)
+      // marginBottom: theme.spacing(2)
     },
     button: {
       fontSize: "18px",
@@ -68,15 +77,48 @@ const useStyles = makeStyles((theme: Theme) =>
       boxShadow: `0 3px 5px 2px ${theme.palette.buttonMain.dark}`
     },
     flex: {
+      paddingTop: theme.spacing(4),
       display: "flex",
       flexFlow: "column",
       alignItems: "flex-end"
     },
-    paddingLR: { paddingLeft: theme.spacing(5), paddingRight: theme.spacing(5) }
+    paddingLR: {
+      paddingLeft: theme.spacing(4),
+      paddingRight: theme.spacing(4)
+    },
+    editWrap: {
+      height: "300px"
+    },
+    linkButton: {
+      padding: theme.spacing(2),
+      display: "flex",
+      justifyContent: "flex-start",
+      "& a": {
+        alignItems: "center",
+        width: "100%",
+        display: "flex",
+        textDecoration: "none",
+        "& h3": {
+          marginTop: theme.spacing(2),
+          borderLeft: `solid 4px ${theme.palette.primary.main}`,
+          paddingLeft: theme.spacing(2)
+        }
+      },
+      "& a:link": {
+        color: "#757575"
+      },
+      "& a:visited": {
+        color: "#757575"
+      }
+    }
   })
 );
 
-const Index = ({ props }) => {
+const Index = ({ isuser, dm , headData}) => {
+  let ogpData;
+  if (typeof headData !== "undefined") {
+    ogpData = JSON.parse(headData);
+  }
   const router = useRouter();
   const classes = useStyles();
   const [comment, setComment] = React.useState("");
@@ -99,17 +141,19 @@ const Index = ({ props }) => {
     createdAt: null,
     isResolve: false
   });
-  const [commentState, setCommentState] = React.useState<any|null>();
+  const [commentState, setCommentState] = React.useState<any | null>();
   const [myData, setmyData] = React.useState();
   React.useEffect(() => {
-    setmyData(props);
-  }, [props]);
+    setmyData(isuser);
+  }, [isuser]);
 
   React.useEffect(() => {
     if (typeof router.query.id !== "undefined") {
       const cleanup = async () => {
         const getQuestion = await questionDB.showQuestion(router.query.id);
         const questionData: any = getQuestion.question.data();
+        console.log(questionData);
+
         if (typeof questionData != "undefined") {
           setCommentState(getQuestion.comments);
           setState({
@@ -152,23 +196,57 @@ const Index = ({ props }) => {
         });
     }
   };
+  const toggleDM = e => {
+    e.preventDefault();
+    if (!dm.dMopen) {
+      dm.handleDMMember(state.userData.uid);
+      return dm.handleDMOpen();
+    } else return dm.handleDMClose();
+  };
+
   return (
     <React.Fragment>
+      {typeof headData !== "undefined" && (
+        <OGPHeader
+          title={ogpData.title}
+          description={ogpData.text.substr(0, 200)}
+          image={"/images/card_banner_1200_01.png"}
+          url={`questions/${router.query.id}`}
+        />
+      )}
       <CssBaseline />
       <Container maxWidth="lg" className={classes.margin}>
         <div className={classes.userInfo + " " + classes.padding}>
-          <UserInfo userInfo={state.userData} />
-          <Typography className={classes.timestamp}>
-            {state.createdAt}
-          </Typography>
+          <CardActionArea className={classes.linkButton}>
+            {state.userData !== null && (
+              <Link href="/users/[id]" as={`/users/${state.userData.uid}`}>
+                <a>
+                  <UserInfo userInfo={state.userData} />
+                  <IconButton
+                    aria-label="pm"
+                    color="primary"
+                    // className={classes.icon}
+                    onClick={toggleDM}
+                  >
+                    <MailIcon />
+                  </IconButton>
+                  <Typography className={classes.timestamp}>
+                    {state.createdAt}
+                  </Typography>
+                </a>
+              </Link>
+            )}
+          </CardActionArea>
         </div>
-        <Typography className={classes.padding} variant="h3">
+        <Typography className={classes.paddingLR} variant="h3">
           {state.title}
         </Typography>
         <div className={classes.paddingLR}>
           <Chips labels={state.tags} />
         </div>
-        <MarkDownViewer text={state.text} isEdit={false}/>
+        <div className={classes.paddingLR}>
+          <MarkDownViewer text={state.text} isEdit={false} />
+        </div>
       </Container>
       <Container maxWidth="lg" className={classes.commentWrap}>
         <Typography className={classes.paddingSmall} variant="h4">
@@ -194,7 +272,10 @@ const Index = ({ props }) => {
                       )}`}
                     </Typography>
                   </div>
-                  <MarkDownViewer text={`${element.data().text}`} isEdit={false}/>
+                  <MarkDownViewer
+                    text={`${element.data().text}`}
+                    isEdit={false}
+                  />
                 </Paper>
               </Grid>
             );
@@ -204,7 +285,9 @@ const Index = ({ props }) => {
             {"コメントを投稿する"}
           </Typography>
           <Divider className={classes.divider} component="div" />
-          <MarkDownEditor handleChange={handleChange()} text={comment} />
+          <div className={classes.editWrap}>
+            <MarkDownEditor handleChange={handleChange()} text={comment} />
+          </div>
           <div className={classes.flex}>
             <Button
               variant="contained"

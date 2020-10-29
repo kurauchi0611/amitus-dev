@@ -88,7 +88,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Index = ({ props }) => {
+const Index = ({ isuser }) => {
   const classes = useStyles();
   const router = useRouter();
   const [error, setError] = React.useState<any | null>();
@@ -105,12 +105,12 @@ const Index = ({ props }) => {
     tags: null,
     text: sampleMoji,
     index: 0,
-    userData: props,
+    userData: isuser,
     amount: undefined
   });
   React.useEffect(() => {
-    setState({ ...state, userData: props });
-  }, [props]);
+    setState({ ...state, userData: isuser });
+  }, [isuser]);
 
   const handleChange = name => event => {
     if (name === "text") {
@@ -148,7 +148,7 @@ const Index = ({ props }) => {
     setOpen(false);
   };
   const sendTicket = async () => {
-    if (state.text !== "" && state.tags !== null && state.text !== "") {
+    if (state.title !== "" && state.tags !== null && state.text !== "") {
       if (state.index === 0) {
         const postTicket = await ticketDB.postTicket(state);
         if (postTicket !== null) {

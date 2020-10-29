@@ -150,7 +150,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const PasswordForm = ({ label, handlechange, password }) => {
+export const PasswordForm = ({ label, handlechange, password,keyPress }) => {
   const [values, setValues] = React.useState({
     showPassword: false
   });
@@ -192,7 +192,16 @@ export const PasswordForm = ({ label, handlechange, password }) => {
             </IconButton>
           </InputAdornment>
         }
+        onKeyDown={keyPress}
       />
     </FormControl>
   );
 };
+
+PasswordForm.defaultProps={
+  label:null,
+  handlechange:null,
+  email:null,
+  autoFocus:false,
+  keyPress:null
+}

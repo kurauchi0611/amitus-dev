@@ -16,53 +16,53 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     title: { background: "#fff", marginBottom: theme.spacing(1) },
     error: {
-      background: theme.palette.buttonCancel.main
+      background: theme.palette.buttonCancel.main,
     },
     paper: {
       padding: theme.spacing(2),
       textAlign: "center",
-      color: theme.palette.text.secondary
+      color: theme.palette.text.secondary,
     },
     avatar: {
       fontSize: "5vw",
       width: "10vw",
       height: "10vw",
       color: "#fff",
-      background: theme.palette.buttonMain.main
+      background: theme.palette.buttonMain.main,
     },
     status: {
       display: "flex",
       flexFlow: "column",
-      alignItems: "center"
+      alignItems: "center",
     },
     typo: {
       marginTop: theme.spacing(2),
-      marginBottom: theme.spacing(2)
+      marginBottom: theme.spacing(2),
     },
     divider: {
       background: theme.palette.buttonMain.main,
       width: "100%",
       height: "2px",
-      margin: `${theme.spacing(1)}px auto`
+      margin: `${theme.spacing(1)}px auto`,
     },
     ff: {
-      textAlign: "left"
+      textAlign: "left",
     },
     content: {
       display: "flex",
       flexFlow: "wrap",
-      justifyContent: "space-around"
+      justifyContent: "space-around",
     },
     contentPadding: {
-      padding: theme.spacing(4)
+      padding: theme.spacing(4),
     },
     gridWrap: {
       background: "#fff",
-    }
+    },
   })
 );
 
-const Index = ({ props }) => {
+const Index = ({ isuser }) => {
   const classes = useStyles();
   const [userState, setUserState] = React.useState<{
     createdAt: any;
@@ -85,15 +85,15 @@ const Index = ({ props }) => {
     rating: 1,
     follow: 0,
     follower: 0,
-    uid: ""
+    uid: "",
   });
   React.useEffect(() => {
-    if (typeof props !== "undefined") {
+    if (typeof isuser !== "undefined") {
       db.collection("users")
-        .doc(props.uid)
-        .onSnapshot(doc => {
+        .doc(isuser.uid)
+        .onSnapshot((doc) => {
           console.log(doc);
-          const userData:any|null = doc.data();
+          const userData: any | null = doc.data();
           setUserState({
             ...userState,
             createdAt: userData.createdAt,
@@ -105,16 +105,16 @@ const Index = ({ props }) => {
             rating: userData.rating,
             follow: userData.follow,
             follower: userData.follower,
-            uid: props.uid
+            uid: isuser.uid,
           });
         });
     }
-  }, [props]);
+  }, [isuser]);
   return (
     <React.Fragment>
       <CssBaseline />
       <Container maxWidth="xl" className={classes.margin}>
-        <Grid container  className={classes.gridWrap}>
+        <Grid container className={classes.gridWrap}>
           <MyStatus props={userState} />
           <UserContent props={userState} />
         </Grid>

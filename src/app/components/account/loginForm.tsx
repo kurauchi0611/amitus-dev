@@ -82,6 +82,10 @@ export const LoginForm = ({ label }) => {
     });
     setOpen(false);
   };
+  const keyPress = e => {
+    console.log("hoge");
+    if (e.which == 13) loginUser();
+  };
 
   const emailValidation = email => {
     if (!email) return "メールアドレスを入力してください";
@@ -161,12 +165,14 @@ export const LoginForm = ({ label }) => {
               handlechange={handleChange("email")}
               email={state.email}
               autoFocus={true}
+              keyPress={keyPress}
             />
             <div className={classes.error}>{state.emailFaild}</div>
             <PasswordForm
               label="パスワード"
               handlechange={handleChange("password")}
               password={state.password}
+              keyPress={keyPress}
             ></PasswordForm>
             <div className={classes.error}>{state.passwordFaild}</div>
             <div className={classes.error}>{state.faild}</div>
