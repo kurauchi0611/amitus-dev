@@ -224,7 +224,7 @@ export const main = async selectedModel => {
    */
   const projectionMatrix = new cubismmatrix44.CubismMatrix44();
   const resizeModel = () => {
-    canvas.width = 640;
+    canvas.width = 600;
     canvas.height = 500;
 
     // NOTE: HTMLキャンバスのclientWidth、clientHeightが変わってもwidthとheightは変わらないので、自分で更新する

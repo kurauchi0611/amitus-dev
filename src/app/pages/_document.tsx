@@ -27,7 +27,7 @@ class MyDocument extends Document {
           <script src="https://js.stripe.com/v3/" />
           <script src="/clmtrackr.js"></script>
         </Head>{" "}
-        <body>
+        <body style={{overflowX:"hidden"}}>
           {" "}
           <Main /> <NextScript />{" "}
         </body>{" "}

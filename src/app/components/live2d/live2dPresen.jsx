@@ -41,8 +41,9 @@ const useStyles = makeStyles((theme) => ({
   },
   paperWrap: {
     height: "400px",
-    width: "100%",
+    width: "96%",
     overflow: "scroll",
+    marginRight:20,
   },
   paper: {
     padding: "2px",
@@ -55,6 +56,7 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: "nowrap",
     animationName: "$marquee",
     animationTimingFunction: "linear",
+    fontWeight:"bold",
     animationIterationCount: "infinite",
   },
   "@keyframes marquee": {
@@ -67,75 +69,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 export default function () {
-  const arr = [
-    {
-      content: "aaa",
-      createdAt: { seconds: 1500000000 },
-    },
-    {
-      content: "aaa",
-      createdAt: { seconds: 1500000000 },
-    },
-    {
-      content: "aaa",
-      createdAt: { seconds: 1500000000 },
-    },
-    {
-      content: "aaa",
-      createdAt: { seconds: 1500000000 },
-    },
-    {
-      content: "aaa",
-      createdAt: { seconds: 1500000000 },
-    },
-    {
-      content: "aaa",
-      createdAt: { seconds: 1500000000 },
-    },
-    {
-      content: "aaa",
-      createdAt: { seconds: 1500000000 },
-    },
-    {
-      content: "aaa",
-      createdAt: { seconds: 1500000000 },
-    },
-    {
-      content: "aaa",
-      createdAt: { seconds: 1500000000 },
-    },
-    {
-      content: "aaa",
-      createdAt: { seconds: 1500000000 },
-    },
-    {
-      content: "aaa",
-      createdAt: { seconds: 1500000000 },
-    },
-    {
-      content: "aaa",
-      createdAt: { seconds: 1500000000 },
-    },
-    {
-      content: "aaa",
-      createdAt: { seconds: 1500000000 },
-    },
-    {
-      content: "aaa",
-      createdAt: { seconds: 1500000000 },
-    },
-  ];
   const player = document.getElementById("player");
   const classes = useStyles();
   const inputLabel = React.useRef(null);
   const [labelWidth, setLabelWidth] = React.useState(0);
   const [isGuest, setIsGuest] = React.useState("error");
-  const [comments, setComments] = React.useState(arr);
+  const [comments, setComments] = React.useState(null);
   React.useEffect(() => {
     setLabelWidth(inputLabel.current.offsetWidth);
   }, []);
   React.useEffect(() => {
     db.collection("comments")
+      .where("createdAt",">=",new Date())
       .orderBy("createdAt", "desc")
       .onSnapshot((snapshot) => {
         console.log(snapshot.docs);
@@ -204,11 +149,11 @@ export default function () {
       >
         <Grid item xs={8}>
           <Iframe
-            src="https://app.pitch.com/app/embed/dc0fbadd-d98a-4889-b501-f74bd2718032"
+            src="https://app.pitch.com/app/embed/429f35b0-53cb-4d11-9c3c-00fc6f6a9709"
             allow="fullscreen"
-            allowFullScreen=""
+            allowfullscreen=""
             width="1100"
-            height="619"
+            height="620"
             style="border:0"
           ></Iframe>
         </Grid>
